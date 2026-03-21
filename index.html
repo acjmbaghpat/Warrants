@@ -282,26 +282,35 @@ function genD(){
   toast(`📄 ${tot} page${tot>1?'s':''} ready — Print / PDF Save karo`,3500);
 }
 
-// ── Document wrapper ──
+// ── Document wrapper — Google Fonts for correct Hindi rendering ──
 function wD(cn,tot,pages){
-  return`<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><title>Proforma — ${cn}</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-@page{size:A4;margin:15mm 20mm 15mm 25mm;}
-body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;font-size:12pt;line-height:1.8;color:#000;background:#fff;padding-top:48px;}
-.pg{page-break-after:always;}.pg:last-child{page-break-after:avoid;}
-table{width:100%;border-collapse:collapse;}
-td{padding:1px 0;vertical-align:top;}
-.rbox{text-align:right;border-left:1px solid #555;padding-left:10px;font-size:11pt;line-height:1.7;white-space:nowrap;}
-.pb{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
-.pb button{background:#fff;color:#1a237e;border:none;padding:6px 18px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
-.sig{display:flex;justify-content:space-between;margin-top:35px;}
-.note{margin-top:14px;font-size:10pt;color:#333;}
-hr{border:none;border-top:1.5px solid #000;margin:8px 0;}
-@media print{.pb{display:none;}body{padding-top:0;}}
-</style></head><body>
-<div class="pb"><span>📄 ${tot} pages | Case: ${cn}</span><button onclick="window.print()">🖨️ Print / PDF Save</button></div>
-${pages}</body></html>`;
+  return'<!DOCTYPE html><html lang="hi"><head>'
+    +'<meta charset="UTF-8">'
+    +'<title>Proforma \u2014 '+cn+'</title>'
+    +'<link rel="preconnect" href="https://fonts.googleapis.com">'
+    +'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">'
+    +'<style>'
+    +'*{box-sizing:border-box;margin:0;padding:0;}'
+    +'@page{size:A4;margin:20mm 20mm 15mm 25mm;}'
+    +"body{font-family:'Noto Sans Devanagari',Arial,sans-serif;font-size:13pt;line-height:2;color:#000;background:#fff;padding-top:50px;}"
+    +'.pg{page-break-after:always;padding:0;}'
+    +'.pg:last-child{page-break-after:avoid;}'
+    +'p{margin:4px 0;}'
+    +'table{width:100%;border-collapse:collapse;}'
+    +"td{padding:2px 0;vertical-align:top;font-family:'Noto Sans Devanagari',Arial,sans-serif;}"
+    +'.rbox{text-align:left;border-left:1px solid #333;padding-left:8px;font-size:12pt;line-height:1.9;white-space:nowrap;width:38%;}'
+    +'.pb{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;}'
+    +'.pb button{background:#fff;color:#1a237e;border:none;padding:6px 18px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;}'
+    +'.sig{display:flex;justify-content:space-between;margin-top:40px;}'
+    +'.note{margin-top:14px;font-size:10pt;color:#333;}'
+    +'hr{border:none;border-top:1.5px solid #000;margin:8px 0;}'
+    +'@media print{.pb{display:none;}body{padding-top:0;}}'
+    +'</style></head><body>'
+    +'<div class="pb"><span>\ud83d\udcc4 '+tot+' page'+(tot>1?'s':'')+' | Case: '+cn+'</span>'
+    +'<button onclick="window.print()">\ud83d\udda8\ufe0f Print / PDF Save</button></div>'
+    +pages
+    +'</body></html>';
 }
 
 // ═══════════════════════════════════════════════════════════
