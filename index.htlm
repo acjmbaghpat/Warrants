@@ -5,230 +5,164 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Court Proforma — ACJM Baghpat</title>
 <style>
-:root{--font:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;
-  --blue:#1a237e;--blue2:#3949ab;--green:#2e7d32;--red:#c62828;--bg:#eef2ff;}
+:root{--f:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;--b:#1a237e;--b2:#3949ab;--g:#2e7d32;--r:#c62828;--bg:#eef2ff;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
-.screen{display:none !important;min-height:100vh;flex-direction:column;}
-.screen.active{display:flex !important;}
-
-.hdr{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:14px 16px;
-  display:flex;align-items:center;gap:10px;box-shadow:0 3px 10px rgba(0,0,0,.25);
-  position:sticky;top:0;z-index:10;}
-.hdr h1{font-size:15px;font-weight:700;flex:1;line-height:1.3;}
+body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
+.hdr{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 8px rgba(0,0,0,.25);position:sticky;top:0;z-index:10;}
+.hdr h1{font-size:15px;font-weight:700;flex:1;}
 .badge{background:rgba(255,255,255,.22);border-radius:20px;padding:3px 11px;font-size:12px;white-space:nowrap;}
-.back-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:0 6px 0 0;line-height:1;}
-
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;}
-.card{background:#fff;border-radius:14px;padding:16px;margin:14px 14px 0;box-shadow:0 2px 10px rgba(0,0,0,.07);}
-.sec-title{font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;letter-spacing:.5px;padding:16px 14px 6px;}
-
+.bk{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:0 6px 0 0;}
+.cnt{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;}
+.card{background:#fff;border-radius:14px;padding:16px;margin:14px 14px 0;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.st{font-size:12px;font-weight:700;color:var(--b2);text-transform:uppercase;letter-spacing:.5px;padding:16px 14px 6px;}
 .fg{margin-bottom:13px;}
 .fg:last-child{margin-bottom:0;}
-.lbl{display:block;font-size:12px;font-weight:600;color:#455a64;margin-bottom:5px;}
-.inp-wrap{display:flex;gap:6px;}
-.inp{flex:1;min-width:0;padding:11px 12px;border:1.5px solid #cfd8dc;border-radius:9px;
-  font-family:var(--font);font-size:14px;outline:none;background:#fff;color:#000;-webkit-appearance:none;}
-.inp:focus{border-color:var(--blue2);}
-.mic-btn{flex-shrink:0;width:42px;height:42px;border:1.5px solid #cfd8dc;border-radius:9px;
-  background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.mic-btn.on{background:var(--red);border-color:var(--red);}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-
-.btn{display:block;width:100%;padding:13px 16px;border:none;border-radius:11px;
-  font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;
-  text-align:center;margin-bottom:10px;-webkit-appearance:none;line-height:1.4;}
+.lb{display:block;font-size:12px;font-weight:600;color:#455a64;margin-bottom:5px;}
+.iw{display:flex;gap:6px;}
+.ip{flex:1;min-width:0;padding:11px 12px;border:1.5px solid #cfd8dc;border-radius:9px;font-family:var(--f);font-size:14px;outline:none;background:#fff;color:#000;-webkit-appearance:none;}
+.ip:focus{border-color:var(--b2);}
+.mb{flex-shrink:0;width:42px;height:42px;border:1.5px solid #cfd8dc;border-radius:9px;background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mb.on{background:var(--r);border-color:var(--r);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn{display:block;width:100%;padding:13px 16px;border:none;border-radius:11px;font-family:var(--f);font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:10px;-webkit-appearance:none;line-height:1.4;}
 .btn:last-child{margin-bottom:0;}
 .btn:active{opacity:.8;}
-.btn-p{background:var(--blue);color:#fff;}
-.btn-g{background:var(--green);color:#fff;}
-.btn-o{background:transparent;border:2px solid var(--blue2);color:var(--blue2);}
-
-.acc-card{background:#f8f9ff;border:1.5px solid #c5cae9;border-radius:11px;padding:14px;margin-bottom:12px;}
-.acc-hdr{display:flex;align-items:center;margin-bottom:12px;}
-.acc-num{background:var(--blue);color:#fff;border-radius:50%;width:26px;height:26px;
-  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
-  margin-right:8px;flex-shrink:0;}
-.acc-title{flex:1;font-size:13px;font-weight:600;color:var(--blue);}
-.del-btn{background:#ffebee;color:var(--red);border:none;border-radius:7px;
-  padding:6px 12px;font-size:12px;cursor:pointer;font-family:var(--font);}
-
-.chk-row{display:flex;align-items:center;padding:13px 14px;border:1.5px solid #e0e0e0;
-  border-radius:11px;margin-bottom:9px;background:#fff;user-select:none;-webkit-user-select:none;}
-.chk-row.on{border-color:var(--blue2);background:#e8eaf6;}
-.chk-row input[type=checkbox]{width:22px;height:22px;margin-right:12px;flex-shrink:0;accent-color:var(--blue);}
-.chk-row .cl{flex:1;font-size:14px;font-weight:500;cursor:pointer;}
-.chk-row .cl small{display:block;font-size:11px;color:#78909c;font-weight:400;}
-.dtag{background:#e8eaf6;color:var(--blue);border-radius:7px;padding:2px 9px;font-size:12px;font-weight:700;}
-.chk-row.on .dtag{background:var(--blue2);color:#fff;}
-.sel-row{display:flex;gap:8px;padding:0 14px 8px;}
-.sel-row button{flex:1;padding:9px;border:1.5px solid var(--blue2);border-radius:8px;
-  background:transparent;color:var(--blue2);font-size:13px;font-family:var(--font);cursor:pointer;}
-
-.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f4f8;font-size:13px;}
-.info-row:last-child{border:none;}
-.ilbl{color:#78909c;}
-.ival{font-weight:600;text-align:right;margin-left:8px;word-break:break-all;}
-
-/* ── Scanner ── */
-.scan-wrap{padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:12px;}
-
-#qr-box{width:100%;max-width:360px;}
-/* html5-qrcode injects its own styles — we override the container look */
-#qr-box video{border-radius:12px !important;width:100% !important;}
-#qr-box img{border-radius:12px !important;width:100% !important;}
-
-.scan-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;}
-
-.scan-hint{color:#546e7a;font-size:13px;text-align:center;}
-.man-row{display:flex;gap:8px;width:100%;max-width:360px;}
-.man-row .inp{flex:1;}
-.go-btn{padding:11px 18px;background:var(--blue);color:#fff;border:none;border-radius:9px;
-  font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);}
-
+.bp{background:var(--b);color:#fff;}
+.bg2{background:var(--g);color:#fff;}
+.bo{background:transparent;border:2px solid var(--b2);color:var(--b2);}
+.ac{background:#f8f9ff;border:1.5px solid #c5cae9;border-radius:11px;padding:14px;margin-bottom:12px;}
+.ah{display:flex;align-items:center;margin-bottom:12px;}
+.an{background:var(--b);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:8px;flex-shrink:0;}
+.at{flex:1;font-size:13px;font-weight:600;color:var(--b);}
+.db{background:#ffebee;color:var(--r);border:none;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:var(--f);}
+.cr{display:flex;align-items:center;padding:13px 14px;border:1.5px solid #e0e0e0;border-radius:11px;margin-bottom:9px;background:#fff;user-select:none;-webkit-user-select:none;}
+.cr.on{border-color:var(--b2);background:#e8eaf6;}
+.cr input[type=checkbox]{width:22px;height:22px;margin-right:12px;flex-shrink:0;accent-color:var(--b);}
+.cl{flex:1;font-size:14px;font-weight:500;cursor:pointer;}
+.cl small{display:block;font-size:11px;color:#78909c;font-weight:400;}
+.dt{background:#e8eaf6;color:var(--b);border-radius:7px;padding:2px 9px;font-size:12px;font-weight:700;}
+.cr.on .dt{background:var(--b2);color:#fff;}
+.sr{display:flex;gap:8px;padding:0 14px 8px;}
+.sr button{flex:1;padding:9px;border:1.5px solid var(--b2);border-radius:8px;background:transparent;color:var(--b2);font-size:13px;font-family:var(--f);cursor:pointer;}
+.ir{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f4f8;font-size:13px;}
+.ir:last-child{border:none;}
+.il{color:#78909c;}
+.iv{font-weight:600;text-align:right;margin-left:8px;word-break:break-all;}
 .bot{padding:14px;background:#fff;border-top:1px solid #e8eaf6;}
-
-#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#323232;
-  color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;z-index:9999;
-  display:none;max-width:88vw;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.3);}
-
-/* Scanner status box */
-.scan-msg{width:100%;max-width:360px;border-radius:10px;padding:12px 14px;font-size:13px;text-align:center;}
-.scan-msg.loading{background:#e8eaf6;color:var(--blue);}
-.scan-msg.success{background:#e8f5e9;color:var(--green);font-weight:700;}
-.scan-msg.error{background:#ffebee;color:var(--red);}
-.scan-msg.warn{background:#fff3e0;color:#e65100;}
+.sw{padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.mr{display:flex;gap:8px;width:100%;max-width:360px;}
+.mr .ip{flex:1;}
+.gb{padding:11px 18px;background:var(--b);color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--f);}
+.sm{width:100%;max-width:360px;border-radius:10px;padding:12px 14px;font-size:13px;text-align:center;line-height:1.6;}
+.sm.ld{background:#e8eaf6;color:var(--b);}
+.sm.ok{background:#e8f5e9;color:var(--g);font-weight:700;}
+.sm.er{background:#ffebee;color:var(--r);}
+.sm.wn{background:#fff3e0;color:#e65100;}
+#qrb{width:100%;max-width:360px;}
+#qrb video{border-radius:12px !important;width:100% !important;}
+.scb{display:none;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;z-index:9999;display:none;max-width:88vw;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.3);}
 </style>
 </head>
 <body>
 <div id="toast"></div>
 
-<!-- ══ SCREEN 1: SCAN ══ -->
-<div class="screen active" id="s-scan">
+<!-- SCREEN 1: SCAN — visible by default via inline style -->
+<div id="s1" style="display:flex;flex-direction:column;min-height:100vh;">
   <div class="hdr"><h1>⚖️ Court Proforma — ACJM Baghpat</h1></div>
-  <div class="content">
-    <div class="scan-wrap">
-
-      <!-- QR scanner container -->
-      <div id="qr-box"></div>
-      <div id="scan-msg-area"></div>
-
-      <!-- Scan controls: shown after scanner loads -->
-      <div class="scan-btns" id="scan-ctrl" style="display:none;">
-        <button class="btn btn-p" style="margin:0;" onclick="startScan()">📷 Scan Shuru Karo</button>
-        <button class="btn btn-o" style="margin:0;" onclick="stopScan()">⏹ Band Karo</button>
+  <div class="cnt">
+    <div class="sw">
+      <div id="qrb"></div>
+      <div id="sma"></div>
+      <div class="scb" id="scb">
+        <button class="btn bp" style="margin:0;" onclick="startScan()">📷 Scan Shuru Karo</button>
+        <button class="btn bo" style="margin:0;" onclick="stopScan()">⏹ Band Karo</button>
       </div>
-
-      <p class="scan-hint">— ya Case No. seedha type karo —</p>
-      <div class="man-row">
-        <input class="inp" id="man-inp" type="text" placeholder="Case No: 3802/20"
-          autocomplete="off" autocorrect="off" spellcheck="false"/>
-        <button class="go-btn" onclick="onCaseNo(v('man-inp'))">जाओ →</button>
+      <p style="color:#546e7a;font-size:13px;text-align:center;">— ya Case No. seedha type karo —</p>
+      <div class="mr">
+        <input class="ip" id="mi" type="text" placeholder="Case No: 3802/20" autocomplete="off" autocorrect="off" spellcheck="false"/>
+        <button class="gb" onclick="onCaseNo(v('mi'))">जाओ →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ SCREEN 2: NEW CASE ══ -->
-<div class="screen" id="s-new">
+<!-- SCREEN 2: NEW CASE — hidden via inline style -->
+<div id="s2" style="display:none;flex-direction:column;min-height:100vh;">
   <div class="hdr">
-    <button class="back-btn" onclick="goScan()">←</button>
+    <button class="bk" onclick="goS1()">←</button>
     <h1>नया मुकदमा</h1>
-    <span class="badge" id="new-badge"></span>
+    <span class="badge" id="b2"></span>
   </div>
-  <div class="content">
+  <div class="cnt">
     <div class="card">
-      <p style="font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;margin-bottom:12px;">मुकदमे की जानकारी</p>
-      <div class="row2">
-        <div class="fg"><label class="lbl">Case No. *</label>
-          <input class="inp" id="n-caseno" placeholder="3802/20"/></div>
-        <div class="fg"><label class="lbl">CC No.</label>
-          <input class="inp" id="n-cc" placeholder="256/14"/></div>
+      <p class="st" style="padding:0 0 12px;">मुकदमे की जानकारी</p>
+      <div class="r2">
+        <div class="fg"><label class="lb">Case No. *</label><input class="ip" id="nc" placeholder="3802/20"/></div>
+        <div class="fg"><label class="lb">CC No.</label><input class="ip" id="ncc" placeholder="256/14"/></div>
       </div>
-      <div class="fg"><label class="lbl">धारा (Section) *</label>
-        <input class="inp" id="n-sec" placeholder="366 IPC"/></div>
-      <div class="row2">
-        <div class="fg"><label class="lbl">थाना (PS) *</label>
-          <div class="inp-wrap">
-            <input class="inp" id="n-ps" placeholder="छपरौली"/>
-            <button class="mic-btn" onclick="startVoice('n-ps',this)">🎤</button>
-          </div></div>
-        <div class="fg"><label class="lbl">जिला</label>
-          <input class="inp" id="n-dist" placeholder="बागपत"/></div>
+      <div class="fg"><label class="lb">धारा (Section) *</label><input class="ip" id="ns" placeholder="366 IPC"/></div>
+      <div class="r2">
+        <div class="fg"><label class="lb">थाना (PS) *</label>
+          <div class="iw"><input class="ip" id="np" placeholder="छपरौली"/>
+          <button class="mb" onclick="sv('np',this)">🎤</button></div></div>
+        <div class="fg"><label class="lb">जिला</label><input class="ip" id="nd" placeholder="बागपत"/></div>
       </div>
-      <div class="fg"><label class="lbl">अगली तारीख (Fix Date)</label>
-        <input class="inp" id="n-fix" type="date"/></div>
+      <div class="fg"><label class="lb">अगली तारीख (Fix)</label><input class="ip" id="nf" type="date"/></div>
     </div>
-    <p class="sec-title">अभियुक्त की सूची</p>
-    <div id="new-acc-list" style="padding:0 14px;"></div>
-    <div style="padding:6px 14px 0;">
-      <button class="btn btn-o" onclick="addAccNew()">+ अभियुक्त जोड़ें</button>
-    </div>
+    <p class="st">अभियुक्त की सूची</p>
+    <div id="nal" style="padding:0 14px;"></div>
+    <div style="padding:6px 14px 0;"><button class="btn bo" onclick="addAN()">+ अभियुक्त जोड़ें</button></div>
   </div>
-  <div class="bot">
-    <button class="btn btn-p" onclick="saveNew()">💾 मुकदमा सेव करें</button>
-  </div>
+  <div class="bot"><button class="btn bp" onclick="saveN()">💾 मुकदमा सेव करें</button></div>
 </div>
 
-<!-- ══ SCREEN 3: FOUND ══ -->
-<div class="screen" id="s-found">
+<!-- SCREEN 3: FOUND — hidden -->
+<div id="s3" style="display:none;flex-direction:column;min-height:100vh;">
   <div class="hdr">
-    <button class="back-btn" onclick="goScan()">←</button>
+    <button class="bk" onclick="goS1()">←</button>
     <h1>मुकदमा मिला</h1>
-    <span class="badge" id="found-badge"></span>
+    <span class="badge" id="b3"></span>
   </div>
-  <div class="content">
-    <div class="card" id="case-info-card"></div>
-    <p class="sec-title">अभियुक्त चुनें</p>
-    <div class="sel-row">
-      <button onclick="selAll('acc-chk',true)">☑ सभी</button>
-      <button onclick="selAll('acc-chk',false)">☐ कोई नहीं</button>
-    </div>
-    <div id="acc-checks" style="padding:0 14px;"></div>
-    <p class="sec-title">प्रपत्र चुनें</p>
-    <div class="sel-row">
-      <button onclick="selAll('doc-chk',true)">☑ सभी</button>
-      <button onclick="selAll('doc-chk',false)">☐ कोई नहीं</button>
-    </div>
-    <div id="doc-checks" style="padding:0 14px;"></div>
+  <div class="cnt">
+    <div class="card" id="ci"></div>
+    <p class="st">अभियुक्त चुनें</p>
+    <div class="sr"><button onclick="sa('ac',true)">☑ सभी</button><button onclick="sa('ac',false)">☐ कोई नहीं</button></div>
+    <div id="ack" style="padding:0 14px;"></div>
+    <p class="st">प्रपत्र चुनें</p>
+    <div class="sr"><button onclick="sa('dc',true)">☑ सभी</button><button onclick="sa('dc',false)">☐ कोई नहीं</button></div>
+    <div id="dck" style="padding:0 14px;"></div>
   </div>
   <div class="bot">
-    <button class="btn btn-g" onclick="genDocs()">📄 प्रपत्र बनाएं &amp; Download</button>
-    <button class="btn btn-o" onclick="goEdit()">✏️ जानकारी बदलें / Accused Add करें</button>
+    <button class="btn bg2" onclick="genD()">📄 प्रपत्र बनाएं &amp; Download</button>
+    <button class="btn bo" onclick="goEdit()">✏️ जानकारी बदलें / Accused Add करें</button>
   </div>
 </div>
 
-<!-- ══ SCREEN 4: EDIT ══ -->
-<div class="screen" id="s-edit">
+<!-- SCREEN 4: EDIT — hidden -->
+<div id="s4" style="display:none;flex-direction:column;min-height:100vh;">
   <div class="hdr">
-    <button class="back-btn" onclick="renderFound();show('s-found')">←</button>
+    <button class="bk" onclick="rF();goS('s3')">←</button>
     <h1>जानकारी संपादित करें</h1>
-    <span class="badge" id="edit-badge"></span>
+    <span class="badge" id="b4"></span>
   </div>
-  <div class="content">
+  <div class="cnt">
     <div class="card">
-      <p style="font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;margin-bottom:12px;">मुकदमे की जानकारी</p>
-      <div class="row2">
-        <div class="fg"><label class="lbl">CC No.</label><input class="inp" id="e-cc"/></div>
-        <div class="fg"><label class="lbl">जिला</label><input class="inp" id="e-dist"/></div>
+      <p class="st" style="padding:0 0 12px;">मुकदमे की जानकारी</p>
+      <div class="r2">
+        <div class="fg"><label class="lb">CC No.</label><input class="ip" id="ec"/></div>
+        <div class="fg"><label class="lb">जिला</label><input class="ip" id="ed"/></div>
       </div>
-      <div class="fg"><label class="lbl">धारा (Section)</label><input class="inp" id="e-sec"/></div>
-      <div class="fg"><label class="lbl">थाना (PS)</label>
-        <div class="inp-wrap">
-          <input class="inp" id="e-ps"/>
-          <button class="mic-btn" onclick="startVoice('e-ps',this)">🎤</button>
-        </div></div>
-      <div class="fg"><label class="lbl">अगली तारीख</label><input class="inp" id="e-fix" type="date"/></div>
+      <div class="fg"><label class="lb">धारा</label><input class="ip" id="es"/></div>
+      <div class="fg"><label class="lb">थाना</label>
+        <div class="iw"><input class="ip" id="ep"/><button class="mb" onclick="sv('ep',this)">🎤</button></div></div>
+      <div class="fg"><label class="lb">अगली तारीख</label><input class="ip" id="ef" type="date"/></div>
     </div>
-    <p class="sec-title">अभियुक्त की सूची</p>
-    <div id="edit-acc-list" style="padding:0 14px;"></div>
-    <div style="padding:6px 14px 0;">
-      <button class="btn btn-o" onclick="addAccEdit()">+ अभियुक्त जोड़ें</button>
-    </div>
+    <p class="st">अभियुक्त की सूची</p>
+    <div id="eal" style="padding:0 14px;"></div>
+    <div style="padding:6px 14px 0;"><button class="btn bo" onclick="addAE()">+ अभियुक्त जोड़ें</button></div>
   </div>
-  <div class="bot">
-    <button class="btn btn-p" onclick="saveEdit()">💾 अपडेट करें</button>
-  </div>
+  <div class="bot"><button class="btn bp" onclick="saveE()">💾 अपडेट करें</button></div>
 </div>
 
 <script>
@@ -238,9 +172,15 @@ const el=id=>document.getElementById(id);
 const v=id=>(el(id)||{}).value?.trim()||'';
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 
-function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  el(id).classList.add('active');
+// ── Screen switching via inline style (not CSS class) ──
+const SCREENS=['s1','s2','s3','s4'];
+function goS(id){
+  SCREENS.forEach(s=>{
+    const d=el(s);
+    if(d) d.style.display='none';
+  });
+  const t=el(id);
+  if(t){t.style.display='flex';}
   window.scrollTo(0,0);
 }
 
@@ -249,348 +189,248 @@ function toast(msg,dur=3000){
   const t=el('toast');t.textContent=msg;t.style.display='block';
   clearTimeout(_tt);_tt=setTimeout(()=>t.style.display='none',dur);
 }
-
-function scanMsg(msg,type='loading'){
-  el('scan-msg-area').innerHTML=`<div class="scan-msg ${type}">${msg}</div>`;
+function sMsg(msg,type='ld'){
+  el('sma').innerHTML=`<div class="sm ${type}">${msg}</div>`;
 }
 
-// ── localStorage only ──
-const LS='cpf3_';
-function lsSave(o){
-  try{localStorage.setItem(LS+o.caseNo,JSON.stringify(o));return true;}
-  catch(e){toast('❌ Save fail');return false;}
-}
-function lsLoad(k){
-  try{const s=localStorage.getItem(LS+k);return s?JSON.parse(s):null;}
-  catch(e){return null;}
-}
+// ── localStorage ──
+const LS='cpf4_';
+function lsS(o){try{localStorage.setItem(LS+o.caseNo,JSON.stringify(o));return true;}catch(e){toast('❌ Save fail');return false;}}
+function lsL(k){try{const s=localStorage.getItem(LS+k);return s?JSON.parse(s):null;}catch(e){return null;}}
 
-// ── QR Scanner (html5-qrcode from jsdelivr) ──
-let scanner=null;
-let scannerReady=false;
-let scanning=false;
+// ── QR Scanner ──
+let scanner=null,scanReady=false,scanning=false;
 
 function loadLib(){
-  return new Promise(res=>{
-    if(typeof Html5Qrcode!=='undefined'){res(true);return;}
-    scanMsg('📡 Scanner load ho raha hai...','loading');
+  if(typeof Html5Qrcode!=='undefined'){onLibReady();return;}
+  sMsg('📡 Scanner load ho raha hai...','ld');
+  const tryLoad=url=>new Promise(res=>{
     const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
-    s.onload=()=>{
-      scannerReady=true;
-      el('scan-ctrl').style.display='grid';
-      scanMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','success');
-      res(true);
-    };
-    s.onerror=()=>{
-      // Try unpkg fallback
-      const s2=document.createElement('script');
-      s2.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
-      s2.onload=()=>{
-        scannerReady=true;
-        el('scan-ctrl').style.display='grid';
-        scanMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','success');
-        res(true);
-      };
-      s2.onerror=()=>{
-        scanMsg('❌ Scanner load nahi hua (net check karo)<br>Neeche Case No. type karo','error');
-        res(false);
-      };
-      document.head.appendChild(s2);
-    };
+    s.src=url;
+    s.onload=()=>res(typeof Html5Qrcode!=='undefined');
+    s.onerror=()=>res(false);
     document.head.appendChild(s);
   });
+  tryLoad('https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js')
+    .then(ok=>ok?onLibReady():tryLoad('https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'))
+    .then(ok=>{
+      if(ok===true)return; // already handled
+      if(ok){onLibReady();}
+      else{sMsg('❌ Scanner load nahi hua<br><small>Net check karo — ya neeche Case No. type karo</small>','er');}
+    });
+}
+
+function onLibReady(){
+  scanReady=true;
+  el('scb').style.display='grid';
+  sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');
 }
 
 function startScan(){
-  if(!scannerReady){toast('Scanner abhi load ho raha hai...');return;}
-  if(scanning){toast('Scanner pehle se chal raha hai');return;}
-
-  scanMsg('📷 Camera shuru ho raha hai...','loading');
-
-  if(!scanner) scanner=new Html5Qrcode('qr-box');
-
+  if(!scanReady){toast('Scanner abhi load ho raha hai...');return;}
+  if(scanning){toast('Scanner chal raha hai');return;}
+  sMsg('📷 Camera shuru ho raha hai...','ld');
+  if(!scanner) scanner=new Html5Qrcode('qrb');
   Html5Qrcode.getCameras()
     .then(devices=>{
-      if(!devices||!devices.length){
-        scanMsg('❌ Koi camera nahi mila device mein','error');
-        return;
-      }
-      // Prefer back camera
-      const cam=devices.find(d=>
-        /back|rear|environment/i.test(d.label)
-      )||devices[devices.length-1];
-
-      return scanner.start(
-        cam.id,
-        {fps:12, qrbox:{width:250,height:250}, aspectRatio:1.0},
-        (decodedText)=>{
-          // QR decoded!
-          const cn=parseQR(decodedText);
-          if(cn){
-            stopScan();
-            scanMsg(`✅ Case No: <b>${cn}</b> — loading...`,'success');
-            setTimeout(()=>onCaseNo(cn),700);
-          }else{
-            scanMsg(`⚠️ QR mila: <b>${decodedText}</b><br>Manually confirm karo`,'warn');
-            el('man-inp').value=decodedText;
-          }
-        },
-        ()=>{/* scan errors — ignore, keep scanning */}
-      );
+      if(!devices||!devices.length){sMsg('❌ Camera nahi mila','er');return Promise.reject('no cam');}
+      const cam=devices.find(d=>/back|rear|environ/i.test(d.label))||devices[devices.length-1];
+      return scanner.start(cam.id,{fps:12,qrbox:{width:250,height:250},aspectRatio:1},
+        raw=>{
+          const cn=parseQR(raw);
+          if(cn){stopScan();sMsg(`✅ Case No: <b>${cn}</b>`,'ok');setTimeout(()=>onCaseNo(cn),600);}
+          else{el('mi').value=raw;sMsg(`⚠️ QR: ${raw}<br>Confirm karke "जाओ" dabao`,'wn');}
+        },()=>{});
     })
-    .then(()=>{scanning=true;scanMsg('🔍 QR code camera ke saamne rakho','loading');})
+    .then(()=>{scanning=true;sMsg('🔍 QR code camera ke saamne rakho','ld');})
     .catch(err=>{
       scanning=false;
-      const msg=String(err);
-      if(msg.includes('NotAllowed')||msg.includes('Permission')){
-        scanMsg('❌ Camera permission denied<br><small>Chrome: URL bar pe 🔒 → Camera → Allow</small>','error');
-      }else if(msg.includes('NotFound')){
-        scanMsg('❌ Camera nahi mila','error');
-      }else{
-        scanMsg('❌ Camera error: '+msg.substring(0,60),'error');
-      }
+      const m=String(err);
+      if(m.includes('NotAllowed')||m.includes('Permission'))
+        sMsg('❌ Camera permission denied<br><small>Chrome: 🔒 → Camera → Allow → Refresh</small>','er');
+      else if(m.includes('no cam')){}
+      else sMsg('❌ Camera error — Case No. type karo','er');
     });
 }
 
 function stopScan(){
-  if(scanner&&scanning){
-    scanner.stop().then(()=>{scanning=false;}).catch(()=>{scanning=false;});
-  }
+  if(scanner&&scanning){scanner.stop().catch(()=>{});scanning=false;}
 }
 
-function parseQR(raw){
-  if(!raw)return null;
-  const t=raw.trim();
-  const pats=[
-    /Case\s*No[.\-:]*\s*([0-9]+[\/\-][0-9]+)/i,
-    /No[.\-:]+([0-9]+[\/\-][0-9]+)/i,
-    /([0-9]{2,6}\/[0-9]{2,4})/,
-    /^([0-9]+[\/\-][0-9]+)$/,
-  ];
-  for(const p of pats){const m=t.match(p);if(m&&m[1])return m[1].replace('-','/');}
-  if(t.length<=20&&t.length>=3)return t;
-  return null;
+function parseQR(r){
+  if(!r)return null;
+  const t=r.trim();
+  const pp=[/Case\s*No[.\-:]*\s*([0-9]+[\/\-][0-9]+)/i,/No[.\-:]+([0-9]+[\/\-][0-9]+)/i,/([0-9]{2,6}\/[0-9]{2,4})/,/^([0-9]+[\/\-][0-9]+)$/];
+  for(const p of pp){const m=t.match(p);if(m&&m[1])return m[1].replace('-','/');}
+  return t.length<=20&&t.length>=3?t:null;
 }
 
 // ── Navigation ──
 function onCaseNo(cn){
   if(!cn){toast('Case No. daalo');return;}
-  cn=cn.trim();
-  stopScan();
-  const ex=lsLoad(cn);
-  if(ex){curCase=ex;renderFound();show('s-found');}
-  else{loadNewForm(cn);show('s-new');}
+  cn=cn.trim();stopScan();
+  const ex=lsL(cn);
+  if(ex){cc=ex;rF();goS('s3');}
+  else{loadNF(cn);goS('s2');}
 }
+function goS1(){goS('s1');el('mi').value='';if(scanReady)sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');}
 
-function goScan(){
-  show('s-scan');
-  el('man-inp').value='';
-  scanMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','success');
-}
+// ── Accused arrays ──
+let nA=[],eA=[],cc=null;
 
-// ── Accused Array System ──
-let newAcc=[],editAcc=[],curCase=null;
-
-function renderAcc(cid,arr,pfx,addFn,delFn){
+function rA(cid,arr,pfx,aFn,dFn){
   el(cid).innerHTML=arr.map((a,i)=>`
-    <div class="acc-card">
-      <div class="acc-hdr">
-        <span class="acc-num">${i+1}</span>
-        <span class="acc-title">अभियुक्त ${i+1}</span>
-        ${arr.length>1?`<button class="del-btn" onclick="${delFn}(${i})">✕ हटाएं</button>`:''}
+    <div class="ac">
+      <div class="ah"><span class="an">${i+1}</span><span class="at">अभियुक्त ${i+1}</span>
+        ${arr.length>1?`<button class="db" onclick="${dFn}(${i})">✕ हटाएं</button>`:''}</div>
+      <div class="r2">
+        <div class="fg"><label class="lb">नाम *</label>
+          <div class="iw"><input class="ip" id="${pfx}n${i}" value="${esc(a.name)}" placeholder="नाम"/>
+          <button class="mb" onclick="sv('${pfx}n${i}',this)">🎤</button></div></div>
+        <div class="fg"><label class="lb">पिता का नाम *</label>
+          <div class="iw"><input class="ip" id="${pfx}f${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम"/>
+          <button class="mb" onclick="sv('${pfx}f${i}',this)">🎤</button></div></div>
       </div>
-      <div class="row2">
-        <div class="fg"><label class="lbl">नाम *</label>
-          <div class="inp-wrap">
-            <input class="inp" id="${pfx}nm${i}" value="${esc(a.name)}" placeholder="नाम"/>
-            <button class="mic-btn" onclick="startVoice('${pfx}nm${i}',this)">🎤</button>
-          </div></div>
-        <div class="fg"><label class="lbl">पिता का नाम *</label>
-          <div class="inp-wrap">
-            <input class="inp" id="${pfx}fn${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम"/>
-            <button class="mic-btn" onclick="startVoice('${pfx}fn${i}',this)">🎤</button>
-          </div></div>
-      </div>
-      <div class="fg"><label class="lbl">ग्राम / मोहल्ला</label>
-        <div class="inp-wrap">
-          <input class="inp" id="${pfx}vl${i}" value="${esc(a.village)}" placeholder="ग्राम"/>
-          <button class="mic-btn" onclick="startVoice('${pfx}vl${i}',this)">🎤</button>
-        </div></div>
-      <div class="row2">
-        <div class="fg"><label class="lbl">थाना</label>
-          <div class="inp-wrap">
-            <input class="inp" id="${pfx}th${i}" value="${esc(a.thana)}" placeholder="थाना"/>
-            <button class="mic-btn" onclick="startVoice('${pfx}th${i}',this)">🎤</button>
-          </div></div>
-        <div class="fg" style="margin-bottom:0"><label class="lbl">जिला</label>
-          <input class="inp" id="${pfx}dt${i}" value="${esc(a.district)}" placeholder="बागपत"/>
-        </div></div>
-    </div>`).join('');
+      <div class="fg"><label class="lb">ग्राम / मोहल्ला</label>
+        <div class="iw"><input class="ip" id="${pfx}v${i}" value="${esc(a.village)}" placeholder="ग्राम"/>
+        <button class="mb" onclick="sv('${pfx}v${i}',this)">🎤</button></div></div>
+      <div class="r2">
+        <div class="fg"><label class="lb">थाना</label>
+          <div class="iw"><input class="ip" id="${pfx}t${i}" value="${esc(a.thana)}" placeholder="थाना"/>
+          <button class="mb" onclick="sv('${pfx}t${i}',this)">🎤</button></div></div>
+        <div class="fg" style="margin-bottom:0"><label class="lb">जिला</label>
+          <input class="ip" id="${pfx}d${i}" value="${esc(a.district)}" placeholder="बागपत"/></div>
+      </div></div>`).join('');
 }
 
-function harvest(pfx,arr){
-  arr.forEach((a,i)=>{
-    a.name       =(el(`${pfx}nm${i}`)?.value||'').trim();
-    a.fatherName =(el(`${pfx}fn${i}`)?.value||'').trim();
-    a.village    =(el(`${pfx}vl${i}`)?.value||'').trim();
-    a.thana      =(el(`${pfx}th${i}`)?.value||'').trim();
-    a.district   =(el(`${pfx}dt${i}`)?.value||'').trim();
-  });
-}
+function hv(pfx,arr){arr.forEach((a,i)=>{a.name=(el(`${pfx}n${i}`)?.value||'').trim();a.fatherName=(el(`${pfx}f${i}`)?.value||'').trim();a.village=(el(`${pfx}v${i}`)?.value||'').trim();a.thana=(el(`${pfx}t${i}`)?.value||'').trim();a.district=(el(`${pfx}d${i}`)?.value||'').trim();});}
 
-function addAccNew(){harvest('na',newAcc);newAcc.push({name:'',fatherName:'',village:'',thana:'',district:''});renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');setTimeout(()=>el(`nanm${newAcc.length-1}`)?.focus(),80);}
-function delAccNew(i){harvest('na',newAcc);newAcc.splice(i,1);renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');}
-function addAccEdit(){harvest('ea',editAcc);editAcc.push({name:'',fatherName:'',village:'',thana:'',district:''});renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');setTimeout(()=>el(`eanm${editAcc.length-1}`)?.focus(),80);}
-function delAccEdit(i){harvest('ea',editAcc);editAcc.splice(i,1);renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');}
+function addAN(){hv('na',nA);nA.push({name:'',fatherName:'',village:'',thana:'',district:''});rA('nal',nA,'na','addAN','delAN');setTimeout(()=>el(`nan${nA.length-1}`)?.focus(),80);}
+function delAN(i){hv('na',nA);nA.splice(i,1);rA('nal',nA,'na','addAN','delAN');}
+function addAE(){hv('ea',eA);eA.push({name:'',fatherName:'',village:'',thana:'',district:''});rA('eal',eA,'ea','addAE','delAE');setTimeout(()=>el(`ean${eA.length-1}`)?.focus(),80);}
+function delAE(i){hv('ea',eA);eA.splice(i,1);rA('eal',eA,'ea','addAE','delAE');}
 
 // ── New Case ──
-function loadNewForm(cn){
-  el('new-badge').textContent=cn;el('n-caseno').value=cn;
-  ['n-cc','n-sec','n-ps'].forEach(id=>el(id).value='');
-  el('n-dist').value='बागपत';el('n-fix').value='';
-  newAcc=[{name:'',fatherName:'',village:'',thana:'',district:''}];
-  renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');
+function loadNF(cn){
+  el('b2').textContent=cn;el('nc').value=cn;
+  ['ncc','ns','np'].forEach(id=>el(id).value='');
+  el('nd').value='बागपत';el('nf').value='';
+  nA=[{name:'',fatherName:'',village:'',thana:'',district:''}];
+  rA('nal',nA,'na','addAN','delAN');
 }
-function saveNew(){
-  const cn=(el('n-caseno').value||'').trim();
+function saveN(){
+  const cn=(el('nc').value||'').trim();
   if(!cn){toast('Case No. zaroori hai');return;}
-  harvest('na',newAcc);
-  const valid=newAcc.filter(a=>a.name);
-  if(!valid.length){toast('Kam se kam 1 accused ka naam bharo');return;}
-  curCase={caseNo:cn,ccNo:v('n-cc'),section:v('n-sec'),ps:v('n-ps'),
-    district:v('n-dist')||'बागपत',fixDate:el('n-fix').value,
-    accused:valid,savedAt:new Date().toISOString()};
-  if(lsSave(curCase)){toast('✅ Mukadma save ho gaya!');setTimeout(()=>{renderFound();show('s-found');},500);}
+  hv('na',nA);const vd=nA.filter(a=>a.name);
+  if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
+  cc={caseNo:cn,ccNo:v('ncc'),section:v('ns'),ps:v('np'),district:v('nd')||'बागपत',fixDate:el('nf').value,accused:vd,savedAt:new Date().toISOString()};
+  if(lsS(cc)){toast('✅ Mukadma save ho gaya!');setTimeout(()=>{rF();goS('s3');},500);}
 }
 
 // ── Found Screen ──
-function renderFound(){
-  const c=curCase;
-  el('found-badge').textContent=c.caseNo;
+function rF(){
+  const c=cc;
+  el('b3').textContent=c.caseNo;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'—';
-  el('case-info-card').innerHTML=`
-    <p style="font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;margin-bottom:10px;">मुकदमे की जानकारी</p>
-    <div class="info-row"><span class="ilbl">Case No.</span><span class="ival">${c.caseNo}</span></div>
-    ${c.ccNo?`<div class="info-row"><span class="ilbl">CC No.</span><span class="ival">${c.ccNo}</span></div>`:''}
-    <div class="info-row"><span class="ilbl">धारा</span><span class="ival">${c.section||'—'}</span></div>
-    <div class="info-row"><span class="ilbl">थाना</span><span class="ival">${c.ps||'—'}</span></div>
-    <div class="info-row"><span class="ilbl">अगली तारीख</span><span class="ival">${fd}</span></div>`;
-  el('acc-checks').innerHTML=c.accused.map((a,i)=>`
-    <div class="chk-row on" onclick="togChk(this,'acc-chk-${i}')">
-      <input type="checkbox" id="acc-chk-${i}" name="acc-chk" value="${i}" checked>
-      <label class="cl" for="acc-chk-${i}">${a.name}<small>पुत्र ${a.fatherName||'—'}</small></label>
+  el('ci').innerHTML=`
+    <p class="st" style="padding:0 0 10px;">मुकदमे की जानकारी</p>
+    <div class="ir"><span class="il">Case No.</span><span class="iv">${c.caseNo}</span></div>
+    ${c.ccNo?`<div class="ir"><span class="il">CC No.</span><span class="iv">${c.ccNo}</span></div>`:''}
+    <div class="ir"><span class="il">धारा</span><span class="iv">${c.section||'—'}</span></div>
+    <div class="ir"><span class="il">थाना</span><span class="iv">${c.ps||'—'}</span></div>
+    <div class="ir"><span class="il">अगली तारीख</span><span class="iv">${fd}</span></div>`;
+  el('ack').innerHTML=c.accused.map((a,i)=>`
+    <div class="cr on" onclick="tg(this,'ac-${i}')">
+      <input type="checkbox" id="ac-${i}" name="ac" value="${i}" checked>
+      <label class="cl" for="ac-${i}">${a.name}<small>पुत्र ${a.fatherName||'—'}</small></label>
     </div>`).join('');
-  el('doc-checks').innerHTML=[
+  el('dck').innerHTML=[
     {id:'summon',lbl:'समन',sub:'Summons — धारा 61',tag:'Summon'},
     {id:'bw',lbl:'जमानती वारंट',sub:'Bailable Warrant — धारा 71',tag:'BW'},
     {id:'nbw',lbl:'गिरफ्तारी अधिपत्र',sub:'Non-Bailable Warrant — धारा 75',tag:'NBW'},
     {id:'p82',lbl:'उद्घोषणा',sub:'Proclamation — धारा 82',tag:'82'},
     {id:'k83',lbl:'हुक्म कुर्की',sub:'Attachment Order — धारा 83',tag:'83'},
   ].map(d=>`
-    <div class="chk-row" onclick="togChk(this,'doc-chk-${d.id}')">
-      <input type="checkbox" id="doc-chk-${d.id}" name="doc-chk" value="${d.id}">
-      <label class="cl" for="doc-chk-${d.id}">${d.lbl}<small>${d.sub}</small></label>
-      <span class="dtag">${d.tag}</span>
+    <div class="cr" onclick="tg(this,'dc-${d.id}')">
+      <input type="checkbox" id="dc-${d.id}" name="dc" value="${d.id}">
+      <label class="cl" for="dc-${d.id}">${d.lbl}<small>${d.sub}</small></label>
+      <span class="dt">${d.tag}</span>
     </div>`).join('');
 }
-function togChk(div,id){const cb=el(id);cb.checked=!cb.checked;div.classList.toggle('on',cb.checked);}
-function selAll(nm,val){document.querySelectorAll(`[name="${nm}"]`).forEach(cb=>{cb.checked=val;cb.closest('.chk-row').classList.toggle('on',val);});}
+function tg(div,id){const cb=el(id);cb.checked=!cb.checked;div.classList.toggle('on',cb.checked);}
+function sa(nm,val){document.querySelectorAll(`[name="${nm}"]`).forEach(cb=>{cb.checked=val;cb.closest('.cr').classList.toggle('on',val);});}
 
 // ── Edit ──
 function goEdit(){
-  const c=curCase;
-  el('edit-badge').textContent=c.caseNo;
-  el('e-cc').value=c.ccNo||'';el('e-sec').value=c.section||'';
-  el('e-ps').value=c.ps||'';el('e-dist').value=c.district||'बागपत';
-  el('e-fix').value=c.fixDate||'';
-  editAcc=c.accused.map(a=>({...a}));
-  renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');
-  show('s-edit');
+  el('b4').textContent=cc.caseNo;
+  el('ec').value=cc.ccNo||'';el('es').value=cc.section||'';
+  el('ep').value=cc.ps||'';el('ed').value=cc.district||'बागपत';
+  el('ef').value=cc.fixDate||'';
+  eA=cc.accused.map(a=>({...a}));
+  rA('eal',eA,'ea','addAE','delAE');
+  goS('s4');
 }
-function saveEdit(){
-  harvest('ea',editAcc);
-  const valid=editAcc.filter(a=>a.name);
-  if(!valid.length){toast('Kam se kam 1 accused ka naam bharo');return;}
-  curCase={...curCase,ccNo:v('e-cc'),section:v('e-sec'),ps:v('e-ps'),
-    district:v('e-dist')||'बागपत',fixDate:el('e-fix').value,
-    accused:valid,updatedAt:new Date().toISOString()};
-  if(lsSave(curCase)){toast('✅ Update ho gaya!');setTimeout(()=>{renderFound();show('s-found');},400);}
+function saveE(){
+  hv('ea',eA);const vd=eA.filter(a=>a.name);
+  if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
+  cc={...cc,ccNo:v('ec'),section:v('es'),ps:v('ep'),district:v('ed')||'बागपत',fixDate:el('ef').value,accused:vd,updatedAt:new Date().toISOString()};
+  if(lsS(cc)){toast('✅ Update ho gaya!');setTimeout(()=>{rF();goS('s3');},400);}
 }
 
 // ── Generate Documents ──
-function genDocs(){
-  const selAcc=[];
-  document.querySelectorAll('[name="acc-chk"]:checked').forEach(cb=>selAcc.push(curCase.accused[+cb.value]));
-  const selDocs=[];
-  document.querySelectorAll('[name="doc-chk"]:checked').forEach(cb=>selDocs.push(cb.value));
-  if(!selAcc.length){toast('Koi accused nahi chuna');return;}
-  if(!selDocs.length){toast('Koi document nahi chuna');return;}
-  const c=curCase;
+function genD(){
+  const sA=[];document.querySelectorAll('[name="ac"]:checked').forEach(cb=>sA.push(cc.accused[+cb.value]));
+  const sD=[];document.querySelectorAll('[name="dc"]:checked').forEach(cb=>sD.push(cb.value));
+  if(!sA.length){toast('Koi accused nahi chuna');return;}
+  if(!sD.length){toast('Koi document nahi chuna');return;}
+  const c=cc;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'___________';
   let pages='';
-  selAcc.forEach(acc=>selDocs.forEach(dt=>{pages+=buildPage(dt,c,acc,fd);}));
-  const total=selAcc.length*selDocs.length;
-  const html=wrapDoc(c.caseNo,total,pages);
+  sA.forEach(acc=>sD.forEach(dt=>{pages+=bP(dt,c,acc,fd);}));
+  const tot=sA.length*sD.length;
+  const html=wD(c.caseNo,tot,pages);
   const w=window.open('','_blank');
   if(w){w.document.open();w.document.write(html);w.document.close();}
-  else{
-    const a=document.createElement('a');
-    a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);
-    a.download=`Proforma_${c.caseNo.replace('/','_')}.html`;
-    a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);
-  }
-  toast(`📄 ${total} page${total>1?'s':''} ready — Print/PDF Save karo`,3500);
+  else{const a=document.createElement('a');a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);a.download=`Proforma_${c.caseNo.replace('/','_')}.html`;a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+  toast(`📄 ${tot} page${tot>1?'s':''} ready — Print/PDF karo`,3500);
 }
 
-function R(s){return(s||'').trim()||'________';}
+const R=s=>(s||'').trim()||'________';
 
-function wrapDoc(cn,total,pages){
-  return`<!DOCTYPE html><html lang="hi"><head>
-<meta charset="UTF-8"><title>Court Proforma — ${cn}</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
+function wD(cn,tot,pages){
+  return`<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><title>Proforma — ${cn}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0;}
 @page{size:A4;margin:20mm 22mm;}
-body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;
-  font-size:11.5pt;line-height:2;color:#000;background:#fff;padding-top:50px;}
-.pg{page-break-after:always;padding:8px 0;min-height:233mm;}
-.pg:last-child{page-break-after:avoid;}
+body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;font-size:11.5pt;line-height:2;color:#000;background:#fff;padding-top:50px;}
+.pg{page-break-after:always;padding:8px 0;min-height:233mm;}.pg:last-child{page-break-after:avoid;}
 .rhs{float:right;text-align:right;font-size:10pt;line-height:1.8;border-left:1px solid #aaa;padding-left:10px;margin:0 0 6px 10px;}
 .clr::after{content:'';display:table;clear:both;}
 h2{font-size:14pt;font-weight:700;text-align:center;margin:6px 0;}
 h3{font-size:11pt;font-weight:400;text-align:center;margin-bottom:12px;}
 .tc{text-align:center;}.b{font-weight:700;}
-hr{border:none;border-top:1.5px solid #000;margin:10px 0;}
-p{margin:4px 0;}
+hr{border:none;border-top:1.5px solid #000;margin:10px 0;}p{margin:4px 0;}
 .sn{border:1.5px solid #000;display:inline-block;width:22px;height:22px;text-align:center;line-height:20px;font-size:11pt;margin-right:4px;vertical-align:middle;}
 .sig{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;}
-.sig-r{text-align:right;}
-.seal{margin-top:24px;}
+.sig-r{text-align:right;}.seal{margin-top:24px;}
 .note{margin-top:16px;font-size:9.5pt;color:#444;border-top:1px dotted #999;padding-top:8px;}
-.pbar{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:9px 16px;
-  display:flex;justify-content:space-between;align-items:center;
-  font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
-.pbar button{background:#fff;color:#1a237e;border:none;padding:7px 20px;border-radius:7px;
-  font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
-@media print{.pbar{display:none;}body{padding-top:0;}}
+.pb{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
+.pb button{background:#fff;color:#1a237e;border:none;padding:7px 20px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
+@media print{.pb{display:none;}body{padding-top:0;}}
 </style></head><body>
-<div class="pbar">
-  <span>📄 ${total} page${total>1?'s':''} | Case: ${cn}</span>
-  <button onclick="window.print()">🖨️ Print / PDF Save</button>
-</div>${pages}</body></html>`;
+<div class="pb"><span>📄 ${tot} page${tot>1?'s':''} | Case: ${cn}</span><button onclick="window.print()">🖨️ Print / PDF Save</button></div>
+${pages}</body></html>`;
 }
 
-function buildPage(type,c,acc,fd){
-  const sec=R(c.section),ps=R(c.ps),cn=c.caseNo,cc=c.ccNo||'';
-  const dist=R(acc.district||c.district),vl=R(acc.village);
-  const th=R(acc.thana||c.ps),nm=R(acc.name),fn=R(acc.fatherName);
-  const rhs=`<div class="rhs b">मुकदमा सं० ${cn}<br>स- ${nm}<br>u/s- ${sec}<br>${cc?`CC- ${cc}<br>`:''}PS- ${ps}<br>Fix: ${fd}</div>`;
+function bP(type,c,acc,fd){
+  const sec=R(c.section),ps=R(c.ps),cn=c.caseNo,cc2=c.ccNo||'';
+  const dist=R(acc.district||c.district),vl=R(acc.village),th=R(acc.thana||c.ps);
+  const nm=R(acc.name),fn=R(acc.fatherName);
+  const rhs=`<div class="rhs b">मुकदमा सं० ${cn}<br>स- ${nm}<br>u/s- ${sec}<br>${cc2?`CC- ${cc2}<br>`:''}PS- ${ps}<br>Fix: ${fd}</div>`;
 
   if(type==='summon')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-1</p></div>
 <h2>समन</h2><h3>(धारा 61, अनुसूची 5, प्रपत्र संख्या 1)</h3>
 <p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला बागपत</p><hr>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
+<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
 <p>को न्यायालय ACJM, BAGHPAT में धारा <b>${sec}</b> के अंतर्गत मुकदमे में उपस्थित होना आवश्यक है।</p>
 <p>अतएव आपको एतद्वारा समन किया जाता है कि आप दिनांक <b>${fd}</b> को उक्त न्यायालय में व्यक्तिशः उपस्थित हों।</p>
@@ -601,20 +441,17 @@ function buildPage(type,c,acc,fd){
   if(type==='bw')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-3</p></div>
 <h2>जमानती वारंट</h2><h3>(धारा 71, अनुसूची 5, प्रपत्र संख्या 3)</h3>
 <p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला बागपत</p><hr>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
+<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
 <p><b>${sec}</b> के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट किया जाता है कि आप उक्त</p>
-<p><b>${nm}</b> पुत्र <b>${fn}</b> को जमानत सहित गिरफ्तार करके मेरे समक्ष दिनांक <b>${fd}</b> को पेश कीजिये।</p>
-<p>ऐसा करने में त्रुटि न हो।</p>
+<p><b>${nm}</b> पुत्र <b>${fn}</b> को जमानत सहित गिरफ्तार करके मेरे समक्ष दिनांक <b>${fd}</b> को पेश कीजिये। ऐसा करने में त्रुटि न हो।</p>
 <div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
 <div class="seal">न्यायालय की मुहर</div></div>`;
 
   if(type==='nbw')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-2 भाग, संख्या-8</p></div>
 <h2>गिरफ्तारी का अधिपत्र</h2><h3>(धारा 75, अनुसूची 5, प्रपत्र संख्या 2)</h3>
 <p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला</p><hr>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
+<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
 <p><b>${sec}</b> के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट किया जाता है कि आप उक्त</p>
 <p><b>${nm}</b> पुत्र <b>${fn}</b> को गिरफ्तार करके मेरे समक्ष पेश कीजिये। ऐसा करने में त्रुटि न हो।</p>
@@ -633,7 +470,7 @@ function buildPage(type,c,acc,fd){
 <p>अतएव एतद्द्वारा उद्घोषणा की जाती है कि <b>${nm}</b> निवासी ${vl} से यह अपेक्षा की जाती है कि वह दिनांक <b>${fd}</b> को ACJM न्यायालय में मेरे समक्ष परिवाद का उत्तर देने के लिये उपस्थित हों।</p>
 <div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित।</div><div class="sig-r">हस्ताक्षर<br><br>मैजिस्ट्रेट।</div></div>
 <div class="seal">न्यायालय की मुहर</div>
-<p class="note">(1) इस स्थान पर तथा अन्य स्थानों पर जो शब्द लकीर के उपर अथवा नीचे लिखे हैं उनमें से जिनकी आवश्यकता न हो, उनको काट देना चाहिए।</p></div>`;
+<p class="note">(1) जिनकी आवश्यकता न हो, उनको काट देना चाहिए।</p></div>`;
 
   if(type==='k83')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">IL.C.J. Form No. VIII-54</p></div>
 <h2>हुक्म कुर्की बग़रज़ एज़हार बिलजब शख्स मुलज़िम के</h2>
@@ -652,31 +489,23 @@ function buildPage(type,c,acc,fd){
   return'';
 }
 
-// ── Voice Typing ──
-let activeRec=null;
-function startVoice(inputId,btn){
+// ── Voice ──
+let aR=null;
+function sv(iid,btn){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('❌ Voice typing is device mein support nahi');return;}
-  if(activeRec&&btn.classList.contains('on')){activeRec.stop();return;}
-  if(activeRec){try{activeRec.stop();}catch(e){}}
-  const rec=new SR();
-  activeRec=rec;rec.lang='hi-IN';rec.interimResults=true;rec.continuous=false;
-  const inp=el(inputId),orig=inp.value;
+  if(!SR){toast('❌ Voice typing support nahi hai');return;}
+  if(aR&&btn.classList.contains('on')){aR.stop();return;}
+  if(aR){try{aR.stop();}catch(e){}}
+  const rec=new SR();aR=rec;rec.lang='hi-IN';rec.interimResults=true;rec.continuous=false;
+  const inp=el(iid),orig=inp.value;
   btn.textContent='🔴';btn.classList.add('on');
-  rec.onresult=e=>{
-    let f='',t='';
-    for(let i=e.resultIndex;i<e.results.length;i++)
-      e.results[i].isFinal?f+=e.results[i][0].transcript:t+=e.results[i][0].transcript;
-    inp.value=(orig+' '+(f||t)).trim();
-  };
-  rec.onerror=e=>{btn.textContent='🎤';btn.classList.remove('on');activeRec=null;
-    toast(e.error==='not-allowed'?'Mic permission do':'Voice error: '+e.error);};
-  rec.onend=()=>{btn.textContent='🎤';btn.classList.remove('on');activeRec=null;};
-  rec.start();
-  toast('🎤 Bol rahe hain... button dabao rokne ke liye',3000);
+  rec.onresult=e=>{let f='',t='';for(let i=e.resultIndex;i<e.results.length;i++)e.results[i].isFinal?f+=e.results[i][0].transcript:t+=e.results[i][0].transcript;inp.value=(orig+' '+(f||t)).trim();};
+  rec.onerror=e=>{btn.textContent='🎤';btn.classList.remove('on');aR=null;toast(e.error==='not-allowed'?'Mic permission do':'Error: '+e.error);};
+  rec.onend=()=>{btn.textContent='🎤';btn.classList.remove('on');aR=null;};
+  rec.start();toast('🎤 Bol rahe hain...',3000);
 }
 
-// ── Init: load scanner lib on page load ──
+// ── Start ──
 loadLib();
 </script>
 </body>
