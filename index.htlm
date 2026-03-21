@@ -5,36 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Court Proforma — ACJM Baghpat</title>
 <style>
-/* ── System fonts only — no CDN needed ── */
-:root{--font:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;--blue:#1a237e;--blue2:#3949ab;--green:#2e7d32;--red:#c62828;--bg:#eef2ff;--card:#fff;}
+:root{--font:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;
+  --blue:#1a237e;--blue2:#3949ab;--green:#2e7d32;--red:#c62828;--bg:#eef2ff;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
-
-/* ── Screens — CRITICAL: only .active shows ── */
 .screen{display:none !important;min-height:100vh;flex-direction:column;}
 .screen.active{display:flex !important;}
 
-.hdr{background:linear-gradient(135deg,var(--blue),#283593);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 10px rgba(0,0,0,.25);position:sticky;top:0;z-index:10;}
-.hdr h1{font-size:15px;font-weight:700;flex:1;}
+.hdr{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:14px 16px;
+  display:flex;align-items:center;gap:10px;box-shadow:0 3px 10px rgba(0,0,0,.25);
+  position:sticky;top:0;z-index:10;}
+.hdr h1{font-size:15px;font-weight:700;flex:1;line-height:1.3;}
 .badge{background:rgba(255,255,255,.22);border-radius:20px;padding:3px 11px;font-size:12px;white-space:nowrap;}
-.back-btn{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0 6px 0 0;line-height:1;}
+.back-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:0 6px 0 0;line-height:1;}
 
-.content{flex:1;overflow-y:auto;padding-bottom:24px;}
-.card{background:var(--card);border-radius:14px;padding:16px;margin:14px 14px 0;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;}
+.card{background:#fff;border-radius:14px;padding:16px;margin:14px 14px 0;box-shadow:0 2px 10px rgba(0,0,0,.07);}
 .sec-title{font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;letter-spacing:.5px;padding:16px 14px 6px;}
 
 .fg{margin-bottom:13px;}
 .fg:last-child{margin-bottom:0;}
 .lbl{display:block;font-size:12px;font-weight:600;color:#455a64;margin-bottom:5px;}
 .inp-wrap{display:flex;gap:6px;}
-.inp{flex:1;min-width:0;padding:11px 12px;border:1.5px solid #cfd8dc;border-radius:9px;font-family:var(--font);font-size:14px;outline:none;transition:border-color .2s;background:#fff;color:#1a1a2e;}
-.inp:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(57,73,171,.12);}
-.mic-btn{flex-shrink:0;width:42px;height:42px;border:1.5px solid #cfd8dc;border-radius:9px;background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.mic-btn.on{background:var(--red);border-color:var(--red);animation:pulse .7s infinite;}
-@keyframes pulse{50%{transform:scale(1.1);}}
+.inp{flex:1;min-width:0;padding:11px 12px;border:1.5px solid #cfd8dc;border-radius:9px;
+  font-family:var(--font);font-size:14px;outline:none;background:#fff;color:#000;-webkit-appearance:none;}
+.inp:focus{border-color:var(--blue2);}
+.mic-btn{flex-shrink:0;width:42px;height:42px;border:1.5px solid #cfd8dc;border-radius:9px;
+  background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mic-btn.on{background:var(--red);border-color:var(--red);}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
-.btn{display:block;width:100%;padding:13px 16px;border:none;border-radius:11px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:10px;transition:opacity .15s;}
+.btn{display:block;width:100%;padding:13px 16px;border:none;border-radius:11px;
+  font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;
+  text-align:center;margin-bottom:10px;-webkit-appearance:none;line-height:1.4;}
 .btn:last-child{margin-bottom:0;}
 .btn:active{opacity:.8;}
 .btn-p{background:var(--blue);color:#fff;}
@@ -43,70 +46,90 @@ body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
 
 .acc-card{background:#f8f9ff;border:1.5px solid #c5cae9;border-radius:11px;padding:14px;margin-bottom:12px;}
 .acc-hdr{display:flex;align-items:center;margin-bottom:12px;}
-.acc-num{background:var(--blue);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:8px;flex-shrink:0;}
+.acc-num{background:var(--blue);color:#fff;border-radius:50%;width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+  margin-right:8px;flex-shrink:0;}
 .acc-title{flex:1;font-size:13px;font-weight:600;color:var(--blue);}
-.del-btn{background:#ffebee;color:var(--red);border:none;border-radius:7px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--font);}
+.del-btn{background:#ffebee;color:var(--red);border:none;border-radius:7px;
+  padding:6px 12px;font-size:12px;cursor:pointer;font-family:var(--font);}
 
-.chk-row{display:flex;align-items:center;padding:13px 14px;border:1.5px solid #e0e0e0;border-radius:11px;margin-bottom:9px;cursor:pointer;background:#fff;user-select:none;-webkit-user-select:none;}
+.chk-row{display:flex;align-items:center;padding:13px 14px;border:1.5px solid #e0e0e0;
+  border-radius:11px;margin-bottom:9px;background:#fff;user-select:none;-webkit-user-select:none;}
 .chk-row.on{border-color:var(--blue2);background:#e8eaf6;}
-.chk-row input{width:21px;height:21px;margin-right:12px;accent-color:var(--blue);flex-shrink:0;}
-.chk-row .cl{flex:1;font-size:14px;font-weight:500;}
+.chk-row input[type=checkbox]{width:22px;height:22px;margin-right:12px;flex-shrink:0;accent-color:var(--blue);}
+.chk-row .cl{flex:1;font-size:14px;font-weight:500;cursor:pointer;}
 .chk-row .cl small{display:block;font-size:11px;color:#78909c;font-weight:400;}
 .dtag{background:#e8eaf6;color:var(--blue);border-radius:7px;padding:2px 9px;font-size:12px;font-weight:700;}
-.on .dtag{background:var(--blue2);color:#fff;}
-
+.chk-row.on .dtag{background:var(--blue2);color:#fff;}
 .sel-row{display:flex;gap:8px;padding:0 14px 8px;}
-.sel-row button{flex:1;padding:9px;border:1.5px solid var(--blue2);border-radius:8px;background:transparent;color:var(--blue2);font-size:13px;font-family:var(--font);cursor:pointer;}
+.sel-row button{flex:1;padding:9px;border:1.5px solid var(--blue2);border-radius:8px;
+  background:transparent;color:var(--blue2);font-size:13px;font-family:var(--font);cursor:pointer;}
 
 .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f4f8;font-size:13px;}
 .info-row:last-child{border:none;}
-.info-lbl{color:#78909c;}
-.info-val{font-weight:600;text-align:right;max-width:65%;}
+.ilbl{color:#78909c;}
+.ival{font-weight:600;text-align:right;margin-left:8px;word-break:break-all;}
 
-/* ── Scan Screen ── */
-.scan-wrap{padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:16px;}
-.scan-label{display:block;width:100%;max-width:340px;padding:38px 18px;background:#fff;border:2.5px dashed var(--blue2);border-radius:16px;text-align:center;cursor:pointer;color:var(--blue);font-weight:700;font-size:16px;line-height:1.5;}
-.scan-label small{display:block;font-weight:400;font-size:13px;color:#546e7a;margin-top:8px;}
+/* ── Scanner ── */
+.scan-wrap{padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+
+#qr-box{width:100%;max-width:360px;}
+/* html5-qrcode injects its own styles — we override the container look */
+#qr-box video{border-radius:12px !important;width:100% !important;}
+#qr-box img{border-radius:12px !important;width:100% !important;}
+
+.scan-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;}
+
 .scan-hint{color:#546e7a;font-size:13px;text-align:center;}
 .man-row{display:flex;gap:8px;width:100%;max-width:360px;}
 .man-row .inp{flex:1;}
-.go-btn{padding:11px 16px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--font);}
+.go-btn{padding:11px 18px;background:var(--blue);color:#fff;border:none;border-radius:9px;
+  font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);}
 
 .bot{padding:14px;background:#fff;border-top:1px solid #e8eaf6;}
 
-/* ── Toast ── */
-#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;z-index:9999;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);max-width:90vw;text-align:center;}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#323232;
+  color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;z-index:9999;
+  display:none;max-width:88vw;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+
+/* Scanner status box */
+.scan-msg{width:100%;max-width:360px;border-radius:10px;padding:12px 14px;font-size:13px;text-align:center;}
+.scan-msg.loading{background:#e8eaf6;color:var(--blue);}
+.scan-msg.success{background:#e8f5e9;color:var(--green);font-weight:700;}
+.scan-msg.error{background:#ffebee;color:var(--red);}
+.scan-msg.warn{background:#fff3e0;color:#e65100;}
 </style>
 </head>
 <body>
 <div id="toast"></div>
 
-<!-- ═══════════ SCREEN 1: SCAN ═══════════ -->
+<!-- ══ SCREEN 1: SCAN ══ -->
 <div class="screen active" id="s-scan">
   <div class="hdr"><h1>⚖️ Court Proforma — ACJM Baghpat</h1></div>
   <div class="content">
     <div class="scan-wrap">
 
-      <!-- Camera: NO capture attribute — shows chooser (Camera + Gallery) in all WebViews -->
-      <label class="scan-label" for="qr-file">
-        📷 QR Code Scan Karo
-        <small>Yahan dabao → Camera ya Gallery choose karo</small>
-      </label>
-      <input type="file" id="qr-file" accept="image/*"
-        style="position:absolute;width:0;height:0;opacity:0;pointer-events:none;"
-        onchange="handleQrImage(this)"/>
+      <!-- QR scanner container -->
+      <div id="qr-box"></div>
+      <div id="scan-msg-area"></div>
 
-      <div id="qr-result" style="width:100%;max-width:340px;"></div>
+      <!-- Scan controls: shown after scanner loads -->
+      <div class="scan-btns" id="scan-ctrl" style="display:none;">
+        <button class="btn btn-p" style="margin:0;" onclick="startScan()">📷 Scan Shuru Karo</button>
+        <button class="btn btn-o" style="margin:0;" onclick="stopScan()">⏹ Band Karo</button>
+      </div>
+
       <p class="scan-hint">— ya Case No. seedha type karo —</p>
       <div class="man-row">
-        <input class="inp" id="man-inp" type="text" placeholder="Case No: 3802/20" autocomplete="off"/>
+        <input class="inp" id="man-inp" type="text" placeholder="Case No: 3802/20"
+          autocomplete="off" autocorrect="off" spellcheck="false"/>
         <button class="go-btn" onclick="onCaseNo(v('man-inp'))">जाओ →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ SCREEN 2: NEW CASE ═══════════ -->
+<!-- ══ SCREEN 2: NEW CASE ══ -->
 <div class="screen" id="s-new">
   <div class="hdr">
     <button class="back-btn" onclick="goScan()">←</button>
@@ -133,7 +156,7 @@ body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
         <div class="fg"><label class="lbl">जिला</label>
           <input class="inp" id="n-dist" placeholder="बागपत"/></div>
       </div>
-      <div class="fg"><label class="lbl">अगली तारीख (Fix)</label>
+      <div class="fg"><label class="lbl">अगली तारीख (Fix Date)</label>
         <input class="inp" id="n-fix" type="date"/></div>
     </div>
     <p class="sec-title">अभियुक्त की सूची</p>
@@ -147,7 +170,7 @@ body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
   </div>
 </div>
 
-<!-- ═══════════ SCREEN 3: FOUND ═══════════ -->
+<!-- ══ SCREEN 3: FOUND ══ -->
 <div class="screen" id="s-found">
   <div class="hdr">
     <button class="back-btn" onclick="goScan()">←</button>
@@ -175,7 +198,7 @@ body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
   </div>
 </div>
 
-<!-- ═══════════ SCREEN 4: EDIT ═══════════ -->
+<!-- ══ SCREEN 4: EDIT ══ -->
 <div class="screen" id="s-edit">
   <div class="hdr">
     <button class="back-btn" onclick="renderFound();show('s-found')">←</button>
@@ -186,20 +209,16 @@ body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
     <div class="card">
       <p style="font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;margin-bottom:12px;">मुकदमे की जानकारी</p>
       <div class="row2">
-        <div class="fg"><label class="lbl">CC No.</label>
-          <input class="inp" id="e-cc"/></div>
-        <div class="fg"><label class="lbl">जिला</label>
-          <input class="inp" id="e-dist"/></div>
+        <div class="fg"><label class="lbl">CC No.</label><input class="inp" id="e-cc"/></div>
+        <div class="fg"><label class="lbl">जिला</label><input class="inp" id="e-dist"/></div>
       </div>
-      <div class="fg"><label class="lbl">धारा (Section)</label>
-        <input class="inp" id="e-sec"/></div>
+      <div class="fg"><label class="lbl">धारा (Section)</label><input class="inp" id="e-sec"/></div>
       <div class="fg"><label class="lbl">थाना (PS)</label>
         <div class="inp-wrap">
           <input class="inp" id="e-ps"/>
           <button class="mic-btn" onclick="startVoice('e-ps',this)">🎤</button>
         </div></div>
-      <div class="fg"><label class="lbl">अगली तारीख</label>
-        <input class="inp" id="e-fix" type="date"/></div>
+      <div class="fg"><label class="lbl">अगली तारीख</label><input class="inp" id="e-fix" type="date"/></div>
     </div>
     <p class="sec-title">अभियुक्त की सूची</p>
     <div id="edit-acc-list" style="padding:0 14px;"></div>
@@ -213,153 +232,168 @@ body{font-family:var(--font);background:var(--bg);color:#1a1a2e;font-size:15px;}
 </div>
 
 <script>
-// ──────────────────────────────────────
-// HELPERS
-// ──────────────────────────────────────
-const v=id=>(document.getElementById(id)||{}).value?.trim()||'';
+'use strict';
+// ── Helpers ──
 const el=id=>document.getElementById(id);
+const v=id=>(el(id)||{}).value?.trim()||'';
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 
 function show(id){
-  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');});
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   el(id).classList.add('active');
   window.scrollTo(0,0);
 }
 
-let _tid;
-function toast(msg,dur=2800){
+let _tt;
+function toast(msg,dur=3000){
   const t=el('toast');t.textContent=msg;t.style.display='block';
-  clearTimeout(_tid);_tid=setTimeout(()=>t.style.display='none',dur);
+  clearTimeout(_tt);_tt=setTimeout(()=>t.style.display='none',dur);
 }
 
-// ──────────────────────────────────────
-// INDEXEDDB  (localStorage fallback)
-// ──────────────────────────────────────
-let DB=null,dbOK=false;
+function scanMsg(msg,type='loading'){
+  el('scan-msg-area').innerHTML=`<div class="scan-msg ${type}">${msg}</div>`;
+}
 
-function openDB(){
-  return new Promise((res,rej)=>{
-    try{
-      const r=indexedDB.open('CourtProformaDB',1);
-      r.onupgradeneeded=e=>{
-        const d=e.target.result;
-        if(!d.objectStoreNames.contains('cases'))
-          d.createObjectStore('cases',{keyPath:'caseNo'});
+// ── localStorage only ──
+const LS='cpf3_';
+function lsSave(o){
+  try{localStorage.setItem(LS+o.caseNo,JSON.stringify(o));return true;}
+  catch(e){toast('❌ Save fail');return false;}
+}
+function lsLoad(k){
+  try{const s=localStorage.getItem(LS+k);return s?JSON.parse(s):null;}
+  catch(e){return null;}
+}
+
+// ── QR Scanner (html5-qrcode from jsdelivr) ──
+let scanner=null;
+let scannerReady=false;
+let scanning=false;
+
+function loadLib(){
+  return new Promise(res=>{
+    if(typeof Html5Qrcode!=='undefined'){res(true);return;}
+    scanMsg('📡 Scanner load ho raha hai...','loading');
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
+    s.onload=()=>{
+      scannerReady=true;
+      el('scan-ctrl').style.display='grid';
+      scanMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','success');
+      res(true);
+    };
+    s.onerror=()=>{
+      // Try unpkg fallback
+      const s2=document.createElement('script');
+      s2.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+      s2.onload=()=>{
+        scannerReady=true;
+        el('scan-ctrl').style.display='grid';
+        scanMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','success');
+        res(true);
       };
-      r.onsuccess=e=>{DB=e.target.result;dbOK=true;res();};
-      r.onerror=e=>rej(e.target.error||'DB error');
-      r.onblocked=()=>rej('DB blocked');
-    }catch(e){rej(e);}
+      s2.onerror=()=>{
+        scanMsg('❌ Scanner load nahi hua (net check karo)<br>Neeche Case No. type karo','error');
+        res(false);
+      };
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s);
   });
 }
 
-async function safeGet(k){
-  if(dbOK){
-    return new Promise((res,rej)=>{
-      try{
-        const r=DB.transaction('cases','readonly').objectStore('cases').get(k);
-        r.onsuccess=e=>res(e.target.result||null);
-        r.onerror=e=>rej(e.target.error);
-      }catch(e){rej(e);}
-    }).catch(()=>lsGet(k));
-  }
-  return lsGet(k);
+function startScan(){
+  if(!scannerReady){toast('Scanner abhi load ho raha hai...');return;}
+  if(scanning){toast('Scanner pehle se chal raha hai');return;}
+
+  scanMsg('📷 Camera shuru ho raha hai...','loading');
+
+  if(!scanner) scanner=new Html5Qrcode('qr-box');
+
+  Html5Qrcode.getCameras()
+    .then(devices=>{
+      if(!devices||!devices.length){
+        scanMsg('❌ Koi camera nahi mila device mein','error');
+        return;
+      }
+      // Prefer back camera
+      const cam=devices.find(d=>
+        /back|rear|environment/i.test(d.label)
+      )||devices[devices.length-1];
+
+      return scanner.start(
+        cam.id,
+        {fps:12, qrbox:{width:250,height:250}, aspectRatio:1.0},
+        (decodedText)=>{
+          // QR decoded!
+          const cn=parseQR(decodedText);
+          if(cn){
+            stopScan();
+            scanMsg(`✅ Case No: <b>${cn}</b> — loading...`,'success');
+            setTimeout(()=>onCaseNo(cn),700);
+          }else{
+            scanMsg(`⚠️ QR mila: <b>${decodedText}</b><br>Manually confirm karo`,'warn');
+            el('man-inp').value=decodedText;
+          }
+        },
+        ()=>{/* scan errors — ignore, keep scanning */}
+      );
+    })
+    .then(()=>{scanning=true;scanMsg('🔍 QR code camera ke saamne rakho','loading');})
+    .catch(err=>{
+      scanning=false;
+      const msg=String(err);
+      if(msg.includes('NotAllowed')||msg.includes('Permission')){
+        scanMsg('❌ Camera permission denied<br><small>Chrome: URL bar pe 🔒 → Camera → Allow</small>','error');
+      }else if(msg.includes('NotFound')){
+        scanMsg('❌ Camera nahi mila','error');
+      }else{
+        scanMsg('❌ Camera error: '+msg.substring(0,60),'error');
+      }
+    });
 }
 
-async function safePut(val){
-  if(dbOK){
-    return new Promise((res,rej)=>{
-      try{
-        const r=DB.transaction('cases','readwrite').objectStore('cases').put(val);
-        r.onsuccess=()=>res();
-        r.onerror=e=>rej(e.target.error);
-      }catch(e){rej(e);}
-    }).catch(()=>lsPut(val));
+function stopScan(){
+  if(scanner&&scanning){
+    scanner.stop().then(()=>{scanning=false;}).catch(()=>{scanning=false;});
   }
-  lsPut(val);
 }
 
-function lsGet(k){try{const s=localStorage.getItem('cpf_'+k);return s?JSON.parse(s):null;}catch(e){return null;}}
-function lsPut(v){try{localStorage.setItem('cpf_'+v.caseNo,JSON.stringify(v));}catch(e){toast('❌ Save fail');}}
-
-// ──────────────────────────────────────
-// QR PARSING  (robust — handles extra text)
-// ──────────────────────────────────────
 function parseQR(raw){
   if(!raw)return null;
   const t=raw.trim();
   const pats=[
     /Case\s*No[.\-:]*\s*([0-9]+[\/\-][0-9]+)/i,
-    /Case[:\-\s]+([0-9]+[\/\-][0-9]+)/i,
     /No[.\-:]+([0-9]+[\/\-][0-9]+)/i,
-    /^([0-9]+[\/\-][0-9]+)$/,
     /([0-9]{2,6}\/[0-9]{2,4})/,
+    /^([0-9]+[\/\-][0-9]+)$/,
   ];
   for(const p of pats){const m=t.match(p);if(m&&m[1])return m[1].replace('-','/');}
-  if(t.length<=15&&t.length>=3)return t;
+  if(t.length<=20&&t.length>=3)return t;
   return null;
 }
 
-// ──────────────────────────────────────
-// QR IMAGE HANDLER
-// ──────────────────────────────────────
-function handleQrImage(input){
-  if(!input||!input.files||!input.files[0])return;
-  const file=input.files[0];
-  input.value='';
-  el('qr-result').innerHTML='<div style="text-align:center;padding:14px;color:#546e7a;">⏳ Decode ho raha hai...</div>';
-
-  if(typeof Html5Qrcode==='undefined'){
-    el('qr-result').innerHTML='<div style="background:#fff3e0;border-radius:10px;padding:12px;text-align:center;color:#e65100;">Scanner load nahi hua — Case No. neeche type karo</div>';
-    return;
-  }
-  const tmpId='_qt'+Date.now();
-  const tmp=document.createElement('div');
-  tmp.id=tmpId;tmp.style.cssText='position:fixed;left:-9999px;top:-9999px;';
-  document.body.appendChild(tmp);
-
-  new Html5Qrcode(tmpId).scanFile(file,false)
-    .then(raw=>{
-      tmp.remove();
-      const cn=parseQR(raw);
-      if(cn){
-        el('qr-result').innerHTML=`<div style="background:#e8f5e9;border-radius:10px;padding:12px;text-align:center;color:#2e7d32;font-weight:700;">✅ Case No: ${cn}</div>`;
-        setTimeout(()=>onCaseNo(cn),500);
-      }else{
-        el('qr-result').innerHTML=`<div style="background:#fff3e0;border-radius:10px;padding:12px;text-align:center;color:#e65100;">⚠️ Case No. nahi mila<br><small style="color:#888;">QR content: ${raw}</small><br><br>Neeche manually type karo</div>`;
-      }
-    })
-    .catch(()=>{
-      tmp.remove();
-      el('qr-result').innerHTML='<div style="background:#ffebee;border-radius:10px;padding:12px;text-align:center;color:#c62828;">❌ QR read nahi hua<br><small>Saaf photo lo — ya Case No. type karo</small></div>';
-    });
-}
-
-// ──────────────────────────────────────
-// NAVIGATION
-// ──────────────────────────────────────
-async function onCaseNo(cn){
+// ── Navigation ──
+function onCaseNo(cn){
   if(!cn){toast('Case No. daalo');return;}
   cn=cn.trim();
-  toast('🔍 Dhundh raha hoon...',1200);
-  const ex=await safeGet(cn);
+  stopScan();
+  const ex=lsLoad(cn);
   if(ex){curCase=ex;renderFound();show('s-found');}
   else{loadNewForm(cn);show('s-new');}
 }
 
 function goScan(){
   show('s-scan');
-  el('qr-result').innerHTML='';
   el('man-inp').value='';
+  scanMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','success');
 }
 
-// ──────────────────────────────────────
-// ACCUSED — Pure Array System
-// ──────────────────────────────────────
+// ── Accused Array System ──
 let newAcc=[],editAcc=[],curCase=null;
 
-function renderAcc(containerId,arr,pfx,addFn,delFn){
-  el(containerId).innerHTML=arr.map((a,i)=>`
+function renderAcc(cid,arr,pfx,addFn,delFn){
+  el(cid).innerHTML=arr.map((a,i)=>`
     <div class="acc-card">
       <div class="acc-hdr">
         <span class="acc-num">${i+1}</span>
@@ -369,7 +403,7 @@ function renderAcc(containerId,arr,pfx,addFn,delFn){
       <div class="row2">
         <div class="fg"><label class="lbl">नाम *</label>
           <div class="inp-wrap">
-            <input class="inp" id="${pfx}nm${i}" value="${esc(a.name)}" placeholder="अभियुक्त का नाम"/>
+            <input class="inp" id="${pfx}nm${i}" value="${esc(a.name)}" placeholder="नाम"/>
             <button class="mic-btn" onclick="startVoice('${pfx}nm${i}',this)">🎤</button>
           </div></div>
         <div class="fg"><label class="lbl">पिता का नाम *</label>
@@ -405,35 +439,20 @@ function harvest(pfx,arr){
   });
 }
 
-function addAccNew(){
-  harvest('na',newAcc);
-  newAcc.push({name:'',fatherName:'',village:'',thana:'',district:''});
-  renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');
-  setTimeout(()=>el(`nanm${newAcc.length-1}`)?.focus(),80);
-}
+function addAccNew(){harvest('na',newAcc);newAcc.push({name:'',fatherName:'',village:'',thana:'',district:''});renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');setTimeout(()=>el(`nanm${newAcc.length-1}`)?.focus(),80);}
 function delAccNew(i){harvest('na',newAcc);newAcc.splice(i,1);renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');}
-function addAccEdit(){
-  harvest('ea',editAcc);
-  editAcc.push({name:'',fatherName:'',village:'',thana:'',district:''});
-  renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');
-  setTimeout(()=>el(`eanm${editAcc.length-1}`)?.focus(),80);
-}
+function addAccEdit(){harvest('ea',editAcc);editAcc.push({name:'',fatherName:'',village:'',thana:'',district:''});renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');setTimeout(()=>el(`eanm${editAcc.length-1}`)?.focus(),80);}
 function delAccEdit(i){harvest('ea',editAcc);editAcc.splice(i,1);renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');}
 
-// ──────────────────────────────────────
-// NEW CASE
-// ──────────────────────────────────────
+// ── New Case ──
 function loadNewForm(cn){
-  el('new-badge').textContent=cn;
-  el('n-caseno').value=cn;
+  el('new-badge').textContent=cn;el('n-caseno').value=cn;
   ['n-cc','n-sec','n-ps'].forEach(id=>el(id).value='');
-  el('n-dist').value='बागपत';
-  el('n-fix').value='';
+  el('n-dist').value='बागपत';el('n-fix').value='';
   newAcc=[{name:'',fatherName:'',village:'',thana:'',district:''}];
   renderAcc('new-acc-list',newAcc,'na','addAccNew','delAccNew');
 }
-
-async function saveNew(){
+function saveNew(){
   const cn=(el('n-caseno').value||'').trim();
   if(!cn){toast('Case No. zaroori hai');return;}
   harvest('na',newAcc);
@@ -442,53 +461,43 @@ async function saveNew(){
   curCase={caseNo:cn,ccNo:v('n-cc'),section:v('n-sec'),ps:v('n-ps'),
     district:v('n-dist')||'बागपत',fixDate:el('n-fix').value,
     accused:valid,savedAt:new Date().toISOString()};
-  await safePut(curCase);
-  toast('✅ Mukadma save ho gaya!');
-  setTimeout(()=>{renderFound();show('s-found');},500);
+  if(lsSave(curCase)){toast('✅ Mukadma save ho gaya!');setTimeout(()=>{renderFound();show('s-found');},500);}
 }
 
-// ──────────────────────────────────────
-// FOUND SCREEN
-// ──────────────────────────────────────
+// ── Found Screen ──
 function renderFound(){
   const c=curCase;
   el('found-badge').textContent=c.caseNo;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'—';
   el('case-info-card').innerHTML=`
     <p style="font-size:12px;font-weight:700;color:var(--blue2);text-transform:uppercase;margin-bottom:10px;">मुकदमे की जानकारी</p>
-    <div class="info-row"><span class="info-lbl">Case No.</span><span class="info-val">${c.caseNo}</span></div>
-    ${c.ccNo?`<div class="info-row"><span class="info-lbl">CC No.</span><span class="info-val">${c.ccNo}</span></div>`:''}
-    <div class="info-row"><span class="info-lbl">धारा</span><span class="info-val">${c.section||'—'}</span></div>
-    <div class="info-row"><span class="info-lbl">थाना</span><span class="info-val">${c.ps||'—'}</span></div>
-    <div class="info-row"><span class="info-lbl">अगली तारीख</span><span class="info-val">${fd}</span></div>`;
-
+    <div class="info-row"><span class="ilbl">Case No.</span><span class="ival">${c.caseNo}</span></div>
+    ${c.ccNo?`<div class="info-row"><span class="ilbl">CC No.</span><span class="ival">${c.ccNo}</span></div>`:''}
+    <div class="info-row"><span class="ilbl">धारा</span><span class="ival">${c.section||'—'}</span></div>
+    <div class="info-row"><span class="ilbl">थाना</span><span class="ival">${c.ps||'—'}</span></div>
+    <div class="info-row"><span class="ilbl">अगली तारीख</span><span class="ival">${fd}</span></div>`;
   el('acc-checks').innerHTML=c.accused.map((a,i)=>`
     <div class="chk-row on" onclick="togChk(this,'acc-chk-${i}')">
       <input type="checkbox" id="acc-chk-${i}" name="acc-chk" value="${i}" checked>
       <label class="cl" for="acc-chk-${i}">${a.name}<small>पुत्र ${a.fatherName||'—'}</small></label>
     </div>`).join('');
-
-  const DOCS=[
+  el('doc-checks').innerHTML=[
     {id:'summon',lbl:'समन',sub:'Summons — धारा 61',tag:'Summon'},
     {id:'bw',lbl:'जमानती वारंट',sub:'Bailable Warrant — धारा 71',tag:'BW'},
     {id:'nbw',lbl:'गिरफ्तारी अधिपत्र',sub:'Non-Bailable Warrant — धारा 75',tag:'NBW'},
     {id:'p82',lbl:'उद्घोषणा',sub:'Proclamation — धारा 82',tag:'82'},
     {id:'k83',lbl:'हुक्म कुर्की',sub:'Attachment Order — धारा 83',tag:'83'},
-  ];
-  el('doc-checks').innerHTML=DOCS.map(d=>`
+  ].map(d=>`
     <div class="chk-row" onclick="togChk(this,'doc-chk-${d.id}')">
       <input type="checkbox" id="doc-chk-${d.id}" name="doc-chk" value="${d.id}">
       <label class="cl" for="doc-chk-${d.id}">${d.lbl}<small>${d.sub}</small></label>
       <span class="dtag">${d.tag}</span>
     </div>`).join('');
 }
-
 function togChk(div,id){const cb=el(id);cb.checked=!cb.checked;div.classList.toggle('on',cb.checked);}
 function selAll(nm,val){document.querySelectorAll(`[name="${nm}"]`).forEach(cb=>{cb.checked=val;cb.closest('.chk-row').classList.toggle('on',val);});}
 
-// ──────────────────────────────────────
-// EDIT SCREEN
-// ──────────────────────────────────────
+// ── Edit ──
 function goEdit(){
   const c=curCase;
   el('edit-badge').textContent=c.caseNo;
@@ -499,22 +508,17 @@ function goEdit(){
   renderAcc('edit-acc-list',editAcc,'ea','addAccEdit','delAccEdit');
   show('s-edit');
 }
-
-async function saveEdit(){
+function saveEdit(){
   harvest('ea',editAcc);
   const valid=editAcc.filter(a=>a.name);
   if(!valid.length){toast('Kam se kam 1 accused ka naam bharo');return;}
   curCase={...curCase,ccNo:v('e-cc'),section:v('e-sec'),ps:v('e-ps'),
     district:v('e-dist')||'बागपत',fixDate:el('e-fix').value,
     accused:valid,updatedAt:new Date().toISOString()};
-  await safePut(curCase);
-  toast('✅ Update ho gaya!');
-  setTimeout(()=>{renderFound();show('s-found');},400);
+  if(lsSave(curCase)){toast('✅ Update ho gaya!');setTimeout(()=>{renderFound();show('s-found');},400);}
 }
 
-// ──────────────────────────────────────
-// GENERATE DOCUMENTS
-// ──────────────────────────────────────
+// ── Generate Documents ──
 function genDocs(){
   const selAcc=[];
   document.querySelectorAll('[name="acc-chk"]:checked').forEach(cb=>selAcc.push(curCase.accused[+cb.value]));
@@ -522,20 +526,34 @@ function genDocs(){
   document.querySelectorAll('[name="doc-chk"]:checked').forEach(cb=>selDocs.push(cb.value));
   if(!selAcc.length){toast('Koi accused nahi chuna');return;}
   if(!selDocs.length){toast('Koi document nahi chuna');return;}
-
   const c=curCase;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'___________';
   let pages='';
   selAcc.forEach(acc=>selDocs.forEach(dt=>{pages+=buildPage(dt,c,acc,fd);}));
   const total=selAcc.length*selDocs.length;
+  const html=wrapDoc(c.caseNo,total,pages);
+  const w=window.open('','_blank');
+  if(w){w.document.open();w.document.write(html);w.document.close();}
+  else{
+    const a=document.createElement('a');
+    a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);
+    a.download=`Proforma_${c.caseNo.replace('/','_')}.html`;
+    a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }
+  toast(`📄 ${total} page${total>1?'s':''} ready — Print/PDF Save karo`,3500);
+}
 
-  const html=`<!DOCTYPE html><html lang="hi"><head>
-<meta charset="UTF-8"><title>Court Proforma — ${c.caseNo}</title>
+function R(s){return(s||'').trim()||'________';}
+
+function wrapDoc(cn,total,pages){
+  return`<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><title>Court Proforma — ${cn}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 @page{size:A4;margin:20mm 22mm;}
-body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;font-size:11.5pt;line-height:2;color:#000;background:#fff;padding-top:48px;}
-.pg{page-break-after:always;padding:8px 0;min-height:235mm;}
+body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;
+  font-size:11.5pt;line-height:2;color:#000;background:#fff;padding-top:50px;}
+.pg{page-break-after:always;padding:8px 0;min-height:233mm;}
 .pg:last-child{page-break-after:avoid;}
 .rhs{float:right;text-align:right;font-size:10pt;line-height:1.8;border-left:1px solid #aaa;padding-left:10px;margin:0 0 6px 10px;}
 .clr::after{content:'';display:table;clear:both;}
@@ -549,41 +567,30 @@ p{margin:4px 0;}
 .sig-r{text-align:right;}
 .seal{margin-top:24px;}
 .note{margin-top:16px;font-size:9.5pt;color:#444;border-top:1px dotted #999;padding-top:8px;}
-.pbar{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
-.pbar button{background:#fff;color:#1a237e;border:none;padding:7px 20px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
+.pbar{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:9px 16px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
+.pbar button{background:#fff;color:#1a237e;border:none;padding:7px 20px;border-radius:7px;
+  font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
 @media print{.pbar{display:none;}body{padding-top:0;}}
 </style></head><body>
 <div class="pbar">
-  <span>📄 ${total} page${total>1?'s':''} — Case: ${c.caseNo}</span>
+  <span>📄 ${total} page${total>1?'s':''} | Case: ${cn}</span>
   <button onclick="window.print()">🖨️ Print / PDF Save</button>
-</div>
-${pages}
-</body></html>`;
-
-  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=`Proforma_${c.caseNo.replace('/','_')}.html`;
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),10000);
-  toast(`📥 ${total} page download ho raha hai — kholke Print karo`,3500);
+</div>${pages}</body></html>`;
 }
-
-function R(s){return s||'________';}
 
 function buildPage(type,c,acc,fd){
   const sec=R(c.section),ps=R(c.ps),cn=c.caseNo,cc=c.ccNo||'';
-  const dist=R(acc.district||c.district),vl=R(acc.village),th=R(acc.thana||c.ps);
-  const nm=R(acc.name),fn=R(acc.fatherName);
+  const dist=R(acc.district||c.district),vl=R(acc.village);
+  const th=R(acc.thana||c.ps),nm=R(acc.name),fn=R(acc.fatherName);
   const rhs=`<div class="rhs b">मुकदमा सं० ${cn}<br>स- ${nm}<br>u/s- ${sec}<br>${cc?`CC- ${cc}<br>`:''}PS- ${ps}<br>Fix: ${fd}</div>`;
 
-  if(type==='summon')return`<div class="pg">
-<div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-1</p></div>
+  if(type==='summon')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-1</p></div>
 <h2>समन</h2><h3>(धारा 61, अनुसूची 5, प्रपत्र संख्या 1)</h3>
 <p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला बागपत</p><hr>
 <p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>चूँकि &nbsp; जाति व्यवसाय</p>
+<p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
 <p>को न्यायालय ACJM, BAGHPAT में धारा <b>${sec}</b> के अंतर्गत मुकदमे में उपस्थित होना आवश्यक है।</p>
 <p>अतएव आपको एतद्वारा समन किया जाता है कि आप दिनांक <b>${fd}</b> को उक्त न्यायालय में व्यक्तिशः उपस्थित हों।</p>
@@ -591,12 +598,11 @@ function buildPage(type,c,acc,fd){
 <div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
 <div class="seal">न्यायालय की मुहर</div></div>`;
 
-  if(type==='bw')return`<div class="pg">
-<div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-3</p></div>
+  if(type==='bw')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-3</p></div>
 <h2>जमानती वारंट</h2><h3>(धारा 71, अनुसूची 5, प्रपत्र संख्या 3)</h3>
 <p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला बागपत</p><hr>
 <p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>चूँकि &nbsp; जाति व्यवसाय</p>
+<p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
 <p><b>${sec}</b> के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट किया जाता है कि आप उक्त</p>
 <p><b>${nm}</b> पुत्र <b>${fn}</b> को जमानत सहित गिरफ्तार करके मेरे समक्ष दिनांक <b>${fd}</b> को पेश कीजिये।</p>
@@ -604,38 +610,32 @@ function buildPage(type,c,acc,fd){
 <div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
 <div class="seal">न्यायालय की मुहर</div></div>`;
 
-  if(type==='nbw')return`<div class="pg">
-<div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-2 भाग, संख्या-8</p></div>
+  if(type==='nbw')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-2 भाग, संख्या-8</p></div>
 <h2>गिरफ्तारी का अधिपत्र</h2><h3>(धारा 75, अनुसूची 5, प्रपत्र संख्या 2)</h3>
 <p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला</p><hr>
 <p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>चूँकि &nbsp; जाति व्यवसाय</p>
+<p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
 <p><b>${sec}</b> के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट किया जाता है कि आप उक्त</p>
 <p><b>${nm}</b> पुत्र <b>${fn}</b> को गिरफ्तार करके मेरे समक्ष पेश कीजिये। ऐसा करने में त्रुटि न हो।</p>
 <div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
 <div class="seal">न्यायालय की मुहर</div></div>`;
 
-  if(type==='p82')return`<div class="pg">
-<div class="clr">${rhs}<p class="tc b">H.C.J. Form No. 58, Part VIII</p></div>
+  if(type==='p82')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">H.C.J. Form No. 58, Part VIII</p></div>
 <h2>अभियुक्त व्यक्ति की उपसंजाति के लिए अपेक्षा करने वाली उद्घोषणा</h2>
 <h3>(धारा 82, अनुसूची 5, प्रपत्र संख्या 4)</h3>
 <p class="tc b">न्यायालय — मैजिस्ट्रेट ACJM, BAGHPAT कोटि जिला</p><hr>
 <p>चूंकि मेरे समक्ष परिवाद किया गया है कि</p>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>जाति व्यवसाय</p>
+<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>जाति व्यवसाय</p>
 <p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
-<p>द्वारा भारतीय दण्ड संहिता की धारा <b>${sec}</b> के अधीन दण्डनीय किया गया</p>
-<p>अपराध <b>${sec}</b> (1) है और तदुपरि निकाले गये गिरफ्तारी के किये जाने का संदेह किया जाता है,</p>
-<p>अधिपत्र को यह लिख कर लौटा दिया गया है कि उक्त को पाया नहीं जा सका है और चूंकि मुझको समाधानप्रद रूप में यह संदर्शित कर दिया</p>
-<p><b>${nm}</b> पुत्र <b>${fn}</b> अपलायन कर गया है / उक्त अधिपत्र की तामील से बचने के लिये अपने को छिपा रहा है।</p>
+<p>द्वारा भारतीय दण्ड संहिता की धारा <b>${sec}</b> के अधीन दण्डनीय किया गया अपराध <b>${sec}</b> (1) है और तदुपरि निकाले गये गिरफ्तारी के किये जाने का संदेह किया जाता है, अधिपत्र को यह लिख कर लौटा दिया गया है कि उक्त को पाया नहीं जा सका है।</p>
+<p>चूंकि मुझको समाधानप्रद रूप में यह संदर्शित कर दिया — <b>${nm}</b> पुत्र <b>${fn}</b> अपलायन कर गया है / उक्त अधिपत्र की तामील से बचने के लिये अपने को छिपा रहा है।</p>
 <p>अतएव एतद्द्वारा उद्घोषणा की जाती है कि <b>${nm}</b> निवासी ${vl} से यह अपेक्षा की जाती है कि वह दिनांक <b>${fd}</b> को ACJM न्यायालय में मेरे समक्ष परिवाद का उत्तर देने के लिये उपस्थित हों।</p>
 <div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित।</div><div class="sig-r">हस्ताक्षर<br><br>मैजिस्ट्रेट।</div></div>
 <div class="seal">न्यायालय की मुहर</div>
 <p class="note">(1) इस स्थान पर तथा अन्य स्थानों पर जो शब्द लकीर के उपर अथवा नीचे लिखे हैं उनमें से जिनकी आवश्यकता न हो, उनको काट देना चाहिए।</p></div>`;
 
-  if(type==='k83')return`<div class="pg">
-<div class="clr">${rhs}<p class="tc b">IL.C.J. Form No. VIII-54</p></div>
+  if(type==='k83')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">IL.C.J. Form No. VIII-54</p></div>
 <h2>हुक्म कुर्की बग़रज़ एज़हार बिलजब शख्स मुलज़िम के</h2>
 <h3>(दफा 83, जमीमा 5, नमुना न 06)</h3>
 <p class="tc b">अदालत ACJM, BAGHPAT — मजिस्ट्रेट दर्जा जिला</p><hr>
@@ -643,9 +643,7 @@ function buildPage(type,c,acc,fd){
 <p>हरगाह हमारे रूबरू नालिश पेश हुई है कि मुसम्मा &nbsp; वल्द काम पेशा</p>
 <p>साकिन ${vl} &nbsp; थाना ${th} &nbsp; जिला ${dist}</p>
 <p>है का इर्तिकाब किया &nbsp; (2) जुर्म <b>${sec}</b> के इतिकाब का शुबह किया गया</p>
-<p>सजा मजमुआ पर ताजोरात हिन्द को दफा में मुकर्रर है और कैफियत तामील वारन्ट से जो बरतर्बक नालिश मजकूर के जारी हुआ था, यह दरयाफ्त हुआ कि मुसम्मा मजकूर दस्तयाब नहीं हो सकता है।</p>
-<p>हसव इतमीनान हमारे यह अब साबित हुआ है कि मुसम्मा मजकूर फरार हो गया। है और बाद वारन्ट मजकूर की तामील से बचने के लिये रुपोश इश्तिहार हस्ब जाब्ता इस हुख्म से जारी और मुश्तहिर किया गया था कि</p>
-<p>मुसम्मा <b>${nm}</b> पुत्र <b>${fn}</b></p>
+<p>सजा मजमुआ पर ताजोरात हिन्द को दफा में मुकर्रर है और कैफियत तामील वारन्ट से जो बरतर्बक नालिश मजकूर के जारी हुआ था, यह दरयाफ्त हुआ कि मुसम्मा मजकूर दस्तयाब नहीं हो सकता है। हसव इतमीनान हमारे यह अब साबित हुआ है कि मुसम्मा मजकूर फरार हो गया। है और बाद वारन्ट मजकूर की तामील से बचने के लिये रुपोश इश्तिहार हस्ब जाब्ता इस हुख्म से जारी और मुश्तहिर किया गया था कि मुसम्मा <b>${nm}</b> पुत्र <b>${fn}</b></p>
 <p>मजकूर मियाद रोज के अन्दर हाजिर होकर इल्जाम मजकूर की जवाबदेही करे और हरगाह मुसम्मा मजकूर के कब्जे में जायदाद मुफस्सिला जिल अलावा आराजी मालगुजारी कस्बा जिला में बानी मौजा मौजूद है और उसकी कुर्की का हुक्म हो चुका है।</p>
 <p>लिहाजा बजरिये इस तहरीर के तुमको हुक्म दिया जाता है जायदाद मजकूर को बजरिये अपने कब्जे में लाने के लिये कुर्क करो और ता सुदूर हुक्म सानी इस अदालत के ज़ेर कुर्की रक्खो और इस बारन्ट को मय इबारत जोहरी मुश्तर तस्दीक तरीके तामील वारन्ट के वापस करो।</p>
 <div class="sig"><div>मुवर्रिखा माह सन् 20&nbsp;&nbsp; ई०</div><div class="sig-r">दस्तखत<br><br>मैजिस्ट्रेट</div></div>
@@ -654,18 +652,15 @@ function buildPage(type,c,acc,fd){
   return'';
 }
 
-// ──────────────────────────────────────
-// VOICE TYPING
-// ──────────────────────────────────────
+// ── Voice Typing ──
 let activeRec=null;
 function startVoice(inputId,btn){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('❌ Voice typing is device mein nahi hai');return;}
+  if(!SR){toast('❌ Voice typing is device mein support nahi');return;}
   if(activeRec&&btn.classList.contains('on')){activeRec.stop();return;}
   if(activeRec){try{activeRec.stop();}catch(e){}}
   const rec=new SR();
-  activeRec=rec;
-  rec.lang='hi-IN';rec.interimResults=true;rec.continuous=false;
+  activeRec=rec;rec.lang='hi-IN';rec.interimResults=true;rec.continuous=false;
   const inp=el(inputId),orig=inp.value;
   btn.textContent='🔴';btn.classList.add('on');
   rec.onresult=e=>{
@@ -674,41 +669,15 @@ function startVoice(inputId,btn){
       e.results[i].isFinal?f+=e.results[i][0].transcript:t+=e.results[i][0].transcript;
     inp.value=(orig+' '+(f||t)).trim();
   };
-  rec.onerror=e=>{
-    btn.textContent='🎤';btn.classList.remove('on');activeRec=null;
-    toast(e.error==='not-allowed'?'Mic permission do':'Voice error: '+e.error);
-  };
+  rec.onerror=e=>{btn.textContent='🎤';btn.classList.remove('on');activeRec=null;
+    toast(e.error==='not-allowed'?'Mic permission do':'Voice error: '+e.error);};
   rec.onend=()=>{btn.textContent='🎤';btn.classList.remove('on');activeRec=null;};
   rec.start();
   toast('🎤 Bol rahe hain... button dabao rokne ke liye',3000);
 }
 
-// ──────────────────────────────────────
-// INIT
-// ──────────────────────────────────────
-function loadScript(src){
-  return new Promise((res,rej)=>{
-    const s=document.createElement('script');
-    s.src=src;s.onload=res;s.onerror=()=>rej(src);
-    document.head.appendChild(s);
-  });
-}
-async function initScanner(){
-  for(const url of[
-    'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js',
-    'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'
-  ]){
-    try{await loadScript(url);console.log('QR lib OK');return;}
-    catch(e){console.warn('CDN fail:',url);}
-  }
-  console.warn('QR lib unavailable — manual only');
-}
-
-openDB()
-  .then(()=>console.log('DB ready'))
-  .catch(e=>{dbOK=false;console.error('DB fail:',e);});
-
-initScanner();
+// ── Init: load scanner lib on page load ──
+loadLib();
 </script>
 </body>
 </html>
