@@ -15,8 +15,7 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
 .cnt{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;}
 .card{background:#fff;border-radius:14px;padding:16px;margin:14px 14px 0;box-shadow:0 2px 8px rgba(0,0,0,.07);}
 .st{font-size:12px;font-weight:700;color:var(--b2);text-transform:uppercase;letter-spacing:.5px;padding:16px 14px 6px;}
-.fg{margin-bottom:13px;}
-.fg:last-child{margin-bottom:0;}
+.fg{margin-bottom:13px;} .fg:last-child{margin-bottom:0;}
 .lb{display:block;font-size:12px;font-weight:600;color:#455a64;margin-bottom:5px;}
 .iw{display:flex;gap:6px;}
 .ip{flex:1;min-width:0;padding:11px 12px;border:1.5px solid #cfd8dc;border-radius:9px;font-family:var(--f);font-size:14px;outline:none;background:#fff;color:#000;-webkit-appearance:none;}
@@ -25,11 +24,8 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
 .mb.on{background:var(--r);border-color:var(--r);}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .btn{display:block;width:100%;padding:13px 16px;border:none;border-radius:11px;font-family:var(--f);font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:10px;-webkit-appearance:none;line-height:1.4;}
-.btn:last-child{margin-bottom:0;}
-.btn:active{opacity:.8;}
-.bp{background:var(--b);color:#fff;}
-.bg2{background:var(--g);color:#fff;}
-.bo{background:transparent;border:2px solid var(--b2);color:var(--b2);}
+.btn:last-child{margin-bottom:0;} .btn:active{opacity:.8;}
+.bp{background:var(--b);color:#fff;} .bg2{background:var(--g);color:#fff;} .bo{background:transparent;border:2px solid var(--b2);color:var(--b2);}
 .ac{background:#f8f9ff;border:1.5px solid #c5cae9;border-radius:11px;padding:14px;margin-bottom:12px;}
 .ah{display:flex;align-items:center;margin-bottom:12px;}
 .an{background:var(--b);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:8px;flex-shrink:0;}
@@ -45,19 +41,14 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
 .sr{display:flex;gap:8px;padding:0 14px 8px;}
 .sr button{flex:1;padding:9px;border:1.5px solid var(--b2);border-radius:8px;background:transparent;color:var(--b2);font-size:13px;font-family:var(--f);cursor:pointer;}
 .ir{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f4f8;font-size:13px;}
-.ir:last-child{border:none;}
-.il{color:#78909c;}
-.iv{font-weight:600;text-align:right;margin-left:8px;word-break:break-all;}
+.ir:last-child{border:none;} .il{color:#78909c;} .iv{font-weight:600;text-align:right;margin-left:8px;word-break:break-all;}
 .bot{padding:14px;background:#fff;border-top:1px solid #e8eaf6;}
 .sw{padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:12px;}
 .mr{display:flex;gap:8px;width:100%;max-width:360px;}
 .mr .ip{flex:1;}
 .gb{padding:11px 18px;background:var(--b);color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--f);}
 .sm{width:100%;max-width:360px;border-radius:10px;padding:12px 14px;font-size:13px;text-align:center;line-height:1.6;}
-.sm.ld{background:#e8eaf6;color:var(--b);}
-.sm.ok{background:#e8f5e9;color:var(--g);font-weight:700;}
-.sm.er{background:#ffebee;color:var(--r);}
-.sm.wn{background:#fff3e0;color:#e65100;}
+.sm.ld{background:#e8eaf6;color:var(--b);} .sm.ok{background:#e8f5e9;color:var(--g);font-weight:700;} .sm.er{background:#ffebee;color:var(--r);} .sm.wn{background:#fff3e0;color:#e65100;}
 #qrb{width:100%;max-width:360px;}
 #qrb video{border-radius:12px !important;width:100% !important;}
 .scb{display:none;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;}
@@ -67,33 +58,27 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
 <body>
 <div id="toast"></div>
 
-<!-- SCREEN 1: SCAN — visible by default via inline style -->
+<!-- SCREEN 1: SCAN -->
 <div id="s1" style="display:flex;flex-direction:column;min-height:100vh;">
   <div class="hdr"><h1>⚖️ Court Proforma — ACJM Baghpat</h1></div>
-  <div class="cnt">
-    <div class="sw">
-      <div id="qrb"></div>
-      <div id="sma"></div>
-      <div class="scb" id="scb">
-        <button class="btn bp" style="margin:0;" onclick="startScan()">📷 Scan Shuru Karo</button>
-        <button class="btn bo" style="margin:0;" onclick="stopScan()">⏹ Band Karo</button>
-      </div>
-      <p style="color:#546e7a;font-size:13px;text-align:center;">— ya Case No. seedha type karo —</p>
-      <div class="mr">
-        <input class="ip" id="mi" type="text" placeholder="Case No: 3802/20" autocomplete="off" autocorrect="off" spellcheck="false"/>
-        <button class="gb" onclick="onCaseNo(v('mi'))">जाओ →</button>
-      </div>
+  <div class="cnt"><div class="sw">
+    <div id="qrb"></div>
+    <div id="sma"></div>
+    <div class="scb" id="scb">
+      <button class="btn bp" style="margin:0;" onclick="startScan()">📷 Scan Shuru Karo</button>
+      <button class="btn bo" style="margin:0;" onclick="stopScan()">⏹ Band Karo</button>
     </div>
-  </div>
+    <p style="color:#546e7a;font-size:13px;text-align:center;">— ya Case No. seedha type karo —</p>
+    <div class="mr">
+      <input class="ip" id="mi" type="text" placeholder="Case No: 3802/20" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button class="gb" onclick="onCaseNo(v('mi'))">जाओ →</button>
+    </div>
+  </div></div>
 </div>
 
-<!-- SCREEN 2: NEW CASE — hidden via inline style -->
+<!-- SCREEN 2: NEW CASE -->
 <div id="s2" style="display:none;flex-direction:column;min-height:100vh;">
-  <div class="hdr">
-    <button class="bk" onclick="goS1()">←</button>
-    <h1>नया मुकदमा</h1>
-    <span class="badge" id="b2"></span>
-  </div>
+  <div class="hdr"><button class="bk" onclick="goS1()">←</button><h1>नया मुकदमा</h1><span class="badge" id="b2"></span></div>
   <div class="cnt">
     <div class="card">
       <p class="st" style="padding:0 0 12px;">मुकदमे की जानकारी</p>
@@ -104,8 +89,7 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
       <div class="fg"><label class="lb">धारा (Section) *</label><input class="ip" id="ns" placeholder="366 IPC"/></div>
       <div class="r2">
         <div class="fg"><label class="lb">थाना (PS) *</label>
-          <div class="iw"><input class="ip" id="np" placeholder="छपरौली"/>
-          <button class="mb" onclick="sv('np',this)">🎤</button></div></div>
+          <div class="iw"><input class="ip" id="np" placeholder="छपरौली"/><button class="mb" onclick="sv('np',this)">🎤</button></div></div>
         <div class="fg"><label class="lb">जिला</label><input class="ip" id="nd" placeholder="बागपत"/></div>
       </div>
       <div class="fg"><label class="lb">अगली तारीख (Fix)</label><input class="ip" id="nf" type="date"/></div>
@@ -117,13 +101,9 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
   <div class="bot"><button class="btn bp" onclick="saveN()">💾 मुकदमा सेव करें</button></div>
 </div>
 
-<!-- SCREEN 3: FOUND — hidden -->
+<!-- SCREEN 3: FOUND -->
 <div id="s3" style="display:none;flex-direction:column;min-height:100vh;">
-  <div class="hdr">
-    <button class="bk" onclick="goS1()">←</button>
-    <h1>मुकदमा मिला</h1>
-    <span class="badge" id="b3"></span>
-  </div>
+  <div class="hdr"><button class="bk" onclick="goS1()">←</button><h1>मुकदमा मिला</h1><span class="badge" id="b3"></span></div>
   <div class="cnt">
     <div class="card" id="ci"></div>
     <p class="st">अभियुक्त चुनें</p>
@@ -139,13 +119,9 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
   </div>
 </div>
 
-<!-- SCREEN 4: EDIT — hidden -->
+<!-- SCREEN 4: EDIT -->
 <div id="s4" style="display:none;flex-direction:column;min-height:100vh;">
-  <div class="hdr">
-    <button class="bk" onclick="rF();goS('s3')">←</button>
-    <h1>जानकारी संपादित करें</h1>
-    <span class="badge" id="b4"></span>
-  </div>
+  <div class="hdr"><button class="bk" onclick="rF();goS('s3')">←</button><h1>जानकारी संपादित करें</h1><span class="badge" id="b4"></span></div>
   <div class="cnt">
     <div class="card">
       <p class="st" style="padding:0 0 12px;">मुकदमे की जानकारी</p>
@@ -167,325 +143,341 @@ body{font-family:var(--f);background:var(--bg);color:#1a1a2e;font-size:15px;}
 
 <script>
 'use strict';
-// ── Helpers ──
 const el=id=>document.getElementById(id);
 const v=id=>(el(id)||{}).value?.trim()||'';
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const R=s=>(s||'').trim()||'________';
 
-// ── Screen switching via inline style (not CSS class) ──
 const SCREENS=['s1','s2','s3','s4'];
-function goS(id){
-  SCREENS.forEach(s=>{
-    const d=el(s);
-    if(d) d.style.display='none';
-  });
-  const t=el(id);
-  if(t){t.style.display='flex';}
-  window.scrollTo(0,0);
-}
+function goS(id){SCREENS.forEach(s=>{const d=el(s);if(d)d.style.display='none';});const t=el(id);if(t)t.style.display='flex';window.scrollTo(0,0);}
 
 let _tt;
-function toast(msg,dur=3000){
-  const t=el('toast');t.textContent=msg;t.style.display='block';
-  clearTimeout(_tt);_tt=setTimeout(()=>t.style.display='none',dur);
-}
-function sMsg(msg,type='ld'){
-  el('sma').innerHTML=`<div class="sm ${type}">${msg}</div>`;
-}
+function toast(msg,dur=3000){const t=el('toast');t.textContent=msg;t.style.display='block';clearTimeout(_tt);_tt=setTimeout(()=>t.style.display='none',dur);}
+function sMsg(msg,type='ld'){el('sma').innerHTML=`<div class="sm ${type}">${msg}</div>`;}
 
 // ── localStorage ──
-const LS='cpf4_';
+const LS='cpf5_';
 function lsS(o){try{localStorage.setItem(LS+o.caseNo,JSON.stringify(o));return true;}catch(e){toast('❌ Save fail');return false;}}
 function lsL(k){try{const s=localStorage.getItem(LS+k);return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── QR Scanner ──
 let scanner=null,scanReady=false,scanning=false;
-
 function loadLib(){
   if(typeof Html5Qrcode!=='undefined'){onLibReady();return;}
   sMsg('📡 Scanner load ho raha hai...','ld');
-  const tryLoad=url=>new Promise(res=>{
-    const s=document.createElement('script');
-    s.src=url;
-    s.onload=()=>res(typeof Html5Qrcode!=='undefined');
-    s.onerror=()=>res(false);
-    document.head.appendChild(s);
-  });
+  const tryLoad=url=>new Promise(res=>{const s=document.createElement('script');s.src=url;s.onload=()=>res(typeof Html5Qrcode!=='undefined');s.onerror=()=>res(false);document.head.appendChild(s);});
   tryLoad('https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js')
-    .then(ok=>ok?onLibReady():tryLoad('https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'))
-    .then(ok=>{
-      if(ok===true)return; // already handled
-      if(ok){onLibReady();}
-      else{sMsg('❌ Scanner load nahi hua<br><small>Net check karo — ya neeche Case No. type karo</small>','er');}
-    });
+    .then(ok=>ok?(onLibReady(),Promise.resolve(true)):tryLoad('https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'))
+    .then(ok=>{if(ok===true)return;if(ok){onLibReady();}else{sMsg('❌ Scanner load nahi hua — Case No. type karo','er');}});
 }
-
-function onLibReady(){
-  scanReady=true;
-  el('scb').style.display='grid';
-  sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');
-}
-
+function onLibReady(){scanReady=true;el('scb').style.display='grid';sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');}
 function startScan(){
-  if(!scanReady){toast('Scanner abhi load ho raha hai...');return;}
+  if(!scanReady){toast('Scanner load ho raha hai...');return;}
   if(scanning){toast('Scanner chal raha hai');return;}
   sMsg('📷 Camera shuru ho raha hai...','ld');
-  if(!scanner) scanner=new Html5Qrcode('qrb');
-  Html5Qrcode.getCameras()
-    .then(devices=>{
-      if(!devices||!devices.length){sMsg('❌ Camera nahi mila','er');return Promise.reject('no cam');}
-      const cam=devices.find(d=>/back|rear|environ/i.test(d.label))||devices[devices.length-1];
-      return scanner.start(cam.id,{fps:12,qrbox:{width:250,height:250},aspectRatio:1},
-        raw=>{
-          const cn=parseQR(raw);
-          if(cn){stopScan();sMsg(`✅ Case No: <b>${cn}</b>`,'ok');setTimeout(()=>onCaseNo(cn),600);}
-          else{el('mi').value=raw;sMsg(`⚠️ QR: ${raw}<br>Confirm karke "जाओ" dabao`,'wn');}
-        },()=>{});
-    })
-    .then(()=>{scanning=true;sMsg('🔍 QR code camera ke saamne rakho','ld');})
-    .catch(err=>{
-      scanning=false;
-      const m=String(err);
-      if(m.includes('NotAllowed')||m.includes('Permission'))
-        sMsg('❌ Camera permission denied<br><small>Chrome: 🔒 → Camera → Allow → Refresh</small>','er');
-      else if(m.includes('no cam')){}
-      else sMsg('❌ Camera error — Case No. type karo','er');
-    });
+  if(!scanner)scanner=new Html5Qrcode('qrb');
+  Html5Qrcode.getCameras().then(devices=>{
+    if(!devices||!devices.length){sMsg('❌ Camera nahi mila','er');return Promise.reject('no cam');}
+    const cam=devices.find(d=>/back|rear|environ/i.test(d.label))||devices[devices.length-1];
+    return scanner.start(cam.id,{fps:12,qrbox:{width:250,height:250},aspectRatio:1},
+      raw=>{const cn=parseQR(raw);if(cn){stopScan();sMsg(`✅ Case No: <b>${cn}</b>`,'ok');setTimeout(()=>onCaseNo(cn),600);}
+            else{el('mi').value=raw;sMsg(`⚠️ QR: ${raw}<br>Confirm karke "जाओ" dabao`,'wn');}},()=>{});
+  }).then(()=>{scanning=true;sMsg('🔍 QR code camera ke saamne rakho','ld');})
+  .catch(err=>{scanning=false;const m=String(err);
+    if(m.includes('NotAllowed')||m.includes('Permission'))sMsg('❌ Camera permission denied<br><small>Chrome: 🔒 → Camera → Allow → Refresh</small>','er');
+    else if(!m.includes('no cam'))sMsg('❌ Camera error — Case No. type karo','er');});
 }
-
-function stopScan(){
-  if(scanner&&scanning){scanner.stop().catch(()=>{});scanning=false;}
-}
-
-function parseQR(r){
-  if(!r)return null;
-  const t=r.trim();
-  const pp=[/Case\s*No[.\-:]*\s*([0-9]+[\/\-][0-9]+)/i,/No[.\-:]+([0-9]+[\/\-][0-9]+)/i,/([0-9]{2,6}\/[0-9]{2,4})/,/^([0-9]+[\/\-][0-9]+)$/];
-  for(const p of pp){const m=t.match(p);if(m&&m[1])return m[1].replace('-','/');}
-  return t.length<=20&&t.length>=3?t:null;
-}
+function stopScan(){if(scanner&&scanning){scanner.stop().catch(()=>{});scanning=false;}}
+function parseQR(r){if(!r)return null;const t=r.trim();const pp=[/Case\s*No[.\-:]*\s*([0-9]+[\/\-][0-9]+)/i,/No[.\-:]+([0-9]+[\/\-][0-9]+)/i,/([0-9]{2,6}\/[0-9]{2,4})/,/^([0-9]+[\/\-][0-9]+)$/];for(const p of pp){const m=t.match(p);if(m&&m[1])return m[1].replace('-','/');}return t.length<=20&&t.length>=3?t:null;}
 
 // ── Navigation ──
-function onCaseNo(cn){
-  if(!cn){toast('Case No. daalo');return;}
-  cn=cn.trim();stopScan();
-  const ex=lsL(cn);
-  if(ex){cc=ex;rF();goS('s3');}
-  else{loadNF(cn);goS('s2');}
-}
+function onCaseNo(cn){if(!cn){toast('Case No. daalo');return;}cn=cn.trim();stopScan();const ex=lsL(cn);if(ex){cc=ex;rF();goS('s3');}else{loadNF(cn);goS('s2');}}
 function goS1(){goS('s1');el('mi').value='';if(scanReady)sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');}
 
-// ── Accused arrays ──
+// ── Accused ──
 let nA=[],eA=[],cc=null;
-
 function rA(cid,arr,pfx,aFn,dFn){
   el(cid).innerHTML=arr.map((a,i)=>`
-    <div class="ac">
-      <div class="ah"><span class="an">${i+1}</span><span class="at">अभियुक्त ${i+1}</span>
-        ${arr.length>1?`<button class="db" onclick="${dFn}(${i})">✕ हटाएं</button>`:''}</div>
-      <div class="r2">
-        <div class="fg"><label class="lb">नाम *</label>
-          <div class="iw"><input class="ip" id="${pfx}n${i}" value="${esc(a.name)}" placeholder="नाम"/>
-          <button class="mb" onclick="sv('${pfx}n${i}',this)">🎤</button></div></div>
-        <div class="fg"><label class="lb">पिता का नाम *</label>
-          <div class="iw"><input class="ip" id="${pfx}f${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम"/>
-          <button class="mb" onclick="sv('${pfx}f${i}',this)">🎤</button></div></div>
-      </div>
-      <div class="fg"><label class="lb">ग्राम / मोहल्ला</label>
-        <div class="iw"><input class="ip" id="${pfx}v${i}" value="${esc(a.village)}" placeholder="ग्राम"/>
-        <button class="mb" onclick="sv('${pfx}v${i}',this)">🎤</button></div></div>
-      <div class="r2">
-        <div class="fg"><label class="lb">थाना</label>
-          <div class="iw"><input class="ip" id="${pfx}t${i}" value="${esc(a.thana)}" placeholder="थाना"/>
-          <button class="mb" onclick="sv('${pfx}t${i}',this)">🎤</button></div></div>
-        <div class="fg" style="margin-bottom:0"><label class="lb">जिला</label>
-          <input class="ip" id="${pfx}d${i}" value="${esc(a.district)}" placeholder="बागपत"/></div>
-      </div></div>`).join('');
+    <div class="ac"><div class="ah"><span class="an">${i+1}</span><span class="at">अभियुक्त ${i+1}</span>${arr.length>1?`<button class="db" onclick="${dFn}(${i})">✕ हटाएं</button>`:''}</div>
+    <div class="r2">
+      <div class="fg"><label class="lb">नाम *</label><div class="iw"><input class="ip" id="${pfx}n${i}" value="${esc(a.name)}" placeholder="नाम"/><button class="mb" onclick="sv('${pfx}n${i}',this)">🎤</button></div></div>
+      <div class="fg"><label class="lb">पिता का नाम *</label><div class="iw"><input class="ip" id="${pfx}f${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम"/><button class="mb" onclick="sv('${pfx}f${i}',this)">🎤</button></div></div>
+    </div>
+    <div class="fg"><label class="lb">ग्राम / मोहल्ला</label><div class="iw"><input class="ip" id="${pfx}v${i}" value="${esc(a.village)}" placeholder="ग्राम"/><button class="mb" onclick="sv('${pfx}v${i}',this)">🎤</button></div></div>
+    <div class="r2">
+      <div class="fg"><label class="lb">थाना</label><div class="iw"><input class="ip" id="${pfx}t${i}" value="${esc(a.thana)}" placeholder="थाना"/><button class="mb" onclick="sv('${pfx}t${i}',this)">🎤</button></div></div>
+      <div class="fg" style="margin-bottom:0"><label class="lb">जिला</label><input class="ip" id="${pfx}d${i}" value="${esc(a.district)}" placeholder="बागपत"/></div>
+    </div></div>`).join('');
 }
-
 function hv(pfx,arr){arr.forEach((a,i)=>{a.name=(el(`${pfx}n${i}`)?.value||'').trim();a.fatherName=(el(`${pfx}f${i}`)?.value||'').trim();a.village=(el(`${pfx}v${i}`)?.value||'').trim();a.thana=(el(`${pfx}t${i}`)?.value||'').trim();a.district=(el(`${pfx}d${i}`)?.value||'').trim();});}
-
 function addAN(){hv('na',nA);nA.push({name:'',fatherName:'',village:'',thana:'',district:''});rA('nal',nA,'na','addAN','delAN');setTimeout(()=>el(`nan${nA.length-1}`)?.focus(),80);}
 function delAN(i){hv('na',nA);nA.splice(i,1);rA('nal',nA,'na','addAN','delAN');}
 function addAE(){hv('ea',eA);eA.push({name:'',fatherName:'',village:'',thana:'',district:''});rA('eal',eA,'ea','addAE','delAE');setTimeout(()=>el(`ean${eA.length-1}`)?.focus(),80);}
 function delAE(i){hv('ea',eA);eA.splice(i,1);rA('eal',eA,'ea','addAE','delAE');}
 
 // ── New Case ──
-function loadNF(cn){
-  el('b2').textContent=cn;el('nc').value=cn;
-  ['ncc','ns','np'].forEach(id=>el(id).value='');
-  el('nd').value='बागपत';el('nf').value='';
-  nA=[{name:'',fatherName:'',village:'',thana:'',district:''}];
-  rA('nal',nA,'na','addAN','delAN');
-}
-function saveN(){
-  const cn=(el('nc').value||'').trim();
-  if(!cn){toast('Case No. zaroori hai');return;}
-  hv('na',nA);const vd=nA.filter(a=>a.name);
-  if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
+function loadNF(cn){el('b2').textContent=cn;el('nc').value=cn;['ncc','ns','np'].forEach(id=>el(id).value='');el('nd').value='बागपत';el('nf').value='';nA=[{name:'',fatherName:'',village:'',thana:'',district:''}];rA('nal',nA,'na','addAN','delAN');}
+function saveN(){const cn=(el('nc').value||'').trim();if(!cn){toast('Case No. zaroori hai');return;}hv('na',nA);const vd=nA.filter(a=>a.name);if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
   cc={caseNo:cn,ccNo:v('ncc'),section:v('ns'),ps:v('np'),district:v('nd')||'बागपत',fixDate:el('nf').value,accused:vd,savedAt:new Date().toISOString()};
-  if(lsS(cc)){toast('✅ Mukadma save ho gaya!');setTimeout(()=>{rF();goS('s3');},500);}
-}
+  if(lsS(cc)){toast('✅ Mukadma save ho gaya!');setTimeout(()=>{rF();goS('s3');},500);}}
 
-// ── Found Screen ──
+// ── Found ──
 function rF(){
-  const c=cc;
-  el('b3').textContent=c.caseNo;
+  const c=cc;el('b3').textContent=c.caseNo;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'—';
-  el('ci').innerHTML=`
-    <p class="st" style="padding:0 0 10px;">मुकदमे की जानकारी</p>
+  el('ci').innerHTML=`<p class="st" style="padding:0 0 10px;">मुकदमे की जानकारी</p>
     <div class="ir"><span class="il">Case No.</span><span class="iv">${c.caseNo}</span></div>
     ${c.ccNo?`<div class="ir"><span class="il">CC No.</span><span class="iv">${c.ccNo}</span></div>`:''}
     <div class="ir"><span class="il">धारा</span><span class="iv">${c.section||'—'}</span></div>
     <div class="ir"><span class="il">थाना</span><span class="iv">${c.ps||'—'}</span></div>
     <div class="ir"><span class="il">अगली तारीख</span><span class="iv">${fd}</span></div>`;
   el('ack').innerHTML=c.accused.map((a,i)=>`
-    <div class="cr on" onclick="tg(this,'ac-${i}')">
-      <input type="checkbox" id="ac-${i}" name="ac" value="${i}" checked>
-      <label class="cl" for="ac-${i}">${a.name}<small>पुत्र ${a.fatherName||'—'}</small></label>
-    </div>`).join('');
+    <div class="cr on" onclick="tg(this,'ac-${i}')"><input type="checkbox" id="ac-${i}" name="ac" value="${i}" checked>
+    <label class="cl" for="ac-${i}">${a.name}<small>पुत्र ${a.fatherName||'—'}</small></label></div>`).join('');
   el('dck').innerHTML=[
-    {id:'summon',lbl:'समन',sub:'Summons — धारा 61',tag:'Summon'},
-    {id:'bw',lbl:'जमानती वारंट',sub:'Bailable Warrant — धारा 71',tag:'BW'},
+    {id:'summon',lbl:'सम्मन',sub:'Summons',tag:'Summon'},
+    {id:'bw',lbl:'जमानती वारंट',sub:'Bailable Warrant',tag:'BW'},
     {id:'nbw',lbl:'गिरफ्तारी अधिपत्र',sub:'Non-Bailable Warrant — धारा 75',tag:'NBW'},
     {id:'p82',lbl:'उद्घोषणा',sub:'Proclamation — धारा 82',tag:'82'},
     {id:'k83',lbl:'हुक्म कुर्की',sub:'Attachment Order — धारा 83',tag:'83'},
-  ].map(d=>`
-    <div class="cr" onclick="tg(this,'dc-${d.id}')">
-      <input type="checkbox" id="dc-${d.id}" name="dc" value="${d.id}">
-      <label class="cl" for="dc-${d.id}">${d.lbl}<small>${d.sub}</small></label>
-      <span class="dt">${d.tag}</span>
-    </div>`).join('');
+  ].map(d=>`<div class="cr" onclick="tg(this,'dc-${d.id}')"><input type="checkbox" id="dc-${d.id}" name="dc" value="${d.id}">
+    <label class="cl" for="dc-${d.id}">${d.lbl}<small>${d.sub}</small></label><span class="dt">${d.tag}</span></div>`).join('');
 }
 function tg(div,id){const cb=el(id);cb.checked=!cb.checked;div.classList.toggle('on',cb.checked);}
 function sa(nm,val){document.querySelectorAll(`[name="${nm}"]`).forEach(cb=>{cb.checked=val;cb.closest('.cr').classList.toggle('on',val);});}
 
 // ── Edit ──
-function goEdit(){
-  el('b4').textContent=cc.caseNo;
-  el('ec').value=cc.ccNo||'';el('es').value=cc.section||'';
-  el('ep').value=cc.ps||'';el('ed').value=cc.district||'बागपत';
-  el('ef').value=cc.fixDate||'';
-  eA=cc.accused.map(a=>({...a}));
-  rA('eal',eA,'ea','addAE','delAE');
-  goS('s4');
-}
-function saveE(){
-  hv('ea',eA);const vd=eA.filter(a=>a.name);
-  if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
+function goEdit(){el('b4').textContent=cc.caseNo;el('ec').value=cc.ccNo||'';el('es').value=cc.section||'';el('ep').value=cc.ps||'';el('ed').value=cc.district||'बागपत';el('ef').value=cc.fixDate||'';eA=cc.accused.map(a=>({...a}));rA('eal',eA,'ea','addAE','delAE');goS('s4');}
+function saveE(){hv('ea',eA);const vd=eA.filter(a=>a.name);if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
   cc={...cc,ccNo:v('ec'),section:v('es'),ps:v('ep'),district:v('ed')||'बागपत',fixDate:el('ef').value,accused:vd,updatedAt:new Date().toISOString()};
-  if(lsS(cc)){toast('✅ Update ho gaya!');setTimeout(()=>{rF();goS('s3');},400);}
-}
+  if(lsS(cc)){toast('✅ Update ho gaya!');setTimeout(()=>{rF();goS('s3');},400);}}
 
-// ── Generate Documents ──
+// ── Generate ──
 function genD(){
   const sA=[];document.querySelectorAll('[name="ac"]:checked').forEach(cb=>sA.push(cc.accused[+cb.value]));
   const sD=[];document.querySelectorAll('[name="dc"]:checked').forEach(cb=>sD.push(cb.value));
   if(!sA.length){toast('Koi accused nahi chuna');return;}
   if(!sD.length){toast('Koi document nahi chuna');return;}
   const c=cc;
-  const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'___________';
+  const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'';
   let pages='';
   sA.forEach(acc=>sD.forEach(dt=>{pages+=bP(dt,c,acc,fd);}));
   const tot=sA.length*sD.length;
   const html=wD(c.caseNo,tot,pages);
-  const w=window.open('','_blank');
-  if(w){w.document.open();w.document.write(html);w.document.close();}
-  else{const a=document.createElement('a');a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);a.download=`Proforma_${c.caseNo.replace('/','_')}.html`;a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);}
-  toast(`📄 ${tot} page${tot>1?'s':''} ready — Print/PDF karo`,3500);
+  // Blob URL — works everywhere, no atob issue
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');
+  if(!w){
+    // Popup blocked — force download
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`Proforma_${c.caseNo.replace('/','_')}.html`;
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+  toast(`📄 ${tot} page${tot>1?'s':''} ready — Print / PDF Save karo`,3500);
 }
 
-const R=s=>(s||'').trim()||'________';
-
+// ── Document wrapper ──
 function wD(cn,tot,pages){
   return`<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><title>Proforma — ${cn}</title>
-<style>*{box-sizing:border-box;margin:0;padding:0;}
-@page{size:A4;margin:20mm 22mm;}
-body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;font-size:11.5pt;line-height:2;color:#000;background:#fff;padding-top:50px;}
-.pg{page-break-after:always;padding:8px 0;min-height:233mm;}.pg:last-child{page-break-after:avoid;}
-.rhs{float:right;text-align:right;font-size:10pt;line-height:1.8;border-left:1px solid #aaa;padding-left:10px;margin:0 0 6px 10px;}
-.clr::after{content:'';display:table;clear:both;}
-h2{font-size:14pt;font-weight:700;text-align:center;margin:6px 0;}
-h3{font-size:11pt;font-weight:400;text-align:center;margin-bottom:12px;}
-.tc{text-align:center;}.b{font-weight:700;}
-hr{border:none;border-top:1.5px solid #000;margin:10px 0;}p{margin:4px 0;}
-.sn{border:1.5px solid #000;display:inline-block;width:22px;height:22px;text-align:center;line-height:20px;font-size:11pt;margin-right:4px;vertical-align:middle;}
-.sig{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;}
-.sig-r{text-align:right;}.seal{margin-top:24px;}
-.note{margin-top:16px;font-size:9.5pt;color:#444;border-top:1px dotted #999;padding-top:8px;}
-.pb{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
-.pb button{background:#fff;color:#1a237e;border:none;padding:7px 20px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+@page{size:A4;margin:15mm 20mm 15mm 25mm;}
+body{font-family:"Noto Sans Devanagari","Mangal","Arial Unicode MS",Arial,sans-serif;font-size:12pt;line-height:1.8;color:#000;background:#fff;padding-top:48px;}
+.pg{page-break-after:always;}.pg:last-child{page-break-after:avoid;}
+table{width:100%;border-collapse:collapse;}
+td{padding:1px 0;vertical-align:top;}
+.rbox{text-align:right;border-left:1px solid #555;padding-left:10px;font-size:11pt;line-height:1.7;white-space:nowrap;}
+.pb{position:fixed;top:0;left:0;right:0;background:#1a237e;color:#fff;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-family:"Noto Sans Devanagari",Arial,sans-serif;z-index:99;}
+.pb button{background:#fff;color:#1a237e;border:none;padding:6px 18px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
+.sig{display:flex;justify-content:space-between;margin-top:35px;}
+.note{margin-top:14px;font-size:10pt;color:#333;}
+hr{border:none;border-top:1.5px solid #000;margin:8px 0;}
 @media print{.pb{display:none;}body{padding-top:0;}}
 </style></head><body>
-<div class="pb"><span>📄 ${tot} page${tot>1?'s':''} | Case: ${cn}</span><button onclick="window.print()">🖨️ Print / PDF Save</button></div>
+<div class="pb"><span>📄 ${tot} pages | Case: ${cn}</span><button onclick="window.print()">🖨️ Print / PDF Save</button></div>
 ${pages}</body></html>`;
 }
 
+// ═══════════════════════════════════════════════════════════
+// BUILD PAGE — EXACT match with Excel proformas
+// ═══════════════════════════════════════════════════════════
 function bP(type,c,acc,fd){
-  const sec=R(c.section),ps=R(c.ps),cn=c.caseNo,cc2=c.ccNo||'';
-  const dist=R(acc.district||c.district),vl=R(acc.village),th=R(acc.thana||c.ps);
-  const nm=R(acc.name),fn=R(acc.fatherName);
-  const rhs=`<div class="rhs b">मुकदमा सं० ${cn}<br>स- ${nm}<br>u/s- ${sec}<br>${cc2?`CC- ${cc2}<br>`:''}PS- ${ps}<br>Fix: ${fd}</div>`;
+  const nm=R(acc.name), fn=R(acc.fatherName);
+  const vl=R(acc.village), th=R(acc.thana||c.ps), dt=R(acc.district||c.district);
+  const sec=R(c.section), cn=c.caseNo, cc2=c.ccNo||'';
 
-  if(type==='summon')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-1</p></div>
-<h2>समन</h2><h3>(धारा 61, अनुसूची 5, प्रपत्र संख्या 1)</h3>
-<p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला बागपत</p><hr>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
-<p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
-<p>को न्यायालय ACJM, BAGHPAT में धारा <b>${sec}</b> के अंतर्गत मुकदमे में उपस्थित होना आवश्यक है।</p>
-<p>अतएव आपको एतद्वारा समन किया जाता है कि आप दिनांक <b>${fd}</b> को उक्त न्यायालय में व्यक्तिशः उपस्थित हों।</p>
-<p>इस समन की अवज्ञा करने पर आपके विरुद्ध गिरफ्तारी का वारंट जारी किया जा सकता है।</p>
-<div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
-<div class="seal">न्यायालय की मुहर</div></div>`;
+  // Right side box — same across all forms
+  const rbox=`<td width="35%" class="rbox">
+Case No-${cn}<br>
+स- ${nm}<br>
+u/s-${sec}<br>
+${cc2?`CC- ${cc2}<br>`:''}
+PS- :&nbsp;&nbsp;&nbsp;${R(c.ps)}<br>
+Fix ${fd}
+</td>`;
 
-  if(type==='bw')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-3</p></div>
-<h2>जमानती वारंट</h2><h3>(धारा 71, अनुसूची 5, प्रपत्र संख्या 3)</h3>
-<p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला बागपत</p><hr>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
-<p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
-<p><b>${sec}</b> के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट किया जाता है कि आप उक्त</p>
-<p><b>${nm}</b> पुत्र <b>${fn}</b> को जमानत सहित गिरफ्तार करके मेरे समक्ष दिनांक <b>${fd}</b> को पेश कीजिये। ऐसा करने में त्रुटि न हो।</p>
-<div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
-<div class="seal">न्यायालय की मुहर</div></div>`;
+  // ══ SUMMONS (Summons.xlsx exact match) ══
+  if(type==='summon') return `<div class="pg">
+<table><tr><td>सम्मन अभियुक्त</td>${rbox}</tr></table>
+<br>
+<table>
+<tr><td width="5%">1</td><td><b>${nm}</b></td><td>पुत्र</td><td><b>${fn}</b></td></tr>
+<tr><td></td><td>निवासी -</td><td colspan="2">${vl}</td></tr>
+<tr><td></td><td>थाना</td><td colspan="2">${th}</td></tr>
+<tr><td></td><td>जिला</td><td colspan="2">${dt}</td></tr>
+</table>
+</div>`;
 
-  if(type==='nbw')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">हिन्दी उच्च न्या० प्रारूप संख्या-2 भाग, संख्या-8</p></div>
-<h2>गिरफ्तारी का अधिपत्र</h2><h3>(धारा 75, अनुसूची 5, प्रपत्र संख्या 2)</h3>
-<p class="tc b">न्यायालय, ACJM, BAGHPAT</p><p class="tc">मजिस्ट्रेट कोटि जिला</p><hr>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>चूँकि &nbsp;&nbsp; जाति व्यवसाय</p>
-<p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
-<p><b>${sec}</b> के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट किया जाता है कि आप उक्त</p>
-<p><b>${nm}</b> पुत्र <b>${fn}</b> को गिरफ्तार करके मेरे समक्ष पेश कीजिये। ऐसा करने में त्रुटि न हो।</p>
-<div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित</div><div class="sig-r">हस्ताक्षर<br><br>मजिस्ट्रेट</div></div>
-<div class="seal">न्यायालय की मुहर</div></div>`;
+  // ══ BW (BW.xlsx exact match) ══
+  if(type==='bw') return `<div class="pg">
+<table><tr><td>BW-</td>${rbox}</tr></table>
+<br>
+<table>
+<tr><td><b>${nm}</b></td><td>पुत्र</td><td><b>${fn}</b></td></tr>
+<tr><td>निवासी -</td><td colspan="2">${vl}</td></tr>
+<tr><td>थाना</td><td colspan="2">${th}</td></tr>
+<tr><td>जिला</td><td colspan="2">${dt}</td></tr>
+</table>
+</div>`;
 
-  if(type==='p82')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">H.C.J. Form No. 58, Part VIII</p></div>
-<h2>अभियुक्त व्यक्ति की उपसंजाति के लिए अपेक्षा करने वाली उद्घोषणा</h2>
-<h3>(धारा 82, अनुसूची 5, प्रपत्र संख्या 4)</h3>
-<p class="tc b">न्यायालय — मैजिस्ट्रेट ACJM, BAGHPAT कोटि जिला</p><hr>
+  // ══ NBW — गिरफ्तारी का अधिपत्र (NBW.xlsx exact match) ══
+  if(type==='nbw') return `<div class="pg">
+<p>हिन्दी उच्च न्या ० प्रारूप संख्या -2 भाग , संख्या -8</p>
+<table><tr><td><b>गिरफ्तारी का अधिपत्र</b></td>${rbox}</tr></table>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>( धारा 75 , अनुसूची 5 , प्रपत्र संख्या 2 )</p>
+<p>न्यायालय, ACJM, BAGHPAT</p>
+<p>मजिस्ट्रेट कोटि जिला</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<hr>
+<table>
+<tr><td width="5%">1</td><td><b>${nm}</b></td><td>पुत्र</td><td><b>${fn}</b></td></tr>
+</table>
+<p>&nbsp;चूँकि</p>
+<p>जाति व्यवसाय</p>
+<table>
+<tr><td>निवासी -</td><td>${vl}</td><td>थाना</td><td>${th}</td></tr>
+<tr><td>जिला</td><td colspan="3">${dt}</td></tr>
+</table>
+<p>${sec} के अपराध में आरोपित हो, अतएव आपको एतद्वारा निर्दिष्ट &nbsp;किया जाता है कि आप उक्त</p>
+<table>
+<tr><td><b>${nm}</b></td><td><b>${fn}</b></td><td>&nbsp;को गिरफ्तार करके मेरे समक्ष पेश कीजिये। ऐसा करने में त्रुटि न हो।</td></tr>
+</table>
+<div class="sig">
+  <span>सन् 202 ई०के मास के दिवस को दिनांकित</span>
+  <span>हस्ताक्षर</span>
+</div>
+<br>
+<div class="sig">
+  <span>हस्ताक्षर</span>
+  <span>&nbsp;मजिस्ट्रेट</span>
+</div>
+<p style="margin-top:20px;">न्यायालय की मुहर</p>
+<p class="note">(1) यहां उस व्यक्ति या उन व्याक्तियों के नाम और पदांकन, जिसकी या जिनको कि अधिकृत निष्फल करता है , लिखना चाहिए ।</p>
+</div>`;
+
+  // ══ 82 — उद्घोषणा (82_crpc.xlsx exact match) ══
+  if(type==='p82') return `<div class="pg">
+<p>H.C.J. Form No. 58 , Part VIII</p>
+<p>अभियुक्त व्यक्ति की उपसंजाति के लिए अपेक्षा करने वाली उद्घोषणा</p>
+<p>(धारा 82 , अनुसूची 5 प्रपत्र संख्या 4 )</p>
+<table><tr><td>न्यायालय</td>${rbox}</tr></table>
+<p>मैजिस्ट्रेट ACJM, BAGHPATकोटि जिला</p>
+<hr>
 <p>चूंकि मेरे समक्ष परिवाद किया गया है कि</p>
-<p><span class="sn">1</span><b>${nm}</b> पुत्र <b>${fn}</b></p><p>जाति व्यवसाय</p>
-<p>निवासी— ${vl} &nbsp;&nbsp; थाना— ${th} &nbsp;&nbsp; जिला— ${dist}</p>
-<p>द्वारा भारतीय दण्ड संहिता की धारा <b>${sec}</b> के अधीन दण्डनीय किया गया अपराध <b>${sec}</b> (1) है और तदुपरि निकाले गये गिरफ्तारी के किये जाने का संदेह किया जाता है, अधिपत्र को यह लिख कर लौटा दिया गया है कि उक्त को पाया नहीं जा सका है।</p>
-<p>चूंकि मुझको समाधानप्रद रूप में यह संदर्शित कर दिया — <b>${nm}</b> पुत्र <b>${fn}</b> अपलायन कर गया है / उक्त अधिपत्र की तामील से बचने के लिये अपने को छिपा रहा है।</p>
-<p>अतएव एतद्द्वारा उद्घोषणा की जाती है कि <b>${nm}</b> निवासी ${vl} से यह अपेक्षा की जाती है कि वह दिनांक <b>${fd}</b> को ACJM न्यायालय में मेरे समक्ष परिवाद का उत्तर देने के लिये उपस्थित हों।</p>
-<div class="sig"><div>सन् 20&nbsp;&nbsp; ई० के &emsp; मास के &emsp; दिवस को दिनांकित।</div><div class="sig-r">हस्ताक्षर<br><br>मैजिस्ट्रेट।</div></div>
-<div class="seal">न्यायालय की मुहर</div>
-<p class="note">(1) जिनकी आवश्यकता न हो, उनको काट देना चाहिए।</p></div>`;
+<table>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><b>${nm}</b></td><td><b>${fn}</b></td></tr>
+</table>
+<p>जातिव्यवसाय</p>
+<table>
+<tr><td>&nbsp;निवासी&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>${vl}</td><td>थाना</td><td>${th}</td></tr>
+<tr><td>जिला-</td><td colspan="3">${dt}</td></tr>
+</table>
+<p>&nbsp;&nbsp;&nbsp;द्वारा भारतीय दण्ड संहिता की धारा</p>
+<p>के अधीन दण्डनीय</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;किया गया</p>
+<table>
+<tr><td>अपराध</td><td>${sec}</td><td>&nbsp;(1) &nbsp;है और तदुपरि निकाले गये गिरफ्तारी</td></tr>
+</table>
+<p>&nbsp;के किये जाने का संदेह किया जाता</p>
+<p>अधिपत्र को यह लिख कर लौटा दिया गया है कि उक्त</p>
+<p>&nbsp;को पाया नहीं जा सका है और चूंकि मुझको समाधानप्रद रूप में यह संदर्शित कर दिया</p>
+<table>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><b>${nm}</b></td><td>पुत्र</td><td><b>${fn}</b></td></tr>
+</table>
+<p>अपपलायन कर गया है गया है कि उक्त</p>
+<p>&nbsp;&nbsp;उक्त अधिपत्र की तामील से बचने के लिये अपने को छिपा रहा है।</p>
+<p>&nbsp;&nbsp;अतएव एतद्द्वारा उद्घघोषणा की जाती है कि &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;निवासी</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;से यह अपेक्षा की जाती है कि वह दिनांक</p>
+<p>ACJMइस न्यायालय में</p>
+<p>मास सन् 20 2 ई ० उक्त</p>
+<p>&nbsp;मेरे समक्ष &nbsp;&nbsp;परिवाद का उत्तर देने के लिये उपस्थित हों ।</p>
+<div class="sig">
+  <span>सन् 20 2 ई ० के मास के</span>
+  <span>&nbsp;हस्ताक्षर</span>
+</div>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;दिवस को दिनांकित।</p>
+<div style="text-align:right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मैजिस्ट्रेट।</div>
+<p style="margin-top:20px;">न्यायालय की मुहर &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p class="note">&nbsp;(1 ) इस स्थान पर तथा अन्य स्थानो पर जो शब्द लकीर के उपर अथवा नीचे लिखे है</p>
+<p class="note">&nbsp;उनमे से जिनकी आवश्यकता न हो, उनको काट देना चाहिए।</p>
+</div>`;
 
-  if(type==='k83')return`<div class="pg"><div class="clr">${rhs}<p class="tc b">IL.C.J. Form No. VIII-54</p></div>
-<h2>हुक्म कुर्की बग़रज़ एज़हार बिलजब शख्स मुलज़िम के</h2>
-<h3>(दफा 83, जमीमा 5, नमुना न 06)</h3>
-<p class="tc b">अदालत ACJM, BAGHPAT — मजिस्ट्रेट दर्जा जिला</p><hr>
-<p>बनाम (1) <b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>हरगाह हमारे रूबरू नालिश पेश हुई है कि मुसम्मा &nbsp; वल्द काम पेशा</p>
-<p>साकिन ${vl} &nbsp; थाना ${th} &nbsp; जिला ${dist}</p>
-<p>है का इर्तिकाब किया &nbsp; (2) जुर्म <b>${sec}</b> के इतिकाब का शुबह किया गया</p>
-<p>सजा मजमुआ पर ताजोरात हिन्द को दफा में मुकर्रर है और कैफियत तामील वारन्ट से जो बरतर्बक नालिश मजकूर के जारी हुआ था, यह दरयाफ्त हुआ कि मुसम्मा मजकूर दस्तयाब नहीं हो सकता है। हसव इतमीनान हमारे यह अब साबित हुआ है कि मुसम्मा मजकूर फरार हो गया। है और बाद वारन्ट मजकूर की तामील से बचने के लिये रुपोश इश्तिहार हस्ब जाब्ता इस हुख्म से जारी और मुश्तहिर किया गया था कि मुसम्मा <b>${nm}</b> पुत्र <b>${fn}</b></p>
-<p>मजकूर मियाद रोज के अन्दर हाजिर होकर इल्जाम मजकूर की जवाबदेही करे और हरगाह मुसम्मा मजकूर के कब्जे में जायदाद मुफस्सिला जिल अलावा आराजी मालगुजारी कस्बा जिला में बानी मौजा मौजूद है और उसकी कुर्की का हुक्म हो चुका है।</p>
-<p>लिहाजा बजरिये इस तहरीर के तुमको हुक्म दिया जाता है जायदाद मजकूर को बजरिये अपने कब्जे में लाने के लिये कुर्क करो और ता सुदूर हुक्म सानी इस अदालत के ज़ेर कुर्की रक्खो और इस बारन्ट को मय इबारत जोहरी मुश्तर तस्दीक तरीके तामील वारन्ट के वापस करो।</p>
-<div class="sig"><div>मुवर्रिखा माह सन् 20&nbsp;&nbsp; ई०</div><div class="sig-r">दस्तखत<br><br>मैजिस्ट्रेट</div></div>
-<div class="seal">अदालत की मुहर</div>
-<p class="note">(1) यहां नाम आहदा उस शख्स या उन अशखास का, जिसको या जिनको हुक्म की तामील सुपुर्द हो, तहरीर करना चाहिए।</p></div>`;
+  // ══ 83 — हुक्म कुर्की (83_crpc.xlsx exact match) ══
+  if(type==='k83') return `<div class="pg">
+<p>IL.C.J.Form No. VIII - 54 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<table><tr><td>हुक्म कुर्की बग़रज़ एज़हार बिलजब शख्स मुलज़िम के</td>${rbox}</tr></table>
+<p>( दफा 83, जमीमा5, नमुना न 06 )</p>
+<p>अदालत ACJM , BAGHPAT</p>
+<p>मजिस्ट्रट दर्जाजिला</p>
+<hr>
+<table>
+<tr><td>बनाम ( 1 )</td><td><b>${nm}</b></td><td>पुत्र</td><td><b>${fn}</b></td></tr>
+</table>
+<p>हरगाह हमारे रूबरू नालिश पेश हुई है कि मुसम्मा</p>
+<p>वल्द कामपेशा</p>
+<table>
+<tr><td>साकिन</td><td>${vl}</td><td>थाना</td><td>${th}</td></tr>
+<tr><td>जिला</td><td colspan="3">${dt}</td></tr>
+</table>
+<p>है का इर्तिकाब किया</p>
+<table>
+<tr><td>( 2 ) जुर्म</td><td>${sec}</td></tr>
+</table>
+<p>के इतिकाब का शुबह किया गया</p>
+<p>सजा मजमुआ पर</p>
+<p>ताजोरात हिन्द को दफा मे मुकर्रर है और कैफियत तामील</p>
+<p>वारन्ट से जो बरतर्बक नालिश मजकूर के जारी हुआ था, यह दरयाफ्त हुआ कि &nbsp;मुसम्मा &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मजकूर दस्तयाब नही हो सकता </p>
+<p>है और हरगाह</p>
+<p>हसव इतमीनान हमारे यह अब साबित हुआ है कि मुसम्मा मजकूर &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;फरार हो गया।</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;है और बाद</p>
+<p>&nbsp;&nbsp;वारन्ट मजकूर की तामील से बचने के लिये रुपोश इश्तिहार हस्ब जाब्ता इस हुख्म से जारी और मुश्तहिर किया गया था कि</p>
+<table>
+<tr><td>मुसम्मा &nbsp;&nbsp;&nbsp;</td><td><b>${nm}</b></td><td>पुत्र</td><td><b>${fn}</b></td></tr>
+</table>
+<p>मजकूर मियाद &nbsp;रोज के &nbsp;न्दर हाज़िर होकर इल्ज़ाम मजकूर की जवाबदेही करे </p>
+<p>और हरगाह मुसम्मा मजकूर के कब्जे में जायदाद मुफस्सिले र्जुल अलावा आराजी मालगुजारी</p>
+<p>कस्बाजिलामे बानीमौजा</p>
+<p>मौजूद है और उसकी कुर्की का हुक्म हो चुका है। लिहाजा बजरिये इस तहरीर के तुमको हुक्म दिया जाता है</p>
+<p>जायदाद मजकूर को बजरिये अपने कब्जे में लाने के लिये कुर्क करो और ता सुदूर हुक्म सानी इस अदालत के ज़ेर कुर्की रक्खा</p>
+<div class="sig">
+  <span>&nbsp;और इस बारन्ट को मय इबारत जोहरी मुश्तर तस्दीक तरीके तामील वारन्ट के वापस करो ।</span>
+  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;दस्तखत&nbsp;&nbsp;&nbsp;&nbsp;</span>
+</div>
+<p>मूवर्रिखा माह सन् 202 ई०</p>
+<div style="text-align:right;">&nbsp;&nbsp;मैजिस्ट्रेट</div>
+<p style="margin-top:20px;">अदालत की मुहर</p>
+<p class="note">(1 ) यहां नाम आहदा उस शख्स या उन अशखास का , जिसको या जिनको हुक्म की तामील सुपुदं हो , तहरीर करना चाहिए ।</p>
+</div>`;
+
   return'';
 }
 
@@ -505,7 +497,6 @@ function sv(iid,btn){
   rec.start();toast('🎤 Bol rahe hain...',3000);
 }
 
-// ── Start ──
 loadLib();
 </script>
 </body>
