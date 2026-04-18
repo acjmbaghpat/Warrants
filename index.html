@@ -674,39 +674,44 @@ function genD(){
   }
   const c=cc;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'';
-  const wb={SheetNames:[],Sheets:{}};
   const DOC_NAMES={summon:'Summon',bw:'BW',nbw:'NBW',p82:'82-CRPC',k83:'83-CRPC'};
-  let sheetIdx=0;
+  const jobs=[];
   sA.forEach(acc=>{
     sD.forEach(dt=>{
-      sheetIdx++;
-      const sheetName=DOC_NAMES[dt]+(sA.length>1?'_'+acc.name.substring(0,6):'');
-      const safeNm=sheetName.replace(/[:\\\/\?\*\[\]]/g,'').substring(0,31);
+      jobs.push({acc,dt});
+    });
+  });
+  if(!jobs.length){toast('❌ Document generate nahi hua');return;}
+  // Each doc downloaded as separate file — template workbook used directly so bold/styles preserved
+  let downloaded=0;
+  jobs.forEach(({acc,dt},i)=>{
+    setTimeout(()=>{
       try{
         const tmplWb=XLSX.read(TMPL[dt],{type:'base64',cellStyles:true,bookSST:false});
         const tmplWs=tmplWb.Sheets[tmplWb.SheetNames[0]];
         fillCells(tmplWs,dt,c,acc,fd);
-        // Copy styles from template so bold/underline formatting is preserved in output
-        if(!wb.Styles && tmplWb.Styles) wb.Styles=tmplWb.Styles;
-        if(!wb.SSF && tmplWb.SSF) wb.SSF=tmplWb.SSF;
-        wb.SheetNames.push(safeNm);
-        wb.Sheets[safeNm]=tmplWs;
-      }catch(e){console.error('Sheet error:',e);}
-    });
+        const sheetName=(DOC_NAMES[dt]+(jobs.length>1?'_'+acc.name.substring(0,8):'')).replace(/[:\\\/\?\*\[\]]/g,'').substring(0,31);
+        // Rename sheet in template workbook
+        const origName=tmplWb.SheetNames[0];
+        if(origName!==sheetName){
+          tmplWb.Sheets[sheetName]=tmplWb.Sheets[origName];
+          delete tmplWb.Sheets[origName];
+          tmplWb.SheetNames=[sheetName];
+        }
+        const out=XLSX.write(tmplWb,{bookType:'xlsx',type:'array',cellStyles:true});
+        const blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;
+        a.download=c.caseNo.replace(/\//g,'_')+'_'+sheetName+'.xlsx';
+        a.style.display='none';
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        setTimeout(()=>URL.revokeObjectURL(url),15000);
+        downloaded++;
+        if(downloaded===jobs.length) toast('📥 '+downloaded+' file(s) download ho rahi hai — open karke Print karo',3500);
+      }catch(e){toast('❌ Excel error: '+e.message);console.error(e);}
+    }, i*600);
   });
-  if(!wb.SheetNames.length){toast('❌ Document generate nahi hua');return;}
-  try{
-    const out=XLSX.write(wb,{bookType:'xlsx',type:'array',cellStyles:true});
-    const blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;
-    a.download=(c.caseNo.replace(/\//g,'_')+'_'+sD.map(function(d){return{summon:'Summon',bw:'BW',nbw:'NBW',p82:'82-CRPC',k83:'83-CRPC'}[d]||d;}).join('_')+'.xlsx');
-    a.style.display='none';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(url),10000);
-    toast('📥 Excel download ho rahi hai — open karke Print karo',3500);
-  }catch(e){toast('❌ Excel error: '+e.message);console.error(e);}
 }
 
 // Fill variable cells in worksheet — exact cell mapping from original Excel files
@@ -822,7 +827,6 @@ function bP(type,c,acc,fd){
   // Right side box — same across all forms
   const rbox=`<td width="35%" class="rbox">
 Case No-${cn}<br>
-स- ${nm}<br>
 u/s-${sec}<br>
 ${cc2?`CC- ${cc2}<br>`:''}
 PS- :&nbsp;&nbsp;&nbsp;${R(c.ps)}<br>
