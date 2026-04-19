@@ -725,18 +725,45 @@ function fillCells(ws,type,c,acc,fd){
   const cn=c.caseNo||'';
   const cc2=c.ccNo||'';
 
-  var BU = {font:{bold:true,underline:true,sz:11,name:'Calibri'}};
+  var WT = {alignment:{wrapText:true,vertical:'top'}};
+  var BU = {font:{bold:true,underline:true,sz:11,name:'Calibri'},alignment:{wrapText:true,vertical:'top'}};
+  // Merge wrap+bold into existing cell style
+  function mergeStyle(base,extra){
+    if(!base) return extra;
+    return Object.assign({},extra,base,{
+      alignment:Object.assign({},extra.alignment||{},base.alignment||{},{wrapText:true,vertical:'top'}),
+      font:Object.assign({},extra.font||{},base.font||{})
+    });
+  }
   function set(coord,val,style){
-    if(ws[coord]){
-      ws[coord].v=val;ws[coord].w=val;
-      // Preserve template's existing style (bold etc.) — only apply if no existing style
-      if(style && !ws[coord].s) ws[coord].s=style;
-    }
-    else{ws[coord]={v:val,w:val,t:'s',s:style||undefined};}
+    var ex=ws[coord]?ws[coord].s:null;
+    var merged=mergeStyle(ex, style||WT);
+    if(ws[coord]){ws[coord].v=val;ws[coord].w=val;ws[coord].s=merged;}
+    else{ws[coord]={v:val,w:val,t:'s',s:merged};}
   }
   function setBU(coord,val){
-    if(ws[coord]){ws[coord].v=val;ws[coord].w=val;ws[coord].s=BU;}
-    else{ws[coord]={v:val,w:val,t:'s',s:BU};}
+    var ex=ws[coord]?ws[coord].s:null;
+    var merged=mergeStyle(ex,BU);
+    if(ws[coord]){ws[coord].v=val;ws[coord].w=val;ws[coord].s=merged;}
+    else{ws[coord]={v:val,w:val,t:'s',s:merged};}
+  }
+  // After filling all cells, set row heights for wrap and enable sheet-level wrap
+  function applyWrapRows(){
+    var ref=ws['!ref'];
+    if(!ref) return;
+    // Set all rows to auto-height (hpt=height in points, 0=auto not supported, use generous default)
+    var range=XLSX.utils.decode_range(ref);
+    if(!ws['!rows']) ws['!rows']=[];
+    for(var r=range.s.r;r<=range.e.r;r++){
+      if(!ws['!rows'][r]) ws['!rows'][r]={};
+      ws['!rows'][r].hpt=ws['!rows'][r].hpt?Math.max(ws['!rows'][r].hpt,36):36;
+    }
+    // Widen columns that hold name/address data
+    if(!ws['!cols']) ws['!cols']=[];
+    for(var col=2;col<=6;col++){
+      if(!ws['!cols'][col]) ws['!cols'][col]={};
+      ws['!cols'][col].wpx=ws['!cols'][col].wpx?Math.max(ws['!cols'][col].wpx,160):160;
+    }
   }
 
   if(type==='summon'){
@@ -813,6 +840,7 @@ function fillCells(ws,type,c,acc,fd){
     setBU('C24', nm);
     setBU('E24', fn);
   }
+  applyWrapRows();
 }
 
 
