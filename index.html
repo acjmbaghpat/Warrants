@@ -444,58 +444,159 @@ function doLogout() {
   CURRENT_USER = null;
   localStorage.removeItem('last_user');
   goS('s0');
-  // Stop sync
-  if (_fbRef) { _fbRef.off(); _fbRef = null; }
+  if (_fbRef)    { try{_fbRef.off();}catch(_){} _fbRef = null; }
+  if (_fbIdxRef) { try{_fbIdxRef.off();}catch(_){} _fbIdxRef = null; }
+  if (_fbDictRef){ try{_fbDictRef.off();}catch(_){} _fbDictRef = null; }
 }
 
 // ════════════════════════════════════════════════════════
 // FIREBASE SYNC — real-time shared database
 // ════════════════════════════════════════════════════════
 // LS already defined above
-let _fbRef = null;
+// ════════════════════════════════════════════════════════
+// FIREBASE SYNC v2 — Incremental + Index-based
+// Firebase structure:
+//   cases/{key}   = full case object (~1KB)
+//   idx/{key}     = lightweight index {cn,nm,sec,ps,sat,sbn} (~100B)
+//   dict          = shared dictionary
+// localStorage:
+//   cpf5_{caseNo} = cached full case (recent 500)
+//   cpf5_idx_*    = cached index entries
+//   fb_last_sync  = timestamp of last successful sync
+// ════════════════════════════════════════════════════════
+let _fbRef = null, _fbIdxRef = null, _fbDictRef = null;
+const IDX_LS = 'cpf5_idx_';
+const SYNC_TS_KEY = 'fb_last_sync';
+const MAX_LS_CASES = 500; // evict oldest if over this
 
-function startFBSync() {
-  if (!FB_OK || !CURRENT_USER) return;
-  startDictSync();
-  _fbRef = fbDb.ref('cases');
-  // Listen for all case changes
-  _fbRef.on('value', snap => {
-    if (!snap.exists()) return;
-    const all = snap.val() || {};
-    Object.entries(all).forEach(([key, caseData]) => {
-      if (caseData && caseData.caseNo) {
-        localStorage.setItem(LS + caseData.caseNo, JSON.stringify(caseData));
+function fbKey(caseNo){ return (caseNo||'').replace(/[.#$[\]/]/g,'_'); }
+
+// ── Save to localStorage with quota guard ──
+function lsSafe(key, val){
+  try{ localStorage.setItem(key,val); return true; }
+  catch(e){
+    // Quota exceeded — evict 50 oldest cpf5_ entries
+    try{
+      var pairs=[];
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k&&k.startsWith(LS)){
+          try{ var d=JSON.parse(localStorage.getItem(k)); pairs.push({k:k,t:d.savedAt||d.updatedAt||''}); }catch(_){}
+        }
       }
-    });
-    showSaved();
-    _poolLoaded = false; // refresh name autocomplete pool
-  }, err => {
-    console.warn('FB sync error:', err);
+      pairs.sort(function(a,b){return a.t<b.t?-1:1;});
+      // Never evict dict or idx — only full case objects
+      pairs.filter(function(p){return !p.k.startsWith(IDX_LS);}).slice(0,50).forEach(function(p){localStorage.removeItem(p.k);});
+      localStorage.setItem(key,val);
+      return true;
+    }catch(e2){ return false; }
+  }
+}
+
+// ── Write index entry from case object ──
+function idxEntry(o){
+  return JSON.stringify({
+    cn:o.caseNo, nm:(o.accused&&o.accused[0]?o.accused[0].name:''),
+    sec:o.section||'', ps:o.ps||'', sat:o.savedAt||o.updatedAt||new Date().toISOString(),
+    sbn:o.savedByName||''
   });
 }
 
-// ── Override lsS to also save to Firebase ──
+// ── Save case locally + Firebase (full + index) ──
 function lsS(o) {
   try {
-    // Add who saved it
-    if (CURRENT_USER) {
-      o.savedBy = CURRENT_USER.username;
-      o.savedByName = CURRENT_USER.displayName;
-    }
-    localStorage.setItem(LS + o.caseNo, JSON.stringify(o));
-    // Update smart dictionary
+    if (CURRENT_USER) { o.savedBy=CURRENT_USER.username; o.savedByName=CURRENT_USER.displayName; }
+    if(!o.savedAt) o.savedAt = new Date().toISOString();
+    lsSafe(LS + o.caseNo, JSON.stringify(o));
+    lsSafe(IDX_LS + o.caseNo, idxEntry(o));
     updateDictFromCase(o);
-    // Also push to Firebase
     if (FB_OK && CURRENT_USER) {
-      const key = o.caseNo.replace(/[.#$[\]/]/g, '_');
-      fbDb.ref('cases/' + key).set(o).catch(e => console.warn('FB save fail:', e));
+      const k = fbKey(o.caseNo);
+      fbDb.ref('cases/'+k).set(o).catch(e=>console.warn('FB save fail:',e));
+      fbDb.ref('idx/'+k).set(JSON.parse(idxEntry(o))).catch(e=>console.warn('FB idx fail:',e));
     }
     return true;
   } catch(e) { toast('❌ Save fail'); return false; }
 }
 
+// ── Load case: localStorage first, else fetch Firebase ──
 function lsL(k) {
-  try { const s = localStorage.getItem(LS + k); return s ? JSON.parse(s) : null; } catch(e) { return null; }
+  try{ var s=localStorage.getItem(LS+k); if(s) return JSON.parse(s); } catch(e){}
+  return null; // caller will fetch from FB if null
+}
+
+async function lsLOrFB(caseNo) {
+  var local = lsL(caseNo);
+  if(local) return local;
+  if(!FB_OK) return null;
+  try{
+    var snap = await fbDb.ref('cases/'+fbKey(caseNo)).get();
+    if(snap.exists()){
+      var d=snap.val();
+      lsSafe(LS+caseNo, JSON.stringify(d));
+      return d;
+    }
+  }catch(e){ console.warn('FB fetch fail:',e); }
+  return null;
+}
+
+// ── Incremental sync: only new/changed since last sync ──
+function startFBSync() {
+  if (!FB_OK || !CURRENT_USER) return;
+  startDictSync();
+
+  // 1. Index listener — child_added + child_changed (lightweight, always on)
+  _fbIdxRef = fbDb.ref('idx');
+  _fbIdxRef.on('child_added', snap=>{
+    var d=snap.val(); if(!d||!d.cn) return;
+    lsSafe(IDX_LS+d.cn, JSON.stringify(d));
+    _poolLoaded=false;
+  });
+  _fbIdxRef.on('child_changed', snap=>{
+    var d=snap.val(); if(!d||!d.cn) return;
+    lsSafe(IDX_LS+d.cn, JSON.stringify(d));
+    // Invalidate full case cache so fresh fetch happens next time
+    localStorage.removeItem(LS+d.cn);
+    _poolLoaded=false;
+  });
+
+  // 2. Full case sync — only recent cases (last 60 days) pulled automatically
+  //    Older cases fetched on-demand via lsLOrFB when user taps them
+  //    idx listener above handles listing/search for all cases
+  var cutoff = new Date(Date.now() - 60*24*60*60*1000).toISOString();
+  var lastSync = localStorage.getItem(SYNC_TS_KEY);
+  // Use whichever is more recent: 60 days ago OR last stored sync time
+  var syncFrom = lastSync && lastSync > cutoff ? lastSync : cutoff;
+
+  _fbRef = fbDb.ref('cases');
+  var _caseAddedQ = _fbRef.orderByChild('savedAt').startAt(syncFrom);
+  var _caseChangedQ = _fbRef.orderByChild('updatedAt').startAt(syncFrom);
+
+  _caseAddedQ.on('child_added', snap=>{
+    var d=snap.val(); if(!d||!d.caseNo) return;
+    lsSafe(LS+d.caseNo, JSON.stringify(d));
+    lsSafe(IDX_LS+d.caseNo, idxEntry(d));
+    updateDictFromCase(d);
+  }, err=>console.warn('FB cases sync err:',err));
+
+  _caseChangedQ.on('child_changed', snap=>{
+    var d=snap.val(); if(!d||!d.caseNo) return;
+    lsSafe(LS+d.caseNo, JSON.stringify(d));
+    lsSafe(IDX_LS+d.caseNo, idxEntry(d));
+    // Bust pool cache so updated names appear in suggestions
+    _poolLoaded=false;
+  });
+
+  // Store refs for cleanup on logout
+  _fbRef._addedQ  = _caseAddedQ;
+  _fbRef._changedQ = _caseChangedQ;
+
+  // Update lastSync every 5 min
+  localStorage.setItem(SYNC_TS_KEY, new Date().toISOString());
+  setInterval(()=>localStorage.setItem(SYNC_TS_KEY, new Date().toISOString()), 300000);
+
+  // 3. Refresh UI after brief delay (idx will have loaded by then)
+  setTimeout(()=>{ showSaved(); _poolLoaded=false; }, 2500);
 }
 
 // ════════════════════════════════════════════════════════
@@ -504,32 +605,47 @@ function lsL(k) {
 function showSaved() {
   const sl = el('saved-list');
   if (!sl) return;
-  const keys = [];
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith(LS)) keys.push(k);
+  // Collect index entries (lightweight — just {cn,nm,sec,ps,sat,sbn})
+  var idxEntries=[];
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&k.startsWith(IDX_LS)){
+        try{var d=JSON.parse(localStorage.getItem(k));if(d&&d.cn)idxEntries.push(d);}catch(_){}
+      }
     }
-  } catch(e) {}
-  if (!keys.length) { sl.innerHTML = ''; return; }
-  keys.sort();
-  let html = '<div class="sl-hdr">📁 Saved Cases (' + keys.length + ')</div>';
-  keys.forEach(k => {
-    try {
-      const d = JSON.parse(localStorage.getItem(k));
-      if (!d) return;
-      const names = d.accused ? d.accused.map(a => a.name).filter(Boolean).join(', ') : '';
-      const savedInfo = d.savedByName ? ' • ' + d.savedByName : '';
-      html += '<div class="si" data-cn="' + d.caseNo + '" onclick="onCaseNo(this.dataset.cn)">'
-        + '<div class="si-info">'
-        + '<div class="si-cn">' + d.caseNo + '</div>'
-        + '<div class="si-nm">' + names + (d.section ? ' | ' + d.section : '') + savedInfo + '</div>'
-        + '</div>'
-        + '<span class="si-arr">›</span>'
-        + '</div>';
-    } catch(e) {}
+  }catch(e){}
+  // Also scan full cases not yet indexed
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&k.startsWith(LS)){
+        var cn=k.slice(LS.length);
+        if(!idxEntries.find(function(x){return x.cn===cn;})){
+          try{var d=JSON.parse(localStorage.getItem(k));
+            if(d&&d.caseNo)idxEntries.push({cn:d.caseNo,nm:(d.accused&&d.accused[0]?d.accused[0].name:''),sec:d.section||'',ps:d.ps||'',sat:d.savedAt||'',sbn:d.savedByName||''});}
+          catch(_){}
+        }
+      }
+    }
+  }catch(e){}
+  if(!idxEntries.length){sl.innerHTML='';return;}
+  // Sort newest first
+  idxEntries.sort(function(a,b){return (b.sat||'')>(a.sat||'')?1:-1;});
+  var total=idxEntries.length;
+  // Show last 30 in list, rest accessible via "सब" screen
+  var show=idxEntries.slice(0,30);
+  var html='<div class="sl-hdr">📁 Saved Cases ('+total+')'+(total>30?' &nbsp;<span style="font-size:10px;font-weight:400;color:var(--text3);">— latest 30 dikh rahe, sab ke liye 📚 dabao</span>':'')+'</div>';
+  show.forEach(function(d){
+    html+='<div class="si" data-cn="'+esc(d.cn)+'" onclick="onCaseNo(this.dataset.cn)">'
+      +'<div class="si-info">'
+      +'<div class="si-cn">'+esc(d.cn)+'</div>'
+      +'<div class="si-nm">'+(d.nm||'—')+(d.sec?' | '+esc(d.sec):'')+(d.sbn?' • '+esc(d.sbn):'')+'</div>'
+      +'</div>'
+      +'<span class="si-arr">›</span>'
+      +'</div>';
   });
-  sl.innerHTML = html;
+  sl.innerHTML=html;
 }
 
 // ════════════════════════════════════════════════════════
@@ -619,7 +735,27 @@ function stopScan(){if(scanner&&scanning){scanner.stop().catch(()=>{});scanning=
 function parseQR(r){if(!r)return null;const t=r.trim();const pp=[/Case\s*No[.\-:]*\s*([0-9]+[\/\-][0-9]+)/i,/No[.\-:]+([0-9]+[\/\-][0-9]+)/i,/([0-9]{2,6}\/[0-9]{2,4})/,/^([0-9]+[\/\-][0-9]+)$/];for(const p of pp){const m=t.match(p);if(m&&m[1])return m[1].replace('-','/');}return t.length<=20&&t.length>=3?t:null;}
 
 // ── Navigation ──
-function onCaseNo(cn){if(!cn){toast('Case No. daalo');return;}cn=cn.trim();stopScan();const ex=lsL(cn);if(ex){cc=ex;rF();goS('s3');}else{loadNF(cn);goS('s2');}}
+function onCaseNo(cn){
+  if(!cn){toast('Case No. daalo');return;}
+  cn=cn.trim();stopScan();
+  var ex=lsL(cn);
+  if(ex){cc=ex;rF();goS('s3');return;}
+  // Not in localStorage — try Firebase
+  if(FB_OK){
+    toast('🔄 Firebase se fetch ho raha hai...');
+    fbDb.ref('cases/'+fbKey(cn)).get().then(function(snap){
+      if(snap.exists()){
+        var d=snap.val();
+        lsSafe(LS+cn,JSON.stringify(d));
+        cc=d;rF();goS('s3');
+      } else {
+        loadNF(cn);goS('s2');
+      }
+    }).catch(function(){loadNF(cn);goS('s2');});
+  } else {
+    loadNF(cn);goS('s2');
+  }
+}
 function goS1(){goS('s1');el('mi').value='';if(scanReady)sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');showSaved();}
 
 // ── Accused ──
@@ -1258,11 +1394,40 @@ function msSearch(val){
   val=(val||'').trim();
   var box=el('ms-sug'); if(!box)return;
   if(!val){hideMsSuggest();return;}
-  var matches=[];
-  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith(LS)){var d=JSON.parse(localStorage.getItem(k));if(d&&d.caseNo&&d.caseNo.toLowerCase().indexOf(val.toLowerCase())>=0)matches.push(d);}}}catch(e){}
-  var html=matches.slice(0,6).map(function(d){var nm=d.accused?d.accused.map(function(a){return a.name;}).filter(Boolean).join(', '):'';
-    return '<div class="sug-item" onmousedown="hideMsSuggest();onCaseNo(\''+d.caseNo+'\')"><span class="sug-main">'+d.caseNo+'</span><span class="sug-sub">'+nm+(d.section?' | '+d.section:'')+'</span></div>';}).join('');
-  html+='<div class="sug-item sug-new" onmousedown="hideMsSuggest();loadNF(\''+val+'\');goS(\'s2\')"><span class="sug-main">➕ नया मुकदमा: '+val+'</span><span class="sug-sub">इस Case No. से नया बनाएं</span></div>';
+  var vl=val.toLowerCase();
+  var seen={}, matches=[];
+  // 1. Full cases in localStorage
+  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+    if(k&&k.startsWith(LS)&&!k.startsWith(IDX_LS)){
+      var d=JSON.parse(localStorage.getItem(k));
+      if(d&&d.caseNo&&(d.caseNo.toLowerCase().indexOf(vl)>=0||
+        (d.accused&&d.accused.some(function(a){return (a.name||'').toLowerCase().indexOf(vl)>=0;})))){
+        if(!seen[d.caseNo]){matches.push({cn:d.caseNo,nm:(d.accused&&d.accused[0]?d.accused[0].name:''),sec:d.section||''});seen[d.caseNo]=1;}
+      }
+    }
+  }}catch(e){}
+  // 2. Idx entries (lightweight — covers cases not fully cached)
+  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+    if(k&&k.startsWith(IDX_LS)){
+      var ix=JSON.parse(localStorage.getItem(k));
+      if(ix&&ix.cn&&!seen[ix.cn]&&(ix.cn.toLowerCase().indexOf(vl)>=0||(ix.nm||'').toLowerCase().indexOf(vl)>=0)){
+        matches.push({cn:ix.cn,nm:ix.nm||'',sec:ix.sec||''});seen[ix.cn]=1;
+      }
+    }
+  }}catch(e){}
+  matches.sort(function(a,b){return a.cn>b.cn?1:-1;});
+  var html=matches.slice(0,8).map(function(d){
+    var div=document.createElement('div');
+    div.className='sug-item';
+    div.innerHTML='<span class="sug-main">'+esc(d.cn)+'</span><span class="sug-sub">'+esc(d.nm)+(d.sec?' | '+esc(d.sec):'')+'</span>';
+    div.addEventListener('mousedown',function(e){e.preventDefault();hideMsSuggest();onCaseNo(d.cn);});
+    return div.outerHTML;
+  }).join('');
+  var newDiv=document.createElement('div');
+  newDiv.className='sug-item sug-new';
+  newDiv.innerHTML='<span class="sug-main">➕ नया मुकदमा: '+esc(val)+'</span><span class="sug-sub">इस Case No. से नया बनाएं</span>';
+  newDiv.addEventListener('mousedown',function(e){e.preventDefault();hideMsSuggest();loadNF(val);goS('s2');});
+  html+=newDiv.outerHTML;
   box.innerHTML=html; box.style.display='block';
 }
 document.addEventListener('click',function(e){if(!e.target.closest('#mswrap'))hideMsSuggest();});
@@ -1511,13 +1676,19 @@ function addCaseToDict(caseObj,dict){
 function loadPool(){
   _poolLoaded=true;
   var dict=getDictFromStorage();
-  // Also scan all localStorage cases (catches any not yet in dict)
   try{
     for(var i=0;i<localStorage.length;i++){
       var k=localStorage.key(i);
-      if(k&&k.startsWith(LS)){
-        var d=JSON.parse(localStorage.getItem(k));
-        addCaseToDict(d,dict);
+      // Full case objects
+      if(k&&k.startsWith(LS)&&!k.startsWith(IDX_LS)){
+        try{var d=JSON.parse(localStorage.getItem(k));addCaseToDict(d,dict);}catch(_){}
+      }
+      // Lightweight idx entries — add name only
+      if(k&&k.startsWith(IDX_LS)){
+        try{
+          var ix=JSON.parse(localStorage.getItem(k));
+          if(ix&&ix.nm&&dict.names.indexOf(ix.nm)<0) dict.names.push(ix.nm);
+        }catch(_){}
       }
     }
   }catch(e){}
@@ -1527,37 +1698,52 @@ function loadPool(){
 
 // Call this every time a case is saved — updates dictionary
 function updateDictFromCase(caseObj){
-  var dict=getDictFromStorage();
-  if(addCaseToDict(caseObj,dict)){
-    saveDictToStorage(dict);
-    _poolLoaded=false; // force pool rebuild on next type
-    // Also push dict to Firebase so all users get updated suggestions
-    if(FB_OK&&CURRENT_USER){
-      fbDb.ref('dict').set(dict).catch(function(){});
-    }
-  }
+  // Fully async — zero impact on save/sync performance
+  setTimeout(function(){
+    try{
+      var dict=getDictFromStorage();
+      if(addCaseToDict(caseObj,dict)){
+        saveDictToStorage(dict);
+        _poolLoaded=false;
+        // Push merged dict to Firebase so all users get updated suggestions
+        if(FB_OK&&CURRENT_USER){
+          fbDb.ref('dict').set(dict).catch(function(){});
+        }
+      }
+    }catch(e){}
+  },0);
 }
 
-// Sync dict FROM Firebase — called in startFBSync
+// Dict syncs both ways — local + Firebase — fully async, no blocking
 function startDictSync(){
-  if(!FB_OK)return;
-  fbDb.ref('dict').on('value',function(snap){
-    if(!snap.exists())return;
-    var fbDict=snap.val();
-    if(!fbDict||!fbDict.names)return;
-    var localDict=getDictFromStorage();
-    var changed=false;
-    ['names','fathers','villages'].forEach(function(key){
-      (fbDict[key]||[]).forEach(function(entry){
-        if(entry&&localDict[key].indexOf(entry)<0){localDict[key].push(entry);changed=true;}
-      });
-    });
-    if(changed){saveDictToStorage(localDict);_poolLoaded=false;}
+  if(!FB_OK) return;
+  // Listen for any dict changes from other users
+  _fbDictRef = fbDb.ref('dict');
+  _fbDictRef.on('value', function(snap){
+    if(!snap.exists()) return;
+    var fbDict = snap.val();
+    if(!fbDict || !fbDict.names) return;
+    // Merge Firebase dict into local async
+    setTimeout(function(){
+      try{
+        var localDict = getDictFromStorage();
+        var changed = false;
+        ['names','fathers','villages'].forEach(function(key){
+          (fbDict[key]||[]).forEach(function(entry){
+            if(entry && localDict[key].indexOf(entry)<0){
+              localDict[key].push(entry);
+              changed = true;
+            }
+          });
+        });
+        if(changed){ saveDictToStorage(localDict); _poolLoaded=false; }
+      }catch(e){}
+    },0);
   });
 }
 
 function acName(inp,type){
-  loadPool();
+  if(!_poolLoaded) loadPool();
   var val=(inp.value||'').trim();
   var key=type==='father'?'fathers':type==='village'?'villages':'names';
   var pool=_namePool[key];
@@ -1768,27 +1954,94 @@ function doOfflineLogin() {
 // ALL DATA SCREEN — searchable view of every accused
 // ══════════════════════════════════════════════════════════
 var _allCases=[];
+var _allIdx=[];    // lightweight index rows for "All Data" screen
 
-function buildAllCases(){
-  _allCases=[];
+function buildAllIdx(){
+  _allIdx=[];
+  var seen={};
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&k.startsWith(IDX_LS)){
+        try{var d=JSON.parse(localStorage.getItem(k));if(d&&d.cn&&!seen[d.cn]){_allIdx.push(d);seen[d.cn]=1;}}catch(_){}
+      }
+    }
+  }catch(e){}
+  // Also scan full cases not yet in idx
   try{
     for(var i=0;i<localStorage.length;i++){
       var k=localStorage.key(i);
       if(k&&k.startsWith(LS)){
-        var d=JSON.parse(localStorage.getItem(k));
-        if(d&&d.accused)_allCases.push(d);
+        var cn=k.slice(LS.length);
+        if(!seen[cn]){
+          try{var d=JSON.parse(localStorage.getItem(k));
+            if(d&&d.caseNo){
+              _allIdx.push({cn:d.caseNo,nm:(d.accused&&d.accused[0]?d.accused[0].name:''),
+                sec:d.section||'',ps:d.ps||'',sat:d.savedAt||'',sbn:d.savedByName||''});
+              seen[cn]=1;
+            }
+          }catch(_){}
+        }
       }
     }
   }catch(e){}
-  // Sort by caseNo desc
-  _allCases.sort(function(a,b){return (b.caseNo||'').localeCompare(a.caseNo||'');});
+  _allIdx.sort(function(a,b){return (b.sat||'')>(a.sat||'')?1:-1;});
+}
+
+// Build _allCases from idx + localStorage (for renderAllData which needs accused array)
+function buildAllCasesFromIdx(){
+  _allCases=[];
+  _allIdx.forEach(function(ix){
+    // Try to get full case from localStorage
+    try{
+      var raw=localStorage.getItem(LS+ix.cn);
+      if(raw){var d=JSON.parse(raw);if(d&&d.accused){_allCases.push(d);return;}}
+    }catch(_){}
+    // Fallback: synthetic case from index entry
+    _allCases.push({caseNo:ix.cn,section:ix.sec,ps:ix.ps,savedAt:ix.sat,savedByName:ix.sbn,
+      accused:[{name:ix.nm,fatherName:'',village:''}]});
+  });
 }
 
 function openAllData(){
-  buildAllCases();
   goS('s6');
   el('ad-q').value='';
-  renderAllData('');
+  el('ad-list').innerHTML='<div class="ad-empty">⏳ Data load ho raha hai...</div>';
+  el('ad-count').textContent='...';
+  buildAllIdx();
+  if(FB_OK && _allIdx.length < 20){
+    // First time or few local entries — fetch full index from Firebase
+    el('ad-stats').textContent='Firebase se data fetch ho raha hai...';
+    fbDb.ref('idx').once('value').then(function(snap){
+      if(snap.exists()){
+        var fbIdx=snap.val()||{};
+        Object.values(fbIdx).forEach(function(d){
+          if(d&&d.cn){lsSafe(IDX_LS+d.cn, JSON.stringify(d));}
+        });
+      }
+      buildAllIdx();
+      buildAllCasesFromIdx();
+      _poolLoaded=false; // refresh suggestions with newly fetched names
+      renderAllData('');
+    }).catch(function(){
+      buildAllCasesFromIdx();
+      renderAllData('');
+    });
+  } else {
+    buildAllCasesFromIdx();
+    renderAllData('');
+    // Refresh from Firebase in background
+    if(FB_OK){
+      fbDb.ref('idx').once('value').then(function(snap){
+        if(!snap.exists()) return;
+        var changed=false;
+        Object.values(snap.val()||{}).forEach(function(d){
+          if(d&&d.cn){lsSafe(IDX_LS+d.cn, JSON.stringify(d));changed=true;}
+        });
+        if(changed){ buildAllIdx(); buildAllCasesFromIdx(); renderAllData(el('ad-q').value); }
+      }).catch(function(){});
+    }
+  }
 }
 
 function renderAllData(q){
@@ -1818,7 +2071,7 @@ function renderAllData(q){
     });
   });
   el('ad-count').textContent=total+' records';
-  el('ad-stats').textContent=qn?('🔍 "'+q+'" — '+total+' मिले'):(_allCases.length+' मुकदमे · '+total+' अभियुक्त');
+  el('ad-stats').textContent=qn?('\U0001f50d "'+q+'" \u2014 '+total+' \u092e\u093f\u0932\u0947'):(_allIdx.length||_allCases.length)+' \u092e\u0941\u0915\u0926\u094d\u092e\u0947 \u00b7 '+total+' \u0905\u092d\u093f\u092f\u0941\u0915\u094d\u0924';
   if(!rows.length){
     list.innerHTML='<div class="ad-empty">'+( qn?'कोई रिकॉर्ड नहीं मिला':'कोई डेटा नहीं — पहले कोई मुकदमा सेव करें')+'</div>';
     return;
