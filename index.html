@@ -180,6 +180,19 @@ body{background:var(--bg);color:var(--text);font-size:15px;}
 .code-box{background:var(--navy);color:#e8f0ff;border-radius:8px;padding:10px 12px;font-family:monospace;font-size:12px;margin-top:8px;line-height:1.7;white-space:pre-wrap;word-break:break-all;}
 .setup-warn{background:rgba(232,101,10,.07);border:1px solid rgba(232,101,10,.18);border-radius:10px;padding:11px 13px;font-size:12px;color:#9a4400;margin-bottom:12px;line-height:1.6;}
 .online-users{background:rgba(26,107,60,.07);border-radius:9px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--green);}
+/* ALL DATA SCREEN */
+.ad-search{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:var(--f);font-size:15px;outline:none;background:var(--white);margin-bottom:0;}
+.ad-search:focus{border-color:var(--navy3);}
+.ad-stats{font-size:11px;color:var(--text3);padding:6px 14px 4px;font-weight:600;}
+.ad-row{display:flex;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--bg2);gap:10px;cursor:pointer;transition:background .12s;}
+.ad-row:active{background:var(--bg2);}
+.ad-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.ad-info{flex:1;min-width:0;}
+.ad-name{font-size:14px;font-weight:700;color:var(--navy);}
+.ad-father{font-size:12px;color:var(--text3);margin-top:1px;}
+.ad-meta{font-size:11px;color:var(--text2);margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;}
+.ad-tag{background:var(--bg2);border-radius:5px;padding:2px 6px;font-size:10px;font-weight:600;color:var(--navy3);}
+.ad-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
 </style>
 
 <!-- Firebase SDK -->
@@ -443,6 +456,7 @@ let _fbRef = null;
 
 function startFBSync() {
   if (!FB_OK || !CURRENT_USER) return;
+  startDictSync();
   _fbRef = fbDb.ref('cases');
   // Listen for all case changes
   _fbRef.on('value', snap => {
@@ -469,6 +483,8 @@ function lsS(o) {
       o.savedByName = CURRENT_USER.displayName;
     }
     localStorage.setItem(LS + o.caseNo, JSON.stringify(o));
+    // Update smart dictionary
+    updateDictFromCase(o);
     // Also push to Firebase
     if (FB_OK && CURRENT_USER) {
       const key = o.caseNo.replace(/[.#$[\]/]/g, '_');
@@ -555,7 +571,7 @@ const TMPL={"summon": "UEsDBBQABgAIAAAAIQDj7BZZXgEAAJkEAAATAAgCW0NvbnRlbnRfVHlwZ
 
 
 
-const SCREENS=['s0','s1','s2','s3','s4','s5'];
+const SCREENS=['s0','s1','s2','s3','s4','s5','s6'];
 function goS(id){
   SCREENS.forEach(s=>{const d=el(s);if(d){d.classList.remove('active');d.style.display='';}});
   const t=el(id);
@@ -725,45 +741,18 @@ function fillCells(ws,type,c,acc,fd){
   const cn=c.caseNo||'';
   const cc2=c.ccNo||'';
 
-  var WT = {alignment:{wrapText:true,vertical:'top'}};
-  var BU = {font:{bold:true,underline:true,sz:11,name:'Calibri'},alignment:{wrapText:true,vertical:'top'}};
-  // Merge wrap+bold into existing cell style
-  function mergeStyle(base,extra){
-    if(!base) return extra;
-    return Object.assign({},extra,base,{
-      alignment:Object.assign({},extra.alignment||{},base.alignment||{},{wrapText:true,vertical:'top'}),
-      font:Object.assign({},extra.font||{},base.font||{})
-    });
-  }
+  var BU = {font:{bold:true,underline:true,sz:11,name:'Calibri'}};
   function set(coord,val,style){
-    var ex=ws[coord]?ws[coord].s:null;
-    var merged=mergeStyle(ex, style||WT);
-    if(ws[coord]){ws[coord].v=val;ws[coord].w=val;ws[coord].s=merged;}
-    else{ws[coord]={v:val,w:val,t:'s',s:merged};}
+    if(ws[coord]){
+      ws[coord].v=val;ws[coord].w=val;
+      // Preserve template's existing style (bold etc.) — only apply if no existing style
+      if(style && !ws[coord].s) ws[coord].s=style;
+    }
+    else{ws[coord]={v:val,w:val,t:'s',s:style||undefined};}
   }
   function setBU(coord,val){
-    var ex=ws[coord]?ws[coord].s:null;
-    var merged=mergeStyle(ex,BU);
-    if(ws[coord]){ws[coord].v=val;ws[coord].w=val;ws[coord].s=merged;}
-    else{ws[coord]={v:val,w:val,t:'s',s:merged};}
-  }
-  // After filling all cells, set row heights for wrap and enable sheet-level wrap
-  function applyWrapRows(){
-    var ref=ws['!ref'];
-    if(!ref) return;
-    // Set all rows to auto-height (hpt=height in points, 0=auto not supported, use generous default)
-    var range=XLSX.utils.decode_range(ref);
-    if(!ws['!rows']) ws['!rows']=[];
-    for(var r=range.s.r;r<=range.e.r;r++){
-      if(!ws['!rows'][r]) ws['!rows'][r]={};
-      ws['!rows'][r].hpt=ws['!rows'][r].hpt?Math.max(ws['!rows'][r].hpt,36):36;
-    }
-    // Widen columns that hold name/address data
-    if(!ws['!cols']) ws['!cols']=[];
-    for(var col=2;col<=6;col++){
-      if(!ws['!cols'][col]) ws['!cols'][col]={};
-      ws['!cols'][col].wpx=ws['!cols'][col].wpx?Math.max(ws['!cols'][col].wpx,160):160;
-    }
+    if(ws[coord]){ws[coord].v=val;ws[coord].w=val;ws[coord].s=BU;}
+    else{ws[coord]={v:val,w:val,t:'s',s:BU};}
   }
 
   if(type==='summon'){
@@ -840,7 +829,6 @@ function fillCells(ws,type,c,acc,fd){
     setBU('C24', nm);
     setBU('E24', fn);
   }
-  applyWrapRows();
 }
 
 
@@ -1471,66 +1459,103 @@ function pickThana(fid,val){
 // NAME AUTOCOMPLETE
 // ════════════════════════════════════════
 var _namePool={names:[],fathers:[],villages:[]};
+// ══════════════════════════════════════════════════════════
+// SMART DICTIONARY — persists, grows, syncs across all users
+// ══════════════════════════════════════════════════════════
 var _poolLoaded=false;
+var _namePool={names:[],fathers:[],villages:[]};
+var DICT_KEY='court_dict_v1';
 
-// Common Hindi names to show as defaults when no saved data
+// Default seed data
 var _DEFAULT_NAMES=['राम','श्याम','मोहन','सुरेश','राजेश','महेश','दिनेश','विकास',
   'संजय','अजय','विजय','रोहित','अनिल','सुनील','कपिल','दीपक','नीरज','अशोक',
-  'सतीश','हरीश','गिरीश','रमेश','नरेश','राकेश','मुकेश','संतोष','लाल','कुमार'];
+  'सतीश','हरीश','गिरीश','रमेश','नरेश','राकेश','मुकेश','संतोष','लाल','कुमार',
+  'प्रवीण','रविंद्र','जितेंद्र','सुरेंद्र','धर्मेंद्र','नागेंद्र','जगदीश','रामकिशन',
+  'हरिओम','ओमप्रकाश','जयप्रकाश','देवेंद्र','महेंद्र','नरेंद्र','वीरेंद्र','शैलेंद्र'];
 var _DEFAULT_FATHERS=['राम प्रसाद','शिव प्रसाद','सुरेश कुमार','राजेश कुमार','महेश कुमार',
   'दिनेश कुमार','मोहन लाल','सोहन लाल','रामस्वरूप','शिवशंकर','नारायण दास','जगदीश प्रसाद',
-  'हरि प्रसाद','कमल किशोर','बृजमोहन','रघुनाथ','परमानंद','सत्यनारायण'];
-var _DEFAULT_VILLAGES=[
-  // बागपत जिला
-  'बागपत','बड़ौत','छपरौली','खेकड़ा','रमाला','पिलाना','धौलाना','बिनौली',
+  'हरि प्रसाद','कमल किशोर','बृजमोहन','रघुनाथ','परमानंद','सत्यनारायण',
+  'ओमप्रकाश','जयप्रकाश','रामकिशोर','भगवान दास','शंभू दयाल','राम सहाय','मंगल सेन'];
+var _DEFAULT_VILLAGES=['बागपत','बड़ौत','छपरौली','खेकड़ा','रमाला','पिलाना','धौलाना','बिनौली',
   'किठौर','बरनावा','दौराला','ततीरी','शाहपुर','पुरा महादेव','न्योली','नहेला',
   'सिसाना','सांकरोड','बिजरौल','गुलावठी','रटौल','अस्थल','फजलपुर','टिकरी',
-  // मेरठ जिला
-  'मेरठ','सरधना','मवाना','परतापुर','दौराला','मकनपुर','शादीपुर','नंगला','हस्तिनापुर',
-  'किठौर','गढ़मुक्तेश्वर','पिलखुवा','हापुड़','गुलावठी','सिम्भावली',
-  // गाजियाबाद
-  'गाजियाबाद','लोनी','मुरादनगर','मोदीनगर','भोजपुर','डासना','नंदग्राम',
-  'साहिबाबाद','इंदिरापुरम','वसुंधरा','राजनगर','कविनगर','विजयनगर',
-  // मुजफ्फरनगर / शामली
-  'मुजफ्फरनगर','खतौली','बुढ़ाना','जानसठ','कैराना','पुरकाजी','मीरापुर',
-  'थानाभवन','शामली','ऊन','कांधला','झिंझाना','सिसौली','चरथावल',
-  // सहारनपुर
-  'सहारनपुर','देवबंद','रामपुर मनिहारान','नकुड़','बेहट','गंगोह','नानौता',
-  // दिल्ली
-  'दिल्ली','नई दिल्ली','नोएडा','ग्रेटर नोएडा','फरीदाबाद','गुरुग्राम',
-  'शाहदरा','रोहिणी','द्वारका','नांगलोई','नरेला','बवाना','बुराड़ी',
-  // हरियाणा
-  'सोनीपत','गन्नौर','राई','खरखोदा','गोहाना','पानीपत','समालखा','इसराना',
-  'करनाल','तरावड़ी','कैथल','जींद','नरवाना','हिसार','हांसी','आदमपुर',
-  'रोहतक','महम','झज्जर','बहादुरगढ़','फरीदाबाद','बल्लभगढ़','गुरुग्राम',
-  // राजस्थान
-  'जयपुर','सांगानेर','बस्सी','अलवर','भरतपुर','अजमेर','कोटा',
-  // बिहार
-  'पटना','गया','आरा','मुजफ्फरपुर','दरभंगा','बिहारशरीफ','हाजीपुर',
-  // पंजाब
-  'लुधियाना','अमृतसर','जालंधर','पटियाला','मोहाली','खन्ना','समराला',
-];
+  'मेरठ','सरधना','मवाना','हस्तिनापुर','गाजियाबाद','लोनी','मुरादनगर','मोदीनगर',
+  'मुजफ्फरनगर','खतौली','बुढ़ाना','जानसठ','कैराना','शामली','सोनीपत','पानीपत'];
 
+function getDictFromStorage(){
+  try{
+    var raw=localStorage.getItem(DICT_KEY);
+    if(raw){var d=JSON.parse(raw);if(d&&d.names)return d;}
+  }catch(e){}
+  return {names:[..._DEFAULT_NAMES],fathers:[..._DEFAULT_FATHERS],villages:[..._DEFAULT_VILLAGES]};
+}
+
+function saveDictToStorage(dict){
+  try{localStorage.setItem(DICT_KEY,JSON.stringify(dict));}catch(e){}
+}
+
+// Add entries from a case object into the dictionary
+function addCaseToDict(caseObj,dict){
+  var changed=false;
+  if(caseObj&&caseObj.accused){
+    caseObj.accused.forEach(function(a){
+      if(a.name&&dict.names.indexOf(a.name)<0){dict.names.push(a.name);changed=true;}
+      if(a.fatherName&&dict.fathers.indexOf(a.fatherName)<0){dict.fathers.push(a.fatherName);changed=true;}
+      if(a.village&&dict.villages.indexOf(a.village)<0){dict.villages.push(a.village);changed=true;}
+    });
+  }
+  return changed;
+}
+
+// Rebuild pool from local storage + saved dict — called on demand
 function loadPool(){
   _poolLoaded=true;
-  var nm=new Set(_DEFAULT_NAMES);
-  var ft=new Set(_DEFAULT_FATHERS);
-  var vl=new Set(_DEFAULT_VILLAGES);
+  var dict=getDictFromStorage();
+  // Also scan all localStorage cases (catches any not yet in dict)
   try{
     for(var i=0;i<localStorage.length;i++){
       var k=localStorage.key(i);
       if(k&&k.startsWith(LS)){
         var d=JSON.parse(localStorage.getItem(k));
-        if(d&&d.accused)d.accused.forEach(function(a){
-          if(a.name)nm.add(a.name);
-          if(a.fatherName)ft.add(a.fatherName);
-          if(a.village)vl.add(a.village);
-        });
+        addCaseToDict(d,dict);
       }
     }
   }catch(e){}
-  _namePool={names:[...nm],fathers:[...ft],villages:[...vl]};
+  _namePool={names:dict.names.slice(),fathers:dict.fathers.slice(),villages:dict.villages.slice()};
+  saveDictToStorage(dict);
 }
+
+// Call this every time a case is saved — updates dictionary
+function updateDictFromCase(caseObj){
+  var dict=getDictFromStorage();
+  if(addCaseToDict(caseObj,dict)){
+    saveDictToStorage(dict);
+    _poolLoaded=false; // force pool rebuild on next type
+    // Also push dict to Firebase so all users get updated suggestions
+    if(FB_OK&&CURRENT_USER){
+      fbDb.ref('dict').set(dict).catch(function(){});
+    }
+  }
+}
+
+// Sync dict FROM Firebase — called in startFBSync
+function startDictSync(){
+  if(!FB_OK)return;
+  fbDb.ref('dict').on('value',function(snap){
+    if(!snap.exists())return;
+    var fbDict=snap.val();
+    if(!fbDict||!fbDict.names)return;
+    var localDict=getDictFromStorage();
+    var changed=false;
+    ['names','fathers','villages'].forEach(function(key){
+      (fbDict[key]||[]).forEach(function(entry){
+        if(entry&&localDict[key].indexOf(entry)<0){localDict[key].push(entry);changed=true;}
+      });
+    });
+    if(changed){saveDictToStorage(localDict);_poolLoaded=false;}
+  });
+}
+
 function acName(inp,type){
   loadPool();
   var val=(inp.value||'').trim();
@@ -1738,6 +1763,87 @@ function doOfflineLogin() {
   onLoginSuccess();
   toast('✅ Local login — data sirf is device par save hoga');
 }
+
+// ══════════════════════════════════════════════════════════
+// ALL DATA SCREEN — searchable view of every accused
+// ══════════════════════════════════════════════════════════
+var _allCases=[];
+
+function buildAllCases(){
+  _allCases=[];
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&k.startsWith(LS)){
+        var d=JSON.parse(localStorage.getItem(k));
+        if(d&&d.accused)_allCases.push(d);
+      }
+    }
+  }catch(e){}
+  // Sort by caseNo desc
+  _allCases.sort(function(a,b){return (b.caseNo||'').localeCompare(a.caseNo||'');});
+}
+
+function openAllData(){
+  buildAllCases();
+  goS('s6');
+  el('ad-q').value='';
+  renderAllData('');
+}
+
+function renderAllData(q){
+  var list=el('ad-list');
+  var total=0;
+  var rows=[];
+  var qn=(q||'').trim().toLowerCase();
+  _allCases.forEach(function(c){
+    (c.accused||[]).forEach(function(a){
+      var nm=a.name||'';
+      var ft=a.fatherName||'';
+      var vl=a.village||'';
+      var cn=c.caseNo||'';
+      var sec=c.section||'';
+      var ps=c.ps||'';
+      // Filter
+      if(qn){
+        var hay=(nm+' '+ft+' '+vl+' '+cn+' '+sec+' '+ps).toLowerCase();
+        var isHindi=/[ऀ-ॿ]/.test(qn);
+        var match=false;
+        if(isHindi){match=hay.indexOf(qn)>=0;}
+        else{match=hay.indexOf(qn)>=0||hi2rom(nm).indexOf(qn)>=0||hi2rom(ft).indexOf(qn)>=0||hi2rom(vl).indexOf(qn)>=0;}
+        if(!match)return;
+      }
+      total++;
+      rows.push({nm:nm,ft:ft,vl:vl,cn:cn,sec:sec,ps:ps,savedByName:c.savedByName||''});
+    });
+  });
+  el('ad-count').textContent=total+' records';
+  el('ad-stats').textContent=qn?('🔍 "'+q+'" — '+total+' मिले'):(_allCases.length+' मुकदमे · '+total+' अभियुक्त');
+  if(!rows.length){
+    list.innerHTML='<div class="ad-empty">'+( qn?'कोई रिकॉर्ड नहीं मिला':'कोई डेटा नहीं — पहले कोई मुकदमा सेव करें')+'</div>';
+    return;
+  }
+  // Show max 200 rows for performance
+  var show=rows.slice(0,200);
+  list.innerHTML=show.map(function(r,i){
+    var div=document.createElement('div');
+    div.className='ad-row';
+    div.setAttribute('data-cn',r.cn);
+    div.innerHTML='<div class="ad-num">'+(i+1)+'</div>'
+      +'<div class="ad-info">'
+        +'<div class="ad-name">'+esc(r.nm)+'</div>'
+        +'<div class="ad-father">पुत्र '+esc(r.ft)+(r.vl?' &nbsp;·&nbsp; '+esc(r.vl):'')+'</div>'
+        +'<div class="ad-meta">'
+          +(r.cn?'<span class="ad-tag">'+esc(r.cn)+'</span>':'')
+          +(r.sec?'<span class="ad-tag">'+esc(r.sec)+'</span>':'')
+          +(r.ps?'<span class="ad-tag">'+esc(r.ps)+'</span>':'')
+          +(r.savedByName?'<span class="ad-tag">👤'+esc(r.savedByName)+'</span>':'')
+        +'</div>'
+      +'</div>';
+    div.addEventListener('click',function(){onCaseNo(this.getAttribute('data-cn'));});
+    return div.outerHTML;
+  }).join('')+(rows.length>200?'<div class="ad-empty" style="font-size:12px;">...aur '+(rows.length-200)+' records — search karke filter karein</div>':'');
+}
 </script>
 
 </head>
@@ -1776,7 +1882,7 @@ function doOfflineLogin() {
 
 <!-- SCREEN 1: SCAN -->
 <div id="s1" class="screen">
-  <div class="hdr"><h1>⚖️ Court Proforma — ACJM Baghpat</h1><span class="usr-badge" id="hdr-user">---</span><button class="usr-btn" onclick="doLogout()">↩</button><button class="usr-btn" onclick="openSetup()" title="Firebase Setup">⚙</button></div>
+  <div class="hdr"><h1>⚖️ Court Proforma — ACJM Baghpat</h1><span class="usr-badge" id="hdr-user">---</span><button class="usr-btn" onclick="doLogout()">↩</button><button class="usr-btn" onclick="openAllData()">📚 सब</button><button class="usr-btn" onclick="openSetup()" title="Firebase Setup">⚙</button></div>
   <div class="cnt"><div class="sw">
     <div id="qrb"></div>
     <div id="sma"></div>
@@ -1937,6 +2043,15 @@ function doOfflineLogin() {
       <div id="setup-result" style="margin-top:8px;font-size:13px;text-align:center;line-height:1.6;"></div>
     </div>
   </div>
+</div>
+<!-- SCREEN 6: ALL DATA -->
+<div id="s6" class="screen">
+  <div class="hdr"><button class="bk" onclick="goS('s1')">←</button><h1>📚 सभी अभियुक्त डेटा</h1><span class="badge" id="ad-count">...</span></div>
+  <div style="padding:10px 12px 0;flex-shrink:0;">
+    <input class="ad-search ip" id="ad-q" placeholder="नाम / पिता / ग्राम / Case No. खोजें..." oninput="renderAllData(this.value)" autocomplete="off" autocorrect="off" spellcheck="false"/>
+  </div>
+  <div class="ad-stats" id="ad-stats"></div>
+  <div class="cnt" id="ad-list" style="padding:0;"></div>
 </div>
 </body>
 </html>
