@@ -830,14 +830,89 @@ function saveE(){hv('ea',eA);const vd=eA.filter(a=>a.name);if(!vd.length){toast(
 // Uses fflate to edit the xlsx directly → 100% formatting preserved
 // ═══════════════════════════════════════════════════════════
 
-// Form section row-ranges (for print area when specific docs chosen)
-const FORM_RANGES = {
-  summon: "Sheet1!$A$1:$H$24",
-  bw:     "Sheet1!$A$45:$H$65",
-  nbw:    "Sheet1!$A$96:$H$122",
-  p82:    "Sheet1!$A$147:$H$179",
-  k83:    "Sheet1!$A$189:$H$225"
+// Form section row-ranges [startRow, endRow] in the master sheet
+const FORMS = {
+  summon: [9, 23],
+  bw:     [49, 65],
+  nbw:    [96, 122],
+  p82:    [147, 179],
+  k83:    [189, 225]
 };
+const MASTER_MERGES = ['B10:C11','C52:D53'];
+
+// ── Column/ref helpers for shared-formula resolution ──
+function colNum(c){ let n=0; for(const ch of c) n=n*26+(ch.charCodeAt(0)-64); return n; }
+function numCol(n){ let s=''; while(n>0){ s=String.fromCharCode(65+(n-1)%26)+s; n=Math.floor((n-1)/26); } return s; }
+function parseRef(r){ const m=r.match(/^([A-Z]+)(\d+)$/); return [colNum(m[1]), +m[2]]; }
+function shiftFormula(f, dc, dr){ return f.replace(/([A-Z]+)(\d+)/g, (m,c,r)=>numCol(colNum(c)+dc)+(+r+dr)); }
+function xmlUnesc(s){ return String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,'&'); }
+
+// Resolve EVERY formula (regular + shared) to a final value, so the file shows
+// correct data in ANY viewer WITHOUT needing recalculation.
+function bakeValues(files, fills){
+  const ssXml = files['xl/sharedStrings.xml'] ? fflate.strFromU8(files['xl/sharedStrings.xml']) : '';
+  const sst = [];
+  ssXml.replace(/<si>([\s\S]*?)<\/si>/g, (m,inner)=>{ let t=''; inner.replace(/<t[^>]*>([\s\S]*?)<\/t>/g,(mm,x)=>{t+=x;return mm;}); sst.push(xmlUnesc(t)); return m; });
+  const sx = fflate.strFromU8(files['xl/worksheets/sheet1.xml']);
+
+  // shared-formula masters: si -> {cr:[col,row], f:formula}
+  const sharedMaster = {}; let mm;
+  const smRe = /<c r="([A-Z]+\d+)"[^>]*><f t="shared" ref="[^"]+" si="(\d+)">([^<]*)<\/f>/g;
+  while((mm=smRe.exec(sx))) sharedMaster[mm[2]] = { cr: parseRef(mm[1]), f: mm[3] };
+
+  const vals = {}, formulas = {};
+  const cre = /<c r="([A-Z]+\d+)"([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g; let m;
+  while((m=cre.exec(sx))){
+    const coord=m[1], attrs=m[2], inner=m[3]||'';
+    const tM=attrs.match(/t="([^"]+)"/); const t=tM?tM[1]:'n';
+    const shM=inner.match(/<f t="shared"(?:\s+ref="[^"]+")?\s+si="(\d+)"\s*(?:>([^<]*)<\/f>|\/>)/);
+    const regM=inner.match(/<f>([\s\S]*?)<\/f>/);
+    if(shM){ const master=sharedMaster[shM[1]]; if(master){ const [c,r]=parseRef(coord); formulas[coord]=shiftFormula(master.f, c-master.cr[0], r-master.cr[1]); } }
+    else if(regM){ formulas[coord]=regM[1].trim(); }
+    const vM=inner.match(/<v>([\s\S]*?)<\/v>/);
+    const isM=inner.match(/<t[^>]*>([\s\S]*?)<\/t>/);
+    if(t==='s'&&vM&&!formulas[coord]) vals[coord]=sst[+vM[1]]||'';
+    else if(t==='inlineStr'&&isM) vals[coord]=xmlUnesc(isM[1]);
+    else if(vM&&!formulas[coord]) vals[coord]=xmlUnesc(vM[1]);
+  }
+  for(const c in fills) vals[c]=fills[c];
+
+  function resolve(coord, seen){
+    if(fills[coord]!==undefined) return fills[coord];
+    if(formulas[coord]){
+      const ref=formulas[coord];
+      if(/^[A-Z]+\d+$/.test(ref)){
+        if(seen.has(ref)) return '';
+        seen.add(ref);
+        if(fills[ref]!==undefined) return fills[ref];
+        if(formulas[ref]) return resolve(ref, seen);
+        return vals[ref]!==undefined ? vals[ref] : '';
+      }
+      return '';
+    }
+    return vals[coord]!==undefined ? vals[coord] : '';
+  }
+  const out = {};
+  for(const c in fills) out[c]=fills[c];
+  for(const c in formulas) out[c]=resolve(c, new Set([c]));
+  return out;
+}
+
+// Keep only one form's rows, renumber so it starts at row 1 (clean single-form file)
+function extractForm(sx, s, e){
+  const rows=[];
+  sx.replace(/<row r="(\d+)"([^>]*)>([\s\S]*?)<\/row>/g, (m,rn,attrs,body)=>{ const r=+rn; if(r>=s&&r<=e) rows.push({r,attrs,body}); return m; });
+  let nd='';
+  for(const {r,attrs,body} of rows){ const nr=r-s+1; const nb=body.replace(/<c r="([A-Z]+)(\d+)"/g,(mm,col,rr)=>'<c r="'+col+(+rr-s+1)+'"'); nd+='<row r="'+nr+'"'+attrs+'>'+nb+'</row>'; }
+  sx=sx.replace(/<sheetData>[\s\S]*?<\/sheetData>/, '<sheetData>'+nd+'</sheetData>');
+  const mcx=[];
+  for(const mg of MASTER_MERGES){ const [a,b]=mg.split(':'); const [,ar]=parseRef(a); const [,br]=parseRef(b); if(ar>=s&&br<=e){ mcx.push('<mergeCell ref="'+a.replace(/\d+/,ar-s+1)+':'+b.replace(/\d+/,br-s+1)+'"/>'); } }
+  sx=sx.replace(/<mergeCell[^>]*\/>/g,'').replace(/<mergeCells[^>]*>[\s\S]*?<\/mergeCells>/,'').replace(/<mergeCells[^>]*\/>/g,'');
+  const nrows=e-s+1;
+  if(mcx.length) sx=sx.replace(/<\/sheetData>/, '</sheetData><mergeCells count="'+mcx.length+'">'+mcx.join('')+'</mergeCells>');
+  sx=sx.replace(/<dimension ref="[^"]*"\/>/, '<dimension ref="A1:H'+nrows+'"/>');
+  return { sx, nrows };
+}
 
 function b64ToU8(b64){
   const bin = atob(b64);
@@ -926,21 +1001,26 @@ function genD(){
     const made=[]; // {name, bytes}
     jobs.forEach(({acc,dt})=>{
       const files = fflate.unzipSync(b64ToU8(MASTER_TMPL));
+      // 1. Bake ALL values (resolve every formula incl. shared) → correct data in any viewer, no recalc needed
+      const baked = bakeValues(files, fillsFor(acc));
       let sx = fflate.strFromU8(files['xl/worksheets/sheet1.xml']);
-      const fills = fillsFor(acc);
-      for(const coord in fills) sx = fillSheetCell(sx, coord, fills[coord]);
-      files['xl/worksheets/sheet1.xml'] = fflate.strToU8(sx);
+      for(const coord in baked) sx = fillSheetCell(sx, coord, baked[coord]);
+      // 2. Keep ONLY this form's rows (renumbered to top) → only the clicked form downloads
+      const [s,e] = FORMS[dt];
+      const ex = extractForm(sx, s, e);
+      files['xl/worksheets/sheet1.xml'] = fflate.strToU8(ex.sx);
+      // 3. Print area = the whole single form (A4)
       let wx = fflate.strFromU8(files['xl/workbook.xml']);
-      wx = setPrintArea(wx, FORM_RANGES[dt]);
+      wx = setPrintArea(wx, 'Sheet1!$A$1:$H$'+ex.nrows);
       files['xl/workbook.xml'] = fflate.strToU8(wx);
       const out = fflate.zipSync(files, {level:6});
       const nm = (acc.name||'').replace(/[^\u0900-\u097Fa-zA-Z0-9 ]/g,'').trim().substring(0,12).replace(/\s+/g,'_');
-      made.push({ name: caseTag+'_'+DOC_NAMES[dt]+(sA.length>1?'_'+nm:'')+'.xlsx', bytes: out });
+      made.push({ name: caseTag+'_'+DOC_NAMES[dt]+(jobs.length>1?'_'+nm:'')+'.xlsx', bytes: out });
     });
 
     if(made.length===1){
       downloadXlsx(made[0].bytes, made[0].name);
-      toast('📥 Download — 1 A4 page, sidha Print karo',3000);
+      toast('📥 Download — data bhara hua, 1 A4 page, sidha Print karo',3000);
     } else {
       // Bundle all into one zip → single download (no browser block)
       const zipObj={};
