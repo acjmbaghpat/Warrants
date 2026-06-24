@@ -295,6 +295,16 @@ function initFirebase() {
 
 initFirebase();
 
+// Auto re-connect & re-sync when network returns (was offline → online)
+window.addEventListener('online', function(){
+  if (typeof firebase === 'undefined') return;
+  if (CURRENT_USER && !FB_OK) {
+    if (initFirebase()) { try{ startFBSync(); }catch(_){} }
+  } else if (CURRENT_USER && FB_OK) {
+    try{ startFBSync(); }catch(_){} // refresh listeners
+  }
+});
+
 // ── Sync status UI ──
 function setSyncStatus(state, msg) {
   const dot = el('sync-dot'), sm = el('sync-msg');
@@ -347,7 +357,7 @@ async function doLogin() {
           CURRENT_USER = {uid:uname,username:uname,displayName:ul.displayName};
           // Also try Firebase in background
           if (FB_OK) {
-            fbDb.ref('users/' + uname).get().then(snap => {
+            fbDb.ref('users/' + uname).once('value').then(snap => {
               if (!snap.exists()) fbDb.ref('users/'+uname).set(ul).catch(()=>{});
             }).catch(()=>{});
           }
@@ -366,7 +376,7 @@ async function doLogin() {
       loginErr('User nahi mila — pehle register karein ya Offline Mode use karein');
       return;
     }
-    const fbPromise = fbDb.ref('users/' + uname).get();
+    const fbPromise = fbDb.ref('users/' + uname).once('value');
     const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000));
     const snap = await Promise.race([fbPromise, timeoutPromise]);
     
@@ -421,11 +431,13 @@ async function doRegister() {
   // Try Firebase in background (don't block)
   if (FB_OK) {
     try {
-      const snap = await fbDb.ref('users/' + uname).get();
+      const snap = await fbDb.ref('users/' + uname).once('value');
       if (snap.exists()) {
-        // Username taken on server - warn but local registration already done
+        // Username taken on server with a DIFFERENT password → conflict.
+        // Roll back the local account we just created so there's no inconsistent state.
         const sv = snap.val();
         if (sv.password !== btoa(pass)) {
+          localStorage.removeItem('user_' + uname);
           regErr('Yeh username server par pehle se liya hua hai — dusra naam chunein');
           return;
         }
@@ -457,6 +469,7 @@ function doLogout() {
   if (_fbRef)    { try{_fbRef.off();}catch(_){} _fbRef = null; }
   if (_fbIdxRef) { try{_fbIdxRef.off();}catch(_){} _fbIdxRef = null; }
   if (_fbDictRef){ try{_fbDictRef.off();}catch(_){} _fbDictRef = null; }
+  if (_syncTimer){ clearInterval(_syncTimer); _syncTimer = null; }
 }
 
 // ════════════════════════════════════════════════════════
@@ -474,7 +487,7 @@ function doLogout() {
 //   cpf5_idx_*    = cached index entries
 //   fb_last_sync  = timestamp of last successful sync
 // ════════════════════════════════════════════════════════
-let _fbRef = null, _fbIdxRef = null, _fbDictRef = null;
+let _fbRef = null, _fbIdxRef = null, _fbDictRef = null, _syncTimer = null;
 const IDX_LS = 'cpf5_idx_';
 const SYNC_TS_KEY = 'fb_last_sync';
 const MAX_LS_CASES = 500; // evict oldest if over this
@@ -540,7 +553,7 @@ async function lsLOrFB(caseNo) {
   if(local) return local;
   if(!FB_OK) return null;
   try{
-    var snap = await fbDb.ref('cases/'+fbKey(caseNo)).get();
+    var snap = await fbDb.ref('cases/'+fbKey(caseNo)).once('value');
     if(snap.exists()){
       var d=snap.val();
       lsSafe(LS+caseNo, JSON.stringify(d));
@@ -553,6 +566,9 @@ async function lsLOrFB(caseNo) {
 // ── Incremental sync: only new/changed since last sync ──
 function startFBSync() {
   if (!FB_OK || !CURRENT_USER) return;
+  // Detach any existing listeners first (idempotent — safe to call on reconnect)
+  if (_fbRef)    { try{_fbRef.off();}catch(_){} }
+  if (_fbIdxRef) { try{_fbIdxRef.off();}catch(_){} }
   startDictSync();
 
   // 1. Index listener — child_added + child_changed (lightweight, always on)
@@ -601,9 +617,10 @@ function startFBSync() {
   _fbRef._addedQ  = _caseAddedQ;
   _fbRef._changedQ = _caseChangedQ;
 
-  // Update lastSync every 5 min
+  // Update lastSync every 5 min (store id so logout can clear it)
   localStorage.setItem(SYNC_TS_KEY, new Date().toISOString());
-  setInterval(()=>localStorage.setItem(SYNC_TS_KEY, new Date().toISOString()), 300000);
+  if(_syncTimer) clearInterval(_syncTimer);
+  _syncTimer = setInterval(()=>localStorage.setItem(SYNC_TS_KEY, new Date().toISOString()), 300000);
 
   // 3. Refresh UI after brief delay (idx will have loaded by then)
   setTimeout(()=>{ showSaved(); _poolLoaded=false; }, 2500);
@@ -676,7 +693,7 @@ window.addEventListener('DOMContentLoaded', function autoLogin() {
         if (FB_OK) startFBSync();
         // verify session in background
         if (FB_OK) {
-          fbDb.ref('users/' + CURRENT_USER.username).get().then(snap => {
+          fbDb.ref('users/' + CURRENT_USER.username).once('value').then(snap => {
             if (snap.exists()) setSyncStatus('ok', 'Connected — ' + CURRENT_USER.displayName);
             else setSyncStatus('off', 'Offline mode');
           }).catch(() => setSyncStatus('off', 'Offline mode'));
@@ -724,7 +741,7 @@ function loadLib(){
     .then(ok=>ok?(onLibReady(),Promise.resolve(true)):tryLoad('https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'))
     .then(ok=>{if(ok===true)return;if(ok){onLibReady();}else{sMsg('❌ Scanner load nahi hua — Case No. type karo','er');}});
 }
-function onLibReady(){scanReady=true;el('scb').style.display='grid';sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');}
+function onLibReady(){if(scanReady)return;scanReady=true;el('scb').style.display='grid';sMsg('✅ Scanner ready — "Scan Shuru Karo" dabao','ok');}
 function startScan(){
   if(!scanReady){toast('Scanner load ho raha hai...');return;}
   if(scanning){toast('Scanner chal raha hai');return;}
@@ -753,7 +770,7 @@ function onCaseNo(cn){
   // Not in localStorage — try Firebase
   if(FB_OK){
     toast('🔄 Firebase se fetch ho raha hai...');
-    fbDb.ref('cases/'+fbKey(cn)).get().then(function(snap){
+    fbDb.ref('cases/'+fbKey(cn)).once('value').then(function(snap){
       if(snap.exists()){
         var d=snap.val();
         lsSafe(LS+cn,JSON.stringify(d));
@@ -791,7 +808,7 @@ function delAE(i){hv('ea',eA);eA.splice(i,1);rA('eal',eA,'ea','addAE','delAE');}
 function loadNF(cn){el('b2').textContent=cn;el('nc').value=cn;['ncc','ns','np'].forEach(id=>el(id).value='');el('nd').value='बागपत';el('nf').value='';nA=[{name:'',fatherName:'',village:'',thana:'',district:''}];rA('nal',nA,'na','addAN','delAN');}
 function saveN(){const cn=(el('nc').value||'').trim();if(!cn){toast('Case No. zaroori hai');return;}hv('na',nA);const vd=nA.filter(a=>a.name);if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
   cc={caseNo:cn,ccNo:v('ncc'),section:v('ns'),ps:v('np'),district:v('nd')||'बागपत',fixDate:el('nf').value,accused:vd,savedAt:new Date().toISOString()};
-  if(lsS(cc)){showSaved();toast('✅ Mukadma save ho gaya!');setTimeout(()=>{rF();goS('s3');},500);}}
+  if(lsS(cc)){_poolLoaded=false;showSaved();toast('✅ Mukadma save ho gaya!');setTimeout(()=>{rF();goS('s3');},500);}}
 
 // ── Found ──
 function rF(){
@@ -822,7 +839,7 @@ function sa(nm,val){document.querySelectorAll(`[name="${nm}"]`).forEach(cb=>{cb.
 function goEdit(){el('b4').textContent=cc.caseNo;el('ec').value=cc.ccNo||'';el('es').value=cc.section||'';el('ep').value=cc.ps||'';el('ed').value=cc.district||'बागपत';el('ef').value=cc.fixDate||'';eA=cc.accused.map(a=>({...a}));rA('eal',eA,'ea','addAE','delAE');goS('s4');}
 function saveE(){hv('ea',eA);const vd=eA.filter(a=>a.name);if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
   cc={...cc,ccNo:v('ec'),section:v('es'),ps:v('ep'),district:v('ed')||'बागपत',fixDate:el('ef').value,accused:vd,updatedAt:new Date().toISOString()};
-  if(lsS(cc)){showSaved();toast('✅ Update ho gaya!');setTimeout(()=>{rF();goS('s3');},400);}}
+  if(lsS(cc)){_poolLoaded=false;showSaved();toast('✅ Update ho gaya!');setTimeout(()=>{rF();goS('s3');},400);}}
 
 // ── Generate Excel ──
 // ═══════════════════════════════════════════════════════════
@@ -844,8 +861,21 @@ const MASTER_MERGES = ['B10:C11','C52:D53'];
 function colNum(c){ let n=0; for(const ch of c) n=n*26+(ch.charCodeAt(0)-64); return n; }
 function numCol(n){ let s=''; while(n>0){ s=String.fromCharCode(65+(n-1)%26)+s; n=Math.floor((n-1)/26); } return s; }
 function parseRef(r){ const m=r.match(/^([A-Z]+)(\d+)$/); return [colNum(m[1]), +m[2]]; }
-function shiftFormula(f, dc, dr){ return f.replace(/([A-Z]+)(\d+)/g, (m,c,r)=>numCol(colNum(c)+dc)+(+r+dr)); }
-function xmlUnesc(s){ return String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,'&'); }
+function shiftFormula(f, dc, dr){
+  // Shift only RELATIVE refs; leave absolute ($) refs unchanged
+  return f.replace(/(\$?)([A-Z]+)(\$?)(\d+)/g, function(m,ad,c,ar,r){
+    var nc = ad ? c : numCol(colNum(c)+dc);   // $col stays
+    var nr = ar ? r : (+r+dr);                 // $row stays
+    return ad+nc+ar+nr;
+  });
+}
+function xmlUnesc(s){
+  return String(s)
+    .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'")
+    .replace(/&#x([0-9a-fA-F]+);/g, function(_,h){ return String.fromCodePoint(parseInt(h,16)); })
+    .replace(/&#(\d+);/g, function(_,d){ return String.fromCodePoint(+d); })
+    .replace(/&amp;/g,'&');
+}
 
 // Resolve EVERY formula (regular + shared) to a final value, so the file shows
 // correct data in ANY viewer WITHOUT needing recalculation.
@@ -915,11 +945,15 @@ function extractForm(sx, s, e){
 }
 
 function b64ToU8(b64){
-  const bin = atob(b64);
-  const len = bin.length;
-  const u8 = new Uint8Array(len);
-  for(let i=0;i<len;i++) u8[i]=bin.charCodeAt(i);
-  return u8;
+  try{
+    const bin = atob(b64);
+    const len = bin.length;
+    const u8 = new Uint8Array(len);
+    for(let i=0;i<len;i++) u8[i]=bin.charCodeAt(i);
+    return u8;
+  }catch(e){
+    throw new Error('Template padhne mein dikkat (corrupt data)');
+  }
 }
 function xmlEsc(s){
   return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1481,19 +1515,20 @@ function msSearch(val){
     }
   }}catch(e){}
   matches.sort(function(a,b){return a.cn>b.cn?1:-1;});
-  var html=matches.slice(0,8).map(function(d){
+  box.innerHTML=''; // clear
+  matches.slice(0,8).forEach(function(d){
     var div=document.createElement('div');
     div.className='sug-item';
     div.innerHTML='<span class="sug-main">'+esc(d.cn)+'</span><span class="sug-sub">'+esc(d.nm)+(d.sec?' | '+esc(d.sec):'')+'</span>';
     div.addEventListener('mousedown',function(e){e.preventDefault();hideMsSuggest();onCaseNo(d.cn);});
-    return div.outerHTML;
-  }).join('');
+    box.appendChild(div); // append node (keeps listener)
+  });
   var newDiv=document.createElement('div');
   newDiv.className='sug-item sug-new';
   newDiv.innerHTML='<span class="sug-main">➕ नया मुकदमा: '+esc(val)+'</span><span class="sug-sub">इस Case No. से नया बनाएं</span>';
   newDiv.addEventListener('mousedown',function(e){e.preventDefault();hideMsSuggest();loadNF(val);goS('s2');});
-  html+=newDiv.outerHTML;
-  box.innerHTML=html; box.style.display='block';
+  box.appendChild(newDiv);
+  box.style.display='block';
 }
 document.addEventListener('click',function(e){if(!e.target.closest('#mswrap'))hideMsSuggest();});
 
@@ -1973,8 +2008,9 @@ async function testSetup() {
   el('setup-result').innerHTML = '<span style="color:var(--saffron);">🔌 Test ho raha hai...</span>';
   try {
     await fbDb.ref('_ping').set({ t: Date.now(), by: 'setup-test' });
-    var snap = await fbDb.ref('_ping').get();
+    var snap = await fbDb.ref('_ping').once('value');
     if (snap.exists()) {
+      fbDb.ref('_ping').remove().catch(function(){}); // cleanup test data
       el('setup-result').innerHTML = '<span style="color:var(--green);">✅ Firebase connected! Ab login screen par jao.</span>';
       setSyncStatus('ok', 'Firebase connected!');
       setTimeout(function(){ goS('s0'); }, 2000);
@@ -1987,7 +2023,7 @@ async function testSetup() {
 
 // ── Offline / Local-only login ──
 function doOfflineLogin() {
-  const uname = (el('l-user').value || '').trim().toLowerCase();
+  const uname = (el('l-user').value || '').trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
   const pass  = (el('l-pass').value || '').trim();
   if (!uname || !pass) { loginErr('Username aur password daalo'); return; }
   
@@ -2136,14 +2172,15 @@ function renderAllData(q){
     });
   });
   el('ad-count').textContent=total+' records';
-  el('ad-stats').textContent=qn?('\U0001f50d "'+q+'" \u2014 '+total+' \u092e\u093f\u0932\u0947'):(_allIdx.length||_allCases.length)+' \u092e\u0941\u0915\u0926\u094d\u092e\u0947 \u00b7 '+total+' \u0905\u092d\u093f\u092f\u0941\u0915\u094d\u0924';
+  el('ad-stats').textContent=qn?('🔍 "'+q+'" \u2014 '+total+' \u092e\u093f\u0932\u0947'):(_allIdx.length||_allCases.length)+' \u092e\u0941\u0915\u0926\u094d\u092e\u0947 \u00b7 '+total+' \u0905\u092d\u093f\u092f\u0941\u0915\u094d\u0924';
   if(!rows.length){
     list.innerHTML='<div class="ad-empty">'+( qn?'कोई रिकॉर्ड नहीं मिला':'कोई डेटा नहीं — पहले कोई मुकदमा सेव करें')+'</div>';
     return;
   }
   // Show max 200 rows for performance
   var show=rows.slice(0,200);
-  list.innerHTML=show.map(function(r,i){
+  list.innerHTML='';
+  show.forEach(function(r,i){
     var div=document.createElement('div');
     div.className='ad-row';
     div.setAttribute('data-cn',r.cn);
@@ -2159,8 +2196,14 @@ function renderAllData(q){
         +'</div>'
       +'</div>';
     div.addEventListener('click',function(){onCaseNo(this.getAttribute('data-cn'));});
-    return div.outerHTML;
-  }).join('')+(rows.length>200?'<div class="ad-empty" style="font-size:12px;">...aur '+(rows.length-200)+' records — search karke filter karein</div>':'');
+    list.appendChild(div); // append node (keeps listener)
+  });
+  if(rows.length>200){
+    var more=document.createElement('div');
+    more.className='ad-empty'; more.style.fontSize='12px';
+    more.textContent='...aur '+(rows.length-200)+' records — search karke filter karein';
+    list.appendChild(more);
+  }
 }
 </script>
 
