@@ -69,6 +69,9 @@ body{background:var(--bg);color:var(--text);font-size:15px;}
 .mb:active{transform:scale(.93);background:var(--bg2);}
 .mb.on{background:var(--red);border-color:var(--red);color:#fff;}
 .tl-btn{flex-shrink:0;width:36px;height:44px;border:1.5px solid rgba(36,58,138,.25);border-radius:var(--rs);background:rgba(36,58,138,.06);color:var(--navy3);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--tr);}
+.act-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.act-chip{flex:0 0 auto;padding:6px 12px;border:1.5px solid rgba(36,58,138,.22);border-radius:16px;background:rgba(36,58,138,.05);color:var(--navy3,#243a8a);font-size:12px;font-weight:600;cursor:pointer;transition:var(--tr);white-space:nowrap;}
+.act-chip:active{transform:scale(.94);background:var(--saffron,#ff9933);color:#fff;border-color:var(--saffron,#ff9933);}
 .tl-btn:active{transform:scale(.93);background:rgba(36,58,138,.14);}
 
 /* GRID */
@@ -761,6 +764,23 @@ function startScan(){
     else if(!m.includes('no cam'))sMsg('❌ Camera error — Case No. type karo','er');});
 }
 function stopScan(){if(scanner&&scanning){scanner.stop().catch(()=>{});scanning=false;}}
+// Common acts for quick-add after typing the section number
+var ACTS=['IPC','BNS','EX ACT','ARMS ACT','EC ACT','PF ACT','FSS ACT','DP ACT','GUNDA ACT','GAMBLING ACT','NI ACT','NDPS ACT','MV ACT','POCSO ACT','SC/ST ACT'];
+function actChips(inputId){
+  return '<div class="act-chips">'+ACTS.map(function(a){
+    return '<button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct(\''+inputId+'\',\''+a+'\')">'+a+'</button>';
+  }).join('')+'</div>';
+}
+function addAct(inputId,act){
+  var inp=el(inputId); if(!inp) return;
+  var val=(inp.value||'').trim();
+  // don't duplicate if it already ends with this act
+  var esc=act.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  if(new RegExp('(^|\\s)'+esc+'$','i').test(val)){ inp.focus(); return; }
+  inp.value = val ? (val+' '+act) : act;
+  inp.focus();
+}
+
 function parseQR(r){
   if(!r) return null;
   var t=r.trim().replace(/\s+/g,' ');
@@ -964,6 +984,15 @@ function extractForm(sx, s, e){
   // Reset sheetView refs (topLeftCell / selection) to A1 — they pointed at rows that no longer exist
   sx=sx.replace(/<sheetView\b([^>]*)>[\s\S]*?<\/sheetView>/, '<sheetView$1><selection activeCell="A1" sqref="A1"/></sheetView>');
   sx=sx.replace(/(<sheetView\b[^>]*?)\stopLeftCell="[^"]*"/, '$1');
+  // Give left/right print margins so Column A isn't clipped at the printer's edge
+  sx=sx.replace(/<pageMargins\b[^>]*\/>/, '<pageMargins left="0.35" right="0.2" top="0.4" bottom="0.4" header="0" footer="0"/>');
+  // Fit the (now single) form to exactly one A4 page inside those margins → no left cut, no right overflow
+  sx=sx.replace(/<pageSetup\b[^>]*\/>/, '<pageSetup paperSize="9" scale="100" fitToWidth="1" fitToHeight="1" orientation="portrait" horizontalDpi="300" verticalDpi="300"/>');
+  if(/<sheetPr\b/.test(sx)){
+    if(!/pageSetUpPr/.test(sx)) sx=sx.replace(/<sheetPr\b([^>]*?)(\/?)>/, function(m,a,slash){ return slash? '<sheetPr'+a+'><pageSetUpPr fitToPage="1"/></sheetPr>' : '<sheetPr'+a+'><pageSetUpPr fitToPage="1"/>'; });
+  } else {
+    sx=sx.replace(/(<worksheet\b[^>]*>)/, '$1<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>');
+  }
   return { sx, nrows };
 }
 
@@ -2349,7 +2378,7 @@ function renderAllData(q){
         <div class="fg"><label class="lb">Case No. *</label><input class="ip" id="nc" placeholder="3802/20"/></div>
         <div class="fg"><label class="lb">CC No.</label><input class="ip" id="ncc" placeholder="256/14"/></div>
       </div>
-      <div class="fg"><label class="lb">धारा (Section) *</label><input class="ip" id="ns" placeholder="366 IPC"/></div>
+      <div class="fg"><label class="lb">धारा (Section) *</label><input class="ip" id="ns" placeholder="366 IPC"/><div class="act-chips"><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','IPC')">IPC</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','BNS')">BNS</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','EX ACT')">EX ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','ARMS ACT')">ARMS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','EC ACT')">EC ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','PF ACT')">PF ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','FSS ACT')">FSS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','DP ACT')">DP ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','GUNDA ACT')">GUNDA ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','GAMBLING ACT')">GAMBLING ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','NI ACT')">NI ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','NDPS ACT')">NDPS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','MV ACT')">MV ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','POCSO ACT')">POCSO ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','SC/ST ACT')">SC/ST ACT</button></div></div>
       <div class="r2">
         <div class="fg"><label class="lb">जिला</label>
           <div class="ac-outer" id="nd-outer">
@@ -2412,7 +2441,7 @@ function renderAllData(q){
           </div>
         </div>
       </div>
-      <div class="fg"><label class="lb">धारा</label><input class="ip" id="es"/></div>
+      <div class="fg"><label class="lb">धारा</label><input class="ip" id="es"/><div class="act-chips"><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','IPC')">IPC</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','BNS')">BNS</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','EX ACT')">EX ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','ARMS ACT')">ARMS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','EC ACT')">EC ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','PF ACT')">PF ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','FSS ACT')">FSS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','DP ACT')">DP ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','GUNDA ACT')">GUNDA ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','GAMBLING ACT')">GAMBLING ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','NI ACT')">NI ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','NDPS ACT')">NDPS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','MV ACT')">MV ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','POCSO ACT')">POCSO ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('es','SC/ST ACT')">SC/ST ACT</button></div></div>
       <div class="fg"><label class="lb">थाना</label>
         <div class="ac-outer" id="ep-outer">
           <div class="iw" style="position:relative;">
