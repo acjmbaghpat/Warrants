@@ -830,9 +830,9 @@ let nA=[],eA=[],cc=null;
 function rA(cid,arr,pfx,aFn,dFn){
   el(cid).innerHTML=arr.map((a,i)=>`
     <div class="ac"><div class="ah"><span class="an">${i+1}</span><span class="at">अभियुक्त ${i+1}</span>${arr.length>1?`<button class="db" onclick="${dFn}(${i})">✕ हटाएं</button>`:''}</div>
-    <div class="fg"><label class="lb">नाम *</label><div class="ac-outer" id="${pfx}n${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}n${i}" value="${esc(a.name)}" placeholder="नाम" autocomplete="off" oninput="acName(this,'name')" onfocus="acName(this,'name')" onblur="setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}n${i}',this)">🎤</button><div class="ac-dd" id="${pfx}n${i}-dd" style="right:42px;left:0;"></div></div></div></div>
-    <div class="fg"><label class="lb">पिता का नाम *</label><div class="ac-outer" id="${pfx}f${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}f${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम" autocomplete="off" oninput="acName(this,'father')" onfocus="acName(this,'father')" onblur="setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}f${i}',this)">🎤</button><div class="ac-dd" id="${pfx}f${i}-dd" style="right:42px;left:0;"></div></div></div></div>
-    <div class="fg"><label class="lb">ग्राम / मोहल्ला</label><div class="ac-outer" id="${pfx}v${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}v${i}" value="${esc(a.village)}" placeholder="ग्राम" autocomplete="off" oninput="acName(this,'village')" onfocus="acName(this,'village')" onblur="setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}v${i}',this)">🎤</button><div class="ac-dd" id="${pfx}v${i}-dd" style="right:42px;left:0;"></div></div></div></div>
+    <div class="fg"><label class="lb">नाम *</label><div class="ac-outer" id="${pfx}n${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}n${i}" value="${esc(a.name)}" placeholder="नाम" autocomplete="off" oninput="acName(this,'name')" onfocus="acName(this,'name')" onblur="learnField(this,'name');setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}n${i}',this)">🎤</button><div class="ac-dd" id="${pfx}n${i}-dd" style="right:42px;left:0;"></div></div></div></div>
+    <div class="fg"><label class="lb">पिता का नाम *</label><div class="ac-outer" id="${pfx}f${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}f${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम" autocomplete="off" oninput="acName(this,'father')" onfocus="acName(this,'father')" onblur="learnField(this,'father');setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}f${i}',this)">🎤</button><div class="ac-dd" id="${pfx}f${i}-dd" style="right:42px;left:0;"></div></div></div></div>
+    <div class="fg"><label class="lb">ग्राम / मोहल्ला</label><div class="ac-outer" id="${pfx}v${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}v${i}" value="${esc(a.village)}" placeholder="ग्राम" autocomplete="off" oninput="acName(this,'village')" onfocus="acName(this,'village')" onblur="learnField(this,'village');setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}v${i}',this)">🎤</button><div class="ac-dd" id="${pfx}v${i}-dd" style="right:42px;left:0;"></div></div></div></div>
     <div class="r2">
       <div class="fg"><label class="lb">थाना</label><div class="ac-outer" id="${pfx}t${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}t${i}" value="${esc(a.thana)}" placeholder="थाना" autocomplete="off" oninput="acThana('${pfx}t${i}','${pfx}d${i}')" onfocus="acThana('${pfx}t${i}','${pfx}d${i}')"/><button class="mb" onclick="sv('${pfx}t${i}',this)">🎤</button><div class="ac-dd" id="${pfx}t${i}-dd" style="right:42px;left:0;"></div></div></div></div>
       <div class="fg" style="margin-bottom:0"><label class="lb">जिला</label><div class="ac-outer" id="${pfx}d${i}-outer"><input class="ip" id="${pfx}d${i}" value="${esc(a.district)}" placeholder="बागपत" autocomplete="off" oninput="acDist('${pfx}d${i}','${pfx}t${i}')" onfocus="acDist('${pfx}d${i}','${pfx}t${i}')"/><div class="ac-dd" id="${pfx}d${i}-dd"></div></div></div>
@@ -1355,7 +1355,7 @@ function loadXLSX(){
 // DISTRICT → THANA  (UP / Delhi / Haryana / Rajasthan / Bihar / Punjab)
 // ══════════════════════════════════════════════════════
 var DT={
-'बागपत':['बागपत नगर','बड़ौत','बिनौली','छपरौली','खेकड़ा','रमाला','पिलाना','धौलाना'],
+'बागपत':['बागपत नगर','कोतवाली बागपत','बड़ौत','छपरौली','बिनौली','खेकड़ा','रमाला','पिलाना','दोघट','चांदीनगर','सिंघावली अहीर','टटीरी','अमीनगर सराय','बागपत देहात'],
 'मेरठ':['मेरठ कैंट','मेरठ नगर','मेडिकल कालेज','सिविल लाइंस','लिसाड़ी गेट','हापुड़ रोड','मवाना','सरधना','माछरा','नंगला गाँव','परतापुर','दौराला','गंगानगर','ब्रह्मपुरी','सदर बाजार मेरठ'],
 'गाजियाबाद':['साहिबाबाद','इंदिरापुरम','वसुंधरा','मोदीनगर','लोनी','कविनगर','मसूरी','ट्रोनिका सिटी','सिहानी गेट','विजयनगर','कोतवाली गाजियाबाद','नंदग्राम','रजापुर','मुरादनगर','डासना','भोजपुर'],
 'मुजफ्फरनगर':['कोतवाली मुजफ्फरनगर','खतौली','बुढ़ाना','जानसठ','कैराना','पुरकाजी','मीरापुर','सिसौली','भोपा','रतनपुरी','चरथावल','मंसूरपुर','उन','थानाभवन'],
@@ -1665,8 +1665,13 @@ function hi2rom(str) {
 var _distIdx = null, _thanaIdx = null;
 function buildIdx() {
   if (_distIdx) return;
-  _distIdx = ALL_DIST.map(function(d){ return {h:d, r:hi2rom(d)}; });
-  _thanaIdx = ALL_THANA.map(function(t){ return {h:t, r:hi2rom(t)}; });
+  var dict = getDictFromStorage();
+  var dists = ALL_DIST.concat(dict.districts||[]);
+  var thanas = ALL_THANA.concat(dict.ps||[]);
+  dists = dists.filter(function(v,i){ return v && dists.indexOf(v)===i; });
+  thanas = thanas.filter(function(v,i){ return v && thanas.indexOf(v)===i; });
+  _distIdx = dists.map(function(d){ return {h:d, r:hi2rom(d)}; });
+  _thanaIdx = thanas.map(function(t){ return {h:t, r:hi2rom(t)}; });
 }
 
 // Smart match: query can be Hindi or English phonetic
@@ -1678,6 +1683,7 @@ function smartMatch(query, idx, limit) {
   
   // Check if query has Hindi chars
   var isHindi = /[\u0900-\u097F]/.test(q);
+  var nq = romNorm(q);
   
   var results = [];
   for (var i = 0; i < idx.length; i++) {
@@ -1689,9 +1695,10 @@ function smartMatch(query, idx, limit) {
       // English/Roman query: match against romanized Hindi
       var r = item.r;
       var hLower = item.h.toLowerCase();
-      if (r.startsWith(q) || hLower.startsWith(q)) {
+      var nr = romNorm(r);
+      if (r.startsWith(q) || hLower.startsWith(q) || (nq && nr.startsWith(nq))) {
         results.push({item:item.h, score:3});
-      } else if (r.indexOf(q) >= 0 || hLower.indexOf(q) >= 0) {
+      } else if (r.indexOf(q) >= 0 || hLower.indexOf(q) >= 0 || (nq && nr.indexOf(nq) >= 0)) {
         results.push({item:item.h, score:2});
       } else {
         // Fuzzy: check if all chars of query appear in sequence in romanized
@@ -1708,6 +1715,15 @@ function smartMatch(query, idx, limit) {
   results.sort(function(a,b){ return b.score - a.score || a.item.localeCompare(b.item,'hi'); });
   return results.slice(0, limit).map(function(x){ return x.item; });
 }
+// Normalize romanization for lenient matching: long vowels → short, drop trailing schwa
+// so user "chandinagar" matches hi2rom "chaandeenagara"
+function romNorm(s){
+  return (s||'').toLowerCase().replace(/[^a-z]/g,'')
+    .replace(/aa/g,'a').replace(/ii/g,'i').replace(/ee/g,'i').replace(/oo/g,'u').replace(/uu/g,'u')
+    .replace(/au/g,'o').replace(/ou/g,'o').replace(/ai/g,'e').replace(/ei/g,'e')
+    .replace(/z/g,'j').replace(/w/g,'v').replace(/ph/g,'f')
+    .replace(/a+$/,'');
+}
 
 // Also build saved-data index for names/villages
 function smartMatchPool(query, pool) {
@@ -1718,12 +1734,14 @@ function smartMatchPool(query, pool) {
     return pool.filter(function(n){ return n.indexOf(query.trim()) >= 0; }).slice(0,10);
   }
   // English query against Hindi pool
+  var nq = romNorm(q);
   var results = [];
   for (var i = 0; i < pool.length; i++) {
     var r = hi2rom(pool[i]);
+    var nr = romNorm(r);
     var score = 0;
-    if (r.startsWith(q)) score = 3;
-    else if (r.indexOf(q) >= 0) score = 2;
+    if (r.startsWith(q) || (nq && nr.startsWith(nq))) score = 3;
+    else if (r.indexOf(q) >= 0 || (nq && nr.indexOf(nq) >= 0)) score = 2;
     else if (pool[i].toLowerCase().indexOf(q) >= 0) score = 2;
     if (score > 0) results.push({item:pool[i], score:score});
   }
@@ -1793,12 +1811,12 @@ function pickThana(fid,val){
 // ════════════════════════════════════════
 // NAME AUTOCOMPLETE
 // ════════════════════════════════════════
-var _namePool={names:[],fathers:[],villages:[]};
+var _namePool={names:[],fathers:[],villages:[],ps:[],districts:[]};
 // ══════════════════════════════════════════════════════════
 // SMART DICTIONARY — persists, grows, syncs across all users
 // ══════════════════════════════════════════════════════════
 var _poolLoaded=false;
-var _namePool={names:[],fathers:[],villages:[]};
+var _namePool={names:[],fathers:[],villages:[],ps:[],districts:[]};
 var DICT_KEY='court_dict_v1';
 
 // Default seed data
@@ -1816,13 +1834,16 @@ var _DEFAULT_VILLAGES=['बागपत','बड़ौत','छपरौली',
   'सिसाना','सांकरोड','बिजरौल','गुलावठी','रटौल','अस्थल','फजलपुर','टिकरी',
   'मेरठ','सरधना','मवाना','हस्तिनापुर','गाजियाबाद','लोनी','मुरादनगर','मोदीनगर',
   'मुजफ्फरनगर','खतौली','बुढ़ाना','जानसठ','कैराना','शामली','सोनीपत','पानीपत'];
+// PS + districts: base list comes from DT map (ALL_THANA/ALL_DIST); these hold learned extras
+var _DEFAULT_PS=[];
+var _DEFAULT_DIST=[];
 
 function getDictFromStorage(){
   try{
     var raw=localStorage.getItem(DICT_KEY);
-    if(raw){var d=JSON.parse(raw);if(d&&d.names)return d;}
+    if(raw){var d=JSON.parse(raw); d.names=d.names||[]; d.fathers=d.fathers||[]; d.villages=d.villages||[]; d.ps=d.ps||[]; d.districts=d.districts||[];if(d&&d.names)return d;}
   }catch(e){}
-  return {names:[..._DEFAULT_NAMES],fathers:[..._DEFAULT_FATHERS],villages:[..._DEFAULT_VILLAGES]};
+  return {names:[..._DEFAULT_NAMES],fathers:[..._DEFAULT_FATHERS],villages:[..._DEFAULT_VILLAGES],ps:[..._DEFAULT_PS],districts:[..._DEFAULT_DIST]};
 }
 
 function saveDictToStorage(dict){
@@ -1832,12 +1853,20 @@ function saveDictToStorage(dict){
 // Add entries from a case object into the dictionary
 function addCaseToDict(caseObj,dict){
   var changed=false;
-  if(caseObj&&caseObj.accused){
-    caseObj.accused.forEach(function(a){
-      if(a.name&&dict.names.indexOf(a.name)<0){dict.names.push(a.name);changed=true;}
-      if(a.fatherName&&dict.fathers.indexOf(a.fatherName)<0){dict.fathers.push(a.fatherName);changed=true;}
-      if(a.village&&dict.villages.indexOf(a.village)<0){dict.villages.push(a.village);changed=true;}
-    });
+  dict.ps=dict.ps||[]; dict.districts=dict.districts||[]; dict.villages=dict.villages||[];
+  function addTo(arr,val){ if(val && arr.indexOf(val)<0){ arr.push(val); changed=true; } }
+  if(caseObj){
+    addTo(dict.ps, caseObj.ps);
+    addTo(dict.districts, caseObj.district);
+    if(caseObj.accused){
+      caseObj.accused.forEach(function(a){
+        addTo(dict.names, a.name);
+        addTo(dict.fathers, a.fatherName);
+        addTo(dict.villages, a.village);
+        addTo(dict.ps, a.thana);
+        addTo(dict.districts, a.district);
+      });
+    }
   }
   return changed;
 }
@@ -1862,8 +1891,30 @@ function loadPool(){
       }
     }
   }catch(e){}
-  _namePool={names:dict.names.slice(),fathers:dict.fathers.slice(),villages:dict.villages.slice()};
+  _namePool={names:dict.names.slice(),fathers:dict.fathers.slice(),villages:dict.villages.slice(),ps:(dict.ps||[]).slice(),districts:(dict.districts||[]).slice()};
+  _distIdx=null;_thanaIdx=null;
   saveDictToStorage(dict);
+}
+
+// Universal learning: remember ANY value typed in a field, immediately (on blur) —
+// not just when a case is saved. So every name/father/village/PS/district ever typed
+// shows up as a suggestion next time.
+function learnField(inp, type){
+  try{
+    var val=(inp && inp.value!==undefined ? inp.value : inp || '').trim();
+    if(val.length<2) return;
+    var key = type==='father'?'fathers' : type==='village'?'villages' : type==='ps'?'ps' : type==='district'?'districts' : 'names';
+    var dict=getDictFromStorage();
+    dict[key]=dict[key]||[];
+    if(dict[key].indexOf(val)<0){
+      dict[key].push(val);
+      saveDictToStorage(dict);
+      _poolLoaded=false; _distIdx=null; _thanaIdx=null;   // refresh suggestions
+      if(typeof FB_OK!=='undefined' && FB_OK && CURRENT_USER){
+        try{ fbDb.ref('dict').set(dict); }catch(e){}       // share with other users
+      }
+    }
+  }catch(e){}
 }
 
 // Call this every time a case is saved — updates dictionary
@@ -1874,7 +1925,7 @@ function updateDictFromCase(caseObj){
       var dict=getDictFromStorage();
       if(addCaseToDict(caseObj,dict)){
         saveDictToStorage(dict);
-        _poolLoaded=false;
+        _poolLoaded=false; _distIdx=null; _thanaIdx=null;
         // Push merged dict to Firebase so all users get updated suggestions
         if(FB_OK&&CURRENT_USER){
           fbDb.ref('dict').set(dict).catch(function(){});
@@ -1892,13 +1943,14 @@ function startDictSync(){
   _fbDictRef.on('value', function(snap){
     if(!snap.exists()) return;
     var fbDict = snap.val();
-    if(!fbDict || !fbDict.names) return;
+    if(!fbDict) return;
     // Merge Firebase dict into local async
     setTimeout(function(){
       try{
         var localDict = getDictFromStorage();
+        localDict.ps=localDict.ps||[]; localDict.districts=localDict.districts||[];
         var changed = false;
-        ['names','fathers','villages'].forEach(function(key){
+        ['names','fathers','villages','ps','districts'].forEach(function(key){
           (fbDict[key]||[]).forEach(function(entry){
             if(entry && localDict[key].indexOf(entry)<0){
               localDict[key].push(entry);
@@ -1906,7 +1958,7 @@ function startDictSync(){
             }
           });
         });
-        if(changed){ saveDictToStorage(localDict); _poolLoaded=false; }
+        if(changed){ saveDictToStorage(localDict); _poolLoaded=false; _distIdx=null; _thanaIdx=null; }
       }catch(e){}
     },0);
   });
@@ -2383,7 +2435,7 @@ function renderAllData(q){
         <div class="fg"><label class="lb">जिला</label>
           <div class="ac-outer" id="nd-outer">
             <input class="ip" id="nd" placeholder="जिला टाइप करें..." autocomplete="off"
-              oninput="acDist('nd','np')" onfocus="acDist('nd','np')"/>
+              oninput="acDist('nd','np')" onfocus="acDist('nd','np')" onblur="setTimeout(()=>learnField(el('nd'),'district'),200)"/>
             <div class="ac-dd" id="nd-dd"></div>
           </div>
         </div>
@@ -2391,7 +2443,7 @@ function renderAllData(q){
           <div class="ac-outer" id="np-outer">
             <div class="iw" style="position:relative;">
               <input class="ip" id="np" placeholder="थाना टाइप करें..." autocomplete="off"
-                oninput="acThana('np','nd')" onfocus="acThana('np','nd')"/>
+                oninput="acThana('np','nd')" onfocus="acThana('np','nd')" onblur="setTimeout(()=>learnField(el('np'),'ps'),200)"/>
               <button class="mb" onclick="sv('np',this)">🎤</button>
               <div class="ac-dd" id="np-dd" style="left:0;right:42px;"></div>
             </div>
@@ -2436,7 +2488,7 @@ function renderAllData(q){
         <div class="fg"><label class="lb">जिला</label>
           <div class="ac-outer" id="ed-outer">
             <input class="ip" id="ed" placeholder="जिला टाइप करें..." autocomplete="off"
-              oninput="acDist('ed','ep')" onfocus="acDist('ed','ep')"/>
+              oninput="acDist('ed','ep')" onfocus="acDist('ed','ep')" onblur="setTimeout(()=>learnField(el('ed'),'district'),200)"/>
             <div class="ac-dd" id="ed-dd"></div>
           </div>
         </div>
@@ -2446,7 +2498,7 @@ function renderAllData(q){
         <div class="ac-outer" id="ep-outer">
           <div class="iw" style="position:relative;">
             <input class="ip" id="ep" placeholder="थाना टाइप करें..." autocomplete="off"
-              oninput="acThana('ep','ed')" onfocus="acThana('ep','ed')"/>
+              oninput="acThana('ep','ed')" onfocus="acThana('ep','ed')" onblur="setTimeout(()=>learnField(el('ep'),'ps'),200)"/>
             <button class="mb" onclick="sv('ep',this)">🎤</button>
             <div class="ac-dd" id="ep-dd" style="left:0;right:42px;"></div>
           </div>
