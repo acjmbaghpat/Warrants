@@ -72,6 +72,8 @@ body{background:var(--bg);color:var(--text);font-size:15px;}
 .act-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .act-chip{flex:0 0 auto;padding:6px 12px;border:1.5px solid rgba(36,58,138,.22);border-radius:16px;background:rgba(36,58,138,.05);color:var(--navy3,#243a8a);font-size:12px;font-weight:600;cursor:pointer;transition:var(--tr);white-space:nowrap;}
 .act-chip:active{transform:scale(.94);background:var(--saffron,#ff9933);color:#fff;border-color:var(--saffron,#ff9933);}
+.samechk{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--navy3,#243a8a);cursor:pointer;white-space:nowrap;}
+.samechk input{width:16px;height:16px;accent-color:var(--saffron,#ff9933);cursor:pointer;}
 .tl-btn:active{transform:scale(.93);background:rgba(36,58,138,.14);}
 
 /* GRID */
@@ -827,9 +829,18 @@ function goS1(){goS('s1');el('mi').value='';if(scanReady)sMsg('✅ Scanner ready
 
 // ── Accused ──
 let nA=[],eA=[],cc=null;
+// Copy address (village/thana/district) from accused #1 into this accused (same-address checkbox)
+function copyAddr(pfx,i,chk){
+  if(!chk||!chk.checked) return;
+  var v0=el(pfx+'v0'), t0=el(pfx+'t0'), d0=el(pfx+'d0');
+  if(el(pfx+'v'+i)&&v0) el(pfx+'v'+i).value=v0.value;
+  if(el(pfx+'t'+i)&&t0) el(pfx+'t'+i).value=t0.value;
+  if(el(pfx+'d'+i)&&d0) el(pfx+'d'+i).value=d0.value;
+}
+
 function rA(cid,arr,pfx,aFn,dFn){
   el(cid).innerHTML=arr.map((a,i)=>`
-    <div class="ac"><div class="ah"><span class="an">${i+1}</span><span class="at">अभियुक्त ${i+1}</span>${arr.length>1?`<button class="db" onclick="${dFn}(${i})">✕ हटाएं</button>`:''}</div>
+    <div class="ac"><div class="ah"><span class="an">${i+1}</span><span class="at">अभियुक्त ${i+1}</span>${i>0?`<label class="samechk"><input type="checkbox" onchange="copyAddr('${pfx}',${i},this)"/> पता #1 जैसा</label>`:''}${arr.length>1?`<button class="db" onclick="${dFn}(${i})">✕ हटाएं</button>`:''}</div>
     <div class="fg"><label class="lb">नाम *</label><div class="ac-outer" id="${pfx}n${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}n${i}" value="${esc(a.name)}" placeholder="नाम" autocomplete="off" oninput="acName(this,'name')" onfocus="acName(this,'name')" onblur="learnField(this,'name');setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}n${i}',this)">🎤</button><div class="ac-dd" id="${pfx}n${i}-dd" style="right:42px;left:0;"></div></div></div></div>
     <div class="fg"><label class="lb">पिता का नाम *</label><div class="ac-outer" id="${pfx}f${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}f${i}" value="${esc(a.fatherName)}" placeholder="पिता का नाम" autocomplete="off" oninput="acName(this,'father')" onfocus="acName(this,'father')" onblur="learnField(this,'father');setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}f${i}',this)">🎤</button><div class="ac-dd" id="${pfx}f${i}-dd" style="right:42px;left:0;"></div></div></div></div>
     <div class="fg"><label class="lb">ग्राम / मोहल्ला</label><div class="ac-outer" id="${pfx}v${i}-outer"><div class="iw" style="position:relative;"><input class="ip" id="${pfx}v${i}" value="${esc(a.village)}" placeholder="ग्राम" autocomplete="off" oninput="acName(this,'village')" onfocus="acName(this,'village')" onblur="learnField(this,'village');setTimeout(()=>acClose(this),200)"/><button class="mb" onclick="sv('${pfx}v${i}',this)">🎤</button><div class="ac-dd" id="${pfx}v${i}-dd" style="right:42px;left:0;"></div></div></div></div>
@@ -845,9 +856,9 @@ function addAE(){hv('ea',eA);eA.push({name:'',fatherName:'',village:'',thana:'',
 function delAE(i){hv('ea',eA);eA.splice(i,1);rA('eal',eA,'ea','addAE','delAE');}
 
 // ── New Case ──
-function loadNF(cn){el('b2').textContent=cn;el('nc').value=cn;['ncc','ns','np'].forEach(id=>el(id).value='');el('nd').value='बागपत';el('nf').value='';nA=[{name:'',fatherName:'',village:'',thana:'',district:''}];rA('nal',nA,'na','addAN','delAN');}
+function loadNF(cn){el('b2').textContent=cn;el('nc').value=cn;['ncc','nfile','ns','np'].forEach(id=>el(id).value='');el('nd').value='बागपत';el('nf').value='';nA=[{name:'',fatherName:'',village:'',thana:'',district:''}];rA('nal',nA,'na','addAN','delAN');}
 function saveN(){const cn=(el('nc').value||'').trim();if(!cn){toast('Case No. zaroori hai');return;}hv('na',nA);const vd=nA.filter(a=>a.name);if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
-  cc={caseNo:cn,ccNo:v('ncc'),section:v('ns'),ps:v('np'),district:v('nd')||'बागपत',fixDate:el('nf').value,accused:vd,savedAt:new Date().toISOString()};
+  cc={caseNo:cn,fileName:v('nfile'),ccNo:v('ncc'),section:v('ns'),ps:v('np'),district:v('nd')||'बागपत',fixDate:el('nf').value,accused:vd,savedAt:new Date().toISOString()};
   if(lsS(cc)){_poolLoaded=false;showSaved();toast('✅ Mukadma save ho gaya!');setTimeout(()=>{rF();goS('s3');},500);}}
 
 // ── Found ──
@@ -876,9 +887,9 @@ function tg(div,id){const cb=el(id);cb.checked=!cb.checked;div.classList.toggle(
 function sa(nm,val){document.querySelectorAll(`[name="${nm}"]`).forEach(cb=>{cb.checked=val;cb.closest('.cr').classList.toggle('on',val);});}
 
 // ── Edit ──
-function goEdit(){el('b4').textContent=cc.caseNo;el('ec').value=cc.ccNo||'';el('es').value=cc.section||'';el('ep').value=cc.ps||'';el('ed').value=cc.district||'बागपत';el('ef').value=cc.fixDate||'';eA=cc.accused.map(a=>({...a}));rA('eal',eA,'ea','addAE','delAE');goS('s4');}
+function goEdit(){el('b4').textContent=cc.caseNo;el('ec').value=cc.ccNo||'';el('efile').value=cc.fileName||'';el('es').value=cc.section||'';el('ep').value=cc.ps||'';el('ed').value=cc.district||'बागपत';el('ef').value=cc.fixDate||'';eA=cc.accused.map(a=>({...a}));rA('eal',eA,'ea','addAE','delAE');goS('s4');}
 function saveE(){hv('ea',eA);const vd=eA.filter(a=>a.name);if(!vd.length){toast('Kam se kam 1 accused ka naam bharo');return;}
-  cc={...cc,ccNo:v('ec'),section:v('es'),ps:v('ep'),district:v('ed')||'बागपत',fixDate:el('ef').value,accused:vd,updatedAt:new Date().toISOString()};
+  cc={...cc,fileName:v('efile'),ccNo:v('ec'),section:v('es'),ps:v('ep'),district:v('ed')||'बागपत',fixDate:el('ef').value,accused:vd,updatedAt:new Date().toISOString()};
   if(lsS(cc)){_poolLoaded=false;showSaved();toast('✅ Update ho gaya!');setTimeout(()=>{rF();goS('s3');},400);}}
 
 // ── Generate Excel ──
@@ -1075,6 +1086,9 @@ function genD(){
   const c=cc;
   const fd=c.fixDate?new Date(c.fixDate+'T00:00:00').toLocaleDateString('hi-IN',{day:'2-digit',month:'long',year:'numeric'}):'';
   const DOC_NAMES={summon:'Summon',bw:'BW',nbw:'NBW',p82:'82-CRPC',k83:'83-CRPC'};
+  // Right-side top box always shows the FIRST accused (lead), whatever accused's warrant we build.
+  const firstName = (c.fileName||'').trim() || (c.accused && c.accused[0] && c.accused[0].name) || '';
+  const RIGHTBOX_NAME = { summon:'F10', bw:'F49', nbw:'F101', p82:'F153', k83:'F193' };
 
   // Build fill map for an accused (input cells → all 5 forms auto-fill via formulas)
   function fillsFor(acc){
@@ -1107,6 +1121,8 @@ function genD(){
       const baked = bakeValues(files, fillsFor(acc));
       let sx = fflate.strFromU8(files['xl/worksheets/sheet1.xml']);
       for(const coord in baked) sx = fillSheetCell(sx, coord, baked[coord]);
+      // Right-side top box → always the 1st accused's name (body stays this accused)
+      if(firstName && RIGHTBOX_NAME[dt]) sx = fillSheetCell(sx, RIGHTBOX_NAME[dt], firstName);
       // 2. Keep ONLY this form's rows (renumbered to top) → only the clicked form downloads
       const [s,e] = FORMS[dt];
       const ex = extractForm(sx, s, e);
@@ -1767,14 +1783,14 @@ function pickDistI(evt,fid,thanaFid,idx){
   var dd=el(fid+'-dd');
   var val=dd&&dd._items?dd._items[idx]:'';
   el(fid).value=val;
+  learnField(el(fid),'district');
   if(dd)dd.style.display='none';
-  if(el(thanaFid))el(thanaFid).value='';
+  // keep the PS/thana value — only close its dropdown so it re-filters for the new district
   var tdd=el(thanaFid+'-dd'); if(tdd)tdd.style.display='none';
 }
 function pickDist(fid,thanaFid,val){
   el(fid).value=val;
   var dd=el(fid+'-dd'); if(dd)dd.style.display='none';
-  if(el(thanaFid))el(thanaFid).value='';
   var tdd=el(thanaFid+'-dd'); if(tdd)tdd.style.display='none';
 }
 
@@ -2430,6 +2446,7 @@ function renderAllData(q){
         <div class="fg"><label class="lb">Case No. *</label><input class="ip" id="nc" placeholder="3802/20"/></div>
         <div class="fg"><label class="lb">CC No.</label><input class="ip" id="ncc" placeholder="256/14"/></div>
       </div>
+      <div class="fg"><label class="lb">फ़ाइल का नाम / पक्षकार (right box) <span style="font-weight:400;opacity:.6;">— optional</span></label><input class="ip" id="nfile" placeholder="Khaali chhodo to 1st accused ka naam aayega"/></div>
       <div class="fg"><label class="lb">धारा (Section) *</label><input class="ip" id="ns" placeholder="366 IPC"/><div class="act-chips"><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','IPC')">IPC</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','BNS')">BNS</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','EX ACT')">EX ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','ARMS ACT')">ARMS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','EC ACT')">EC ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','PF ACT')">PF ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','FSS ACT')">FSS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','DP ACT')">DP ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','GUNDA ACT')">GUNDA ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','GAMBLING ACT')">GAMBLING ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','NI ACT')">NI ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','NDPS ACT')">NDPS ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','MV ACT')">MV ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','POCSO ACT')">POCSO ACT</button><button type="button" class="act-chip" onmousedown="event.preventDefault()" onclick="addAct('ns','SC/ST ACT')">SC/ST ACT</button></div></div>
       <div class="r2">
         <div class="fg"><label class="lb">जिला</label>
@@ -2485,6 +2502,7 @@ function renderAllData(q){
       <p class="st" style="padding:0 0 12px;">मुकदमे की जानकारी</p>
       <div class="r2">
         <div class="fg"><label class="lb">CC No.</label><input class="ip" id="ec"/></div>
+        <div class="fg"><label class="lb">फ़ाइल का नाम / पक्षकार <span style="font-weight:400;opacity:.6;">(right box)</span></label><input class="ip" id="efile" placeholder="Khaali = 1st accused"/></div>
         <div class="fg"><label class="lb">जिला</label>
           <div class="ac-outer" id="ed-outer">
             <input class="ip" id="ed" placeholder="जिला टाइप करें..." autocomplete="off"
